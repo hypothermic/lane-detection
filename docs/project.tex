@@ -3,12 +3,18 @@
 
 \begin{document}
 
+	% Set language to English
 	\taal{en}
 
+	% Cover page
 	\begin{titelpagina}
 
 		\titel{Project Plan}{\emph{Projectplan}}
-		\auteur{Matthijs Bakker}
+		\auteur{
+			Matthijs Bakker
+			Supervisor: Willie Conen
+			Company: AROBS Transilvania SA
+		}
 		\datum{31-01-2022}
 
 	\end{titelpagina}
@@ -19,18 +25,50 @@
 		It describes all factors which will have significant impact in the lifespan of this project, and proposes how I should handle these factors to make the project a success.
 		For this project, the scope definition is very important, because the assignment can be made too complex and too big to complete in the assigned timeframe. In \verwijzing{paragraaf}{Scope} I will describe exactly what the project does and does not entail.
 		
-		Not only is this document a guideline for myself; I hope that it also gives clarity to the project stakeholders. It should provide clarity for how the project will be structured, when certain events will take place and what the potential pitfalls are.
-
+		Not only is this document a guideline for myself; I hope that it also gives clarity to the project stakeholders.
+		The stakeholders should be able to tell from this document how the project will be structured, which products will be created, when certain events will take place and what the potential pitfalls are.
 		
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Project Definition}
 
+		The goal of this project is to enable cars to be more autonomous by making them detect the road lane they're driving on.
+		The final product -- a lane detection system -- is a digital logic layer which can be run on a Field Programmable Gate Array (FPGA).
+		The digital logic layer will be able to detect the position of the vehicle relative to the road lane by processing video input from a camera mounted on the dashboard of the vehicle.
+
 		\begin{paragraaf}{Scope}
+
+			The final product, as described above, takes input and output from other subsystems of a vehicle.
+			It is assumed that these subsystems and the input and output streams to them already exist within the context of the vehicle.
+			Therefore, these subsystems are not in the scope of this project.
+			
+			Outside of the scope of the project are:
+
+			\begin{enumerate}
+			
+				\item Handling video input from a camera located on the dashboard of the vehicle
+				\item Propagating the results from the lane detection system to other subsystems of the vehicle
+				\item Controlling the vehicle
+			
+			\end{enumerate}
 
 		\end{paragraaf}
 
 		\begin{paragraaf}{Dependencies}
+
+			For this project I am dependant on the availability of a capable FPGA to run the final product on.
+			This FPGA needs a substantial amount of LUTs and a proficient clocking circuit, because the digital logic component will run in real-time.
+		
+			Hardware synthesis, the process of "assembling" a digital logic layer from hardware description files, requires a lot of computing resources because it is a NP-Hard \textbf{[todo source?]} problem.
+			Every time I make change to the hardware description, it needs to be re-synthesized and meet timing constraints.
+			Therefore, I need a powerful computer which can quickly re-synthesize the digital logic.
+
+			\begin{enumerate}
+
+				\item The Digilent Arty A7 FPGA board will be used to run the final project on.
+				\item A laptop provided by AROBS will be used to verify, synthesize and implement the digital logic layer.
+		
+			\end{enumerate}
 
 		\end{paragraaf}
 
@@ -74,6 +112,14 @@
 
 	\begin{hoofdstuk}{Planning}
 
+		The project will be spread over a total of 21 weeks.
+		The first week will start on \textit{Monday, 31 January 2022}.
+
+		\textbf{[todo gantt chart]}
+
+		Week 1 - Project plan
+
+		
 	\end{hoofdstuk}
 
 \end{document}
