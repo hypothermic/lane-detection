@@ -1,8 +1,12 @@
 % !TEX program = xelatex
 \documentclass{matthijs}
 
+% Style for first and last page
 \usepackage{wallpaper}
 \usepackage{color}
+
+% Gantt chart for chapter Planning
+\usepackage{pgfgantt}
 
 \begin{document}
 
@@ -13,13 +17,12 @@
 	\begin{titelpagina}
 		\color{white}
 
-		\titel{\vspace{50pt}Project Plan}{\emph{Projectplan}}
+		\titel{\vspace{50pt}Plan of Action}{\emph{Projectplan}}
 		\author{
 			\begin{tabular}{r l}
 				\textbf{Author:} & Matthijs Bakker \\
 				\textbf{Windesheim Supervisor:} & Willie Conen \\
 				\textbf{Company Supervisor:} & Pangyu Jeong \\
-				\textbf{Company:} & AROBS Transilvania SA
 			\end{tabular}
 			\vspace{4cm}
 		}
@@ -124,18 +127,45 @@
 
 		The project will be spread over a total of 21 weeks.
 		The first week will start on \textit{Monday, 31 January 2022}.
+		An approximate planning on a weekly basis can be viewed in figure\verwijzing{figuur}{Gantt Chart}.
 
-		\textbf{[todo gantt chart]}
+		\begin{figuur}{Gantt Chart}
+		\begin{ganttchart}{1}{21}
+			\gantttitle{Week \#}{21} \\
+			\gantttitlelist{1,...,21}{1} \\
 
-		Week 1 - Project plan
+			\ganttgroup{Documentation}{1}{7} \\
+			\ganttbar{Plan of Action}{1}{2} \\
+			\ganttlinkedbar{Kick-Off}{2}{2} \ganttnewline
+			\ganttlinkedbar{Research Paper}{3}{6} \ganttnewline
 
+			\ganttgroup{Realisation}{7}{14} \ganttnewline
+			\ganttbar{Algorithm Implementation}{7}{8} \ganttnewline
+			\ganttmilestone{1st Assessment}{8} \ganttnewline
+			\ganttbar{FPGA Implementation}{9}{14} \ganttnewline
+			\ganttmilestone{Presentation}{10} \ganttnewline
+			\ganttbar{Concept Portfolio}{12}{15}\ganttnewline
+			
+			\ganttgroup{Evaluation}{16}{21} \ganttnewline
+			\ganttbar{Portfolio}{16}{18} \ganttnewline
+			\ganttmilestone{Final Assessment}{17} \ganttnewline
+			\ganttmilestone{Portfolio Hand-in}{18} \ganttnewline
+			\ganttbar{Presentation}{20}{21} \ganttnewline
+			
+			\ganttlink{elem5}{elem7}
+			\ganttlink{elem11}{elem14}
+
+		\end{ganttchart}
+		\end{figuur}
 		
 	\end{hoofdstuk}
 
+	% Empty last page
 	\clearpage
 	\thispagestyle{empty}
 	\addtocounter{page}{-1}
 	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
 	\
 	\clearpage
+
 \end{document}
