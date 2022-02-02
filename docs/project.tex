@@ -8,6 +8,10 @@
 % Gantt chart for chapter Planning
 \usepackage{pgfgantt}
 
+\usepackage{csquotes}
+\usepackage{biblatex}
+\addbibresource{project.bib}
+
 \begin{document}
 
 	% Set language to English
@@ -20,16 +24,24 @@
 		\titel{\vspace{50pt}Plan of Action}{\emph{Projectplan}}
 		\author{
 			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker \\
-				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\textbf{Author:} & Matthijs Bakker\thanks{\color{white}s1142121@student.windesheim.nl} \\
+				\textbf{Course:} & HBO-ICT ESA Full-Time \\
+				\\
+				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
 				\textbf{Company Supervisor:} & Pangyu Jeong \\
+				\textbf{Windesheim Supervisor:} & Willie Conen \\
 			\end{tabular}
 			\vspace{4cm}
 		}
 		\datum{31-01-2022}
 
 		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
+	
 	\end{titelpagina}
+
+	\begin{inhoudspagina}
+
+	\end{inhoudspagina}
 
 	\begin{hoofdstuk}{Preface}
 
@@ -40,14 +52,35 @@
 		
 		Not only is this document a guideline for myself; I hope that it also gives clarity to the project stakeholders.
 		The stakeholders should be able to tell from this document how the project will be structured, which products will be created, when certain events will take place and what the potential pitfalls are.
+
+		Lastly, the planning of this project is described in chapter \verwijzing{hoofdstuk}{Planning}.
+		In the Gantt chart included with this document is visible how much time is allocated for each of the stages of this project.
+		Important milestones, like the evaluations and presentations, are also included in this chart.
 		
+		\vspace{16pt}
+
+		\begin{tabel}{Abbrevations}{l @{\extracolsep{\fill}} r}
+			\textbf{Abbrevation} & \textbf{Explanation} \\
+			\midrule
+			FPGA & Field Programmable Gate Array; a customizable logic circuit \tabularnewline
+			Xilinx Vivado & A design suite for developing digital logic solutions \tabularnewline
+		\end{tabel}
+
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Project Definition}
 
-		The goal of this project is to enable cars to be more autonomous by making them detect the road lane they're driving on.
-		The final product -- a lane detection system -- is a digital logic layer which can be run on a Field Programmable Gate Array (FPGA).
+		The goal of this project is to enable vehicles to be more autonomous by making them detect the road lane they're driving on.
+		The final product -- a lane detection system -- is a digital logic layer which can be run on a Field Programmable Gate Array (hereafter referred to as a FPGA).
 		The digital logic layer will be able to detect the position of the vehicle relative to the road lane by processing video input from a camera mounted on the dashboard of the vehicle.
+
+		\begin{paragraaf}{Initial Situation}
+			
+			A vehicle with a camera on the dashboard is the starting position for this project.
+			I need to develop a solution which can detect the position of the vehicle relative to the road lane by analyzing the camera feed.
+			The final product will be implemented in a Hardware Description Language, so that it is possible to run it on an FPGA.
+		
+		\end{paragraaf}
 
 		\begin{paragraaf}{Scope}
 
@@ -71,21 +104,32 @@
 
 			For this project I am dependant on the availability of a capable FPGA to run the final product on.
 			This FPGA needs a substantial amount of LUTs and a proficient clocking circuit, because the digital logic component will run in real-time.
-		
-			Hardware synthesis, the process of "assembling" a digital logic layer from hardware description files, requires a lot of computing resources because it is a NP-Hard \textbf{[todo source?]} problem.
+			
+			Hardware synthesis, the process of "assembling" a digital logic layer from hardware description files, requires a lot of computing resources because it is a NP-Hard \cite{chu2006rtl}, problem.
 			Every time I make change to the hardware description, it needs to be re-synthesized and meet timing constraints.
 			Therefore, I need a powerful computer which can quickly re-synthesize the digital logic.
 
 			\begin{enumerate}
 
-				\item The Digilent Arty A7 FPGA board will be used to run the final project on.
-				\item A laptop provided by AROBS will be used to verify, synthesize and implement the digital logic layer.
+				\item The Digilent Arty A7 FPGA board will be used to run the final project on
+				\item A powerful laptop provided by AROBS will be used to verify, synthesize and implement the digital logic layer
+				\item Digital Logic design tools (Xilinx Vivado ML Edition and Vitis Model Composer) will need to be available on the laptop
 		
 			\end{enumerate}
 
 		\end{paragraaf}
 
 		\begin{paragraaf}{Preconditions}
+
+			This project has its background in multiple areas: image analysis, hardware design and pattern recognition.
+			Sufficient knowledge of these areas must be available for me to learn from and to help me with the realisation phase of the project.
+
+			\begin{enumerate}
+
+				\item Learning sources about hardware design, image analysis and pattern recognition are available at the company
+				\item The company supervisor is knowledgable on these topics
+
+			\end{enumerate}
 
 		\end{paragraaf}
 
@@ -127,9 +171,11 @@
 
 		The project will be spread over a total of 21 weeks.
 		The first week will start on \textit{Monday, 31 January 2022}.
-		An approximate planning on a weekly basis can be viewed in figure\verwijzing{figuur}{Gantt Chart}.
+		An approximate planning on a weekly basis can be viewed in figure\verwijzing{figuur}{Project Timeline visualized in a Gantt Chart}.
+		Halfway the project, after the first term of 10 weeks, the first assessment will take place.
+		At the end of the project, the final assessment will take place and I will present the product to the company.
 
-		\begin{figuur}{Gantt Chart}
+		\begin{figuur}{Project Timeline visualized in a Gantt Chart}
 		\begin{ganttchart}{1}{21}
 			\gantttitle{Week \#}{21} \\
 			\gantttitlelist{1,...,21}{1} \\
@@ -159,6 +205,10 @@
 		\end{figuur}
 		
 	\end{hoofdstuk}
+
+	% Bibliography page
+	\clearpage
+	\printbibliography
 
 	% Empty last page
 	\clearpage
