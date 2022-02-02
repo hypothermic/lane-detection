@@ -1,6 +1,9 @@
 % !TEX program = xelatex
 \documentclass{matthijs}
 
+\usepackage{wallpaper}
+\usepackage{color}
+
 \begin{document}
 
 	% Set language to English
@@ -8,22 +11,29 @@
 
 	% Cover page
 	\begin{titelpagina}
+		\color{white}
 
-		\titel{Project Plan}{\emph{Projectplan}}
-		\auteur{
-			Matthijs Bakker
-			Supervisor: Willie Conen
-			Company: AROBS Transilvania SA
+		\titel{\vspace{50pt}Project Plan}{\emph{Projectplan}}
+		\author{
+			\begin{tabular}{r l}
+				\textbf{Author:} & Matthijs Bakker \\
+				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\textbf{Company Supervisor:} & Pangyu Jeong \\
+				\textbf{Company:} & AROBS Transilvania SA
+			\end{tabular}
+			\vspace{4cm}
 		}
 		\datum{31-01-2022}
 
+		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
 	\end{titelpagina}
 
 	\begin{hoofdstuk}{Preface}
 
 		This document describes how I am going to work on this project.
 		It describes all factors which will have significant impact in the lifespan of this project, and proposes how I should handle these factors to make the project a success.
-		For this project, the scope definition is very important, because the assignment can be made too complex and too big to complete in the assigned timeframe. In \verwijzing{paragraaf}{Scope} I will describe exactly what the project does and does not entail.
+		For this project, the scope definition is very important, because the assignment can be made too complex and too big to complete in the assigned timeframe.
+		In the paragraph \verwijzing{paragraaf}{Scope} I will describe exactly what the project does and does not entail.
 		
 		Not only is this document a guideline for myself; I hope that it also gives clarity to the project stakeholders.
 		The stakeholders should be able to tell from this document how the project will be structured, which products will be created, when certain events will take place and what the potential pitfalls are.
@@ -122,4 +132,10 @@
 		
 	\end{hoofdstuk}
 
+	\clearpage
+	\thispagestyle{empty}
+	\addtocounter{page}{-1}
+	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
+	\
+	\clearpage
 \end{document}
