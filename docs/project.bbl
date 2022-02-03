@@ -1,0 +1,228 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{andriessen2010gedragscode}{book}{}
+      \name{author}{5}{}{%
+        {{hash=e6216fec38f44411469e4e47cf6c8ba7}{%
+           family={Andriessen},
+           familyi={A\bibinitperiod},
+           given={Daan},
+           giveni={D\bibinitperiod}}}%
+        {{hash=201c11f3659f36ba8d1a611ef6907881}{%
+           family={Onstenk},
+           familyi={O\bibinitperiod},
+           given={Jeroen},
+           giveni={J\bibinitperiod}}}%
+        {{hash=3270c1da57a4538316c6900c743bf560}{%
+           family={Delnooz},
+           familyi={D\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod}}}%
+        {{hash=858a57a6c19d7b0bb105e5116941bc67}{%
+           family={Smeijsters},
+           familyi={S\bibinitperiod},
+           given={Henk},
+           giveni={H\bibinitperiod}}}%
+        {{hash=b7b20337702c9b703a729274d741f377}{%
+           family={Peij},
+           familyi={P\bibinitperiod},
+           given={Stefan},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{efb26331cc8ddaefa2ee9c91b5ce595e}
+      \strng{fullhash}{96cd1888b5d49801935192501103b349}
+      \strng{bibnamehash}{efb26331cc8ddaefa2ee9c91b5ce595e}
+      \strng{authorbibnamehash}{efb26331cc8ddaefa2ee9c91b5ce595e}
+      \strng{authornamehash}{efb26331cc8ddaefa2ee9c91b5ce595e}
+      \strng{authorfullhash}{96cd1888b5d49801935192501103b349}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{8}
+      \field{title}{Gedragscode praktijkgericht onderzoek voor het hbo}
+      \field{urlday}{3}
+      \field{urlmonth}{2}
+      \field{urlyear}{2022}
+      \field{year}{2010}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.vereniginghogescholen.nl/system/knowledge_base/attachments/files/000/000/206/original/Gedragscode_praktijkgericht_onderzoek_voor_het_hbo.pdf?1439885871
+      \endverb
+      \verb{url}
+      \verb https://www.vereniginghogescholen.nl/system/knowledge_base/attachments/files/000/000/206/original/Gedragscode_praktijkgericht_onderzoek_voor_het_hbo.pdf?1439885871
+      \endverb
+    \endentry
+    \entry{brown2018the}{online}{}
+      \name{author}{1}{}{%
+        {{hash=0653a11aad687a389587e0000e0f4a13}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={Simon},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{0653a11aad687a389587e0000e0f4a13}
+      \strng{fullhash}{0653a11aad687a389587e0000e0f4a13}
+      \strng{bibnamehash}{0653a11aad687a389587e0000e0f4a13}
+      \strng{authorbibnamehash}{0653a11aad687a389587e0000e0f4a13}
+      \strng{authornamehash}{0653a11aad687a389587e0000e0f4a13}
+      \strng{authorfullhash}{0653a11aad687a389587e0000e0f4a13}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{6}
+      \field{title}{The C4 Model for Software Architecture}
+      \field{urlday}{3}
+      \field{urlmonth}{2}
+      \field{urlyear}{2022}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.infoq.com/articles/C4-architecture-model/
+      \endverb
+      \verb{url}
+      \verb https://www.infoq.com/articles/C4-architecture-model/
+      \endverb
+    \endentry
+    \entry{chu2006rtl}{book}{}
+      \name{author}{1}{}{%
+        {{hash=db9dfdaedfbc794b5f7f88168fd09904}{%
+           family={Chu},
+           familyi={C\bibinitperiod},
+           given={Pong\bibnamedelima P},
+           giveni={P\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons}%
+      }
+      \strng{namehash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \strng{fullhash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \strng{bibnamehash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \strng{authorbibnamehash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \strng{authornamehash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \strng{authorfullhash}{db9dfdaedfbc794b5f7f88168fd09904}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{RTL hardware design using VHDL: coding for efficiency, portability, and scalability}
+      \field{year}{2006}
+    \endentry
+    \entry{dorman2012sip}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=683bd3f9de5e316bdf6d0f4e770665a5}{%
+           family={Dorman},
+           familyi={D\bibinitperiod},
+           given={Christopher},
+           giveni={C\bibinitperiod}}}%
+        {{hash=be708cf87e2e87b05f949f4039faf4d8}{%
+           family={Rajlich},
+           familyi={R\bibinitperiod},
+           given={Václav},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{bd37d5c5092b5a10c97388a766be5a82}
+      \strng{fullhash}{bd37d5c5092b5a10c97388a766be5a82}
+      \strng{bibnamehash}{bd37d5c5092b5a10c97388a766be5a82}
+      \strng{authorbibnamehash}{bd37d5c5092b5a10c97388a766be5a82}
+      \strng{authornamehash}{bd37d5c5092b5a10c97388a766be5a82}
+      \strng{authorfullhash}{bd37d5c5092b5a10c97388a766be5a82}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2012 Agile Conference}
+      \field{title}{Software Change in the Solo Iterative Process: An Experience Report}
+      \field{year}{2012}
+      \field{pages}{21\bibrangedash 30}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/Agile.2012.13
+      \endverb
+    \endentry
+    \entry{gant2019scrum}{online}{}
+      \name{author}{1}{}{%
+        {{hash=36c79431b915827e1bfcb21a76aa5fb4}{%
+           family={Gant},
+           familyi={G\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \strng{fullhash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \strng{bibnamehash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \strng{authorbibnamehash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \strng{authornamehash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \strng{authorfullhash}{36c79431b915827e1bfcb21a76aa5fb4}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{04}
+      \field{title}{Scrum and the Solo Dev}
+      \field{urlday}{3}
+      \field{urlmonth}{2}
+      \field{urlyear}{2022}
+      \field{year}{2019}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://medium.com/@jmgant.cleareyeconsulting/scrum-and-the-solo-dev-fb8e810ed42b
+      \endverb
+      \verb{url}
+      \verb https://medium.com/@jmgant.cleareyeconsulting/scrum-and-the-solo-dev-fb8e810ed42b
+      \endverb
+    \endentry
+    \entry{windesheim2021handleiding}{book}{}
+      \name{author}{1}{}{%
+        {{hash=886f716441f78b68ca8e18ceefce3e85}{%
+           family={Opleiding\bibnamedelima HBO-ICT},
+           familyi={O\bibinitperiod\bibinitdelim H\bibinithyphendelim I\bibinitperiod},
+           given={Windesheim\bibnamedelima Zwolle},
+           giveni={W\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{886f716441f78b68ca8e18ceefce3e85}
+      \strng{fullhash}{886f716441f78b68ca8e18ceefce3e85}
+      \strng{bibnamehash}{886f716441f78b68ca8e18ceefce3e85}
+      \strng{authorbibnamehash}{886f716441f78b68ca8e18ceefce3e85}
+      \strng{authornamehash}{886f716441f78b68ca8e18ceefce3e85}
+      \strng{authorfullhash}{886f716441f78b68ca8e18ceefce3e85}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Handleiding stage en afstuderen}
+      \field{urlday}{3}
+      \field{urlmonth}{2}
+      \field{urlyear}{2022}
+      \field{year}{2021}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://liveadminwindesheim.sharepoint.com/sites/std-HBO-ICT-voltijd/Gedeelde\%20documenten/Forms/Documenten.aspx?id=\%2Fsites\%2Fstd\%2DHBO\%2DICT\%2Dvoltijd\%2FGedeelde\%20documenten\%2FHBOICT\%20Handleiding\%20stage\%20en\%20afstuderen\%202021\%2D2022\%2Epdf\&parent=\%2Fsites\%2Fstd\%2DHBO\%2DICT\%2Dvoltijd\%2FGedeelde\%20documenten
+      \endverb
+      \verb{url}
+      \verb https://liveadminwindesheim.sharepoint.com/sites/std-HBO-ICT-voltijd/Gedeelde%5C%20documenten/Forms/Documenten.aspx?id=%5C%2Fsites%5C%2Fstd%5C%2DHBO%5C%2DICT%5C%2Dvoltijd%5C%2FGedeelde%5C%20documenten%5C%2FHBOICT%5C%20Handleiding%5C%20stage%5C%20en%5C%20afstuderen%5C%202021%5C%2D2022%5C%2Epdf%5C&parent=%5C%2Fsites%5C%2Fstd%5C%2DHBO%5C%2DICT%5C%2Dvoltijd%5C%2FGedeelde%5C%20documenten
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
