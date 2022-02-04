@@ -3,7 +3,10 @@
 
 % Style for first and last page
 \usepackage{wallpaper}
-\usepackage[]{color}
+\usepackage{color}
+%\definecolor{arobsblue}{HTML}{0e2642}
+%\definecolor{arobsblue}{HTML}{0f2c4c}
+\definecolor{arobsblue}{HTML}{0e335c}
 
 % Gantt chart for chapter Planning
 \usepackage{pgfgantt}
@@ -11,6 +14,13 @@
 \usepackage{csquotes}
 \usepackage{biblatex}
 \addbibresource{project.bib}
+
+%\usepackage{atbegshi}
+%\AtBeginShipout{
+%	\begin{tikzpicture}[remember picture,overlay]
+%		\fill (current page.north west) node[below right,fill=arobsblue,draw=arobsblue,minimum width=\paperwidth,minimum height=2ex] (box) {};
+%	\end{tikzpicture}
+%}
 
 \begin{document}
 
@@ -49,6 +59,7 @@
 
 	\begin{hoofdstuk}{Preface}
 
+
 		This document describes how I am going to work on this project.
 		It describes all the factors which will have significant impact on the lifespan of this project, and proposes how I should handle these factors to make the project a success.
 		For this project, the scope definition is very important, because the assignment can be made too complex and too big to complete in the assigned timeframe.
@@ -73,6 +84,7 @@
 			FPGA & Field Programmable Gate Array; a customizable logic circuit \tabularnewline
 			Xilinx Vivado & A design suite for developing digital logic solutions \tabularnewline
 			SIP & Solo Iterative Process; an agile planning method \tabularnewline
+			ADAS & Advanced Driver-Assistance System \tabularnewline
 		\end{tabel}
 
 	\end{hoofdstuk}
