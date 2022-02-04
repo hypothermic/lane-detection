@@ -150,7 +150,7 @@
 	\begin{hoofdstuk}{Deliverables}
 
 		For this project I will deliver three separate, testable, products.
-		All of them are proof-of-concepts; they will not be brought on the market, however, they will deliver vital documentation for AROBS which can be used to further develop detection systems for autonomous vehicles.
+		All of them are proof-of-concepts; they will not be brought on the market, however, they will deliver vital knowledge for AROBS which can be used to further develop their Advanced Driver-Assistance System (ADAS) warning system for autonomous vehicles.
 		At the end of the project, the products each need to meet the Definition of Done in order for them to be regarded as a success.
 
 		\begin{paragraaf}{Research Paper}
@@ -166,14 +166,14 @@
 		
 			The second product is a computer program which implements the lane detection algorithms as researched in the Research Paper.
 			This computer program will be used as a reference point for implementing the algorithm in hardware.
-			It needs to accept an image and apply the algorithm to detect the position of the car relative to the road lane.
+			It needs to load an image and apply the algorithm on it to detect the position of the car relative to the road lane.
 			This program can also be used to compare the expected result to the result of the hardware implementation.
 		
 		\end{paragraaf}
 
 		\begin{paragraaf}{Hardware Implementation}
 		
-			The third and final product is a hardware implementation of the mentioned algorithm.
+			The third and final product is a hardware implementation of the selected algorithm from the research paper.
 			It will be written in a hardware description language and designed to work on a Xilinx Artix-7 FPGA.
 			A video feed will be processed and results will be visible in real-time.
 			With this product, a great amount of functional and technical documentation will be written, which will be useful for AROBS when integrating such a product in a vehicle.
@@ -384,32 +384,32 @@
 		At the end of the project, the final assessment will take place and I will present the product to the company.
 
 		\begin{figuur}{Project Timeline visualized in a Gantt Chart}
-		\begin{ganttchart}{1}{21}
-			\gantttitle{Week \#}{21} \\
-			\gantttitlelist{1,...,21}{1} \\
+			\begin{ganttchart}{1}{21}
+				\gantttitle{Week \#}{21} \\
+				\gantttitlelist{1,...,21}{1} \\
 
-			\ganttgroup{Documentation}{1}{7} \\
-			\ganttbar{Plan of Action}{1}{2} \\
-			\ganttlinkedbar{Kick-Off}{2}{2} \ganttnewline
-			\ganttlinkedbar{Research Paper}{3}{6} \ganttnewline
+				\ganttgroup[group right shift=0.5]{Documentation}{1}{4} \\
+				\ganttbar{Plan of Action}{1}{2} \\
+				\ganttlinkedbar{Kick-Off}{2}{2} \ganttnewline
+				\ganttlinkedbar[bar right shift=0.5]{Research Paper}{3}{4} \ganttnewline
 
-			\ganttgroup{Realisation}{7}{14} \ganttnewline
-			\ganttbar{Algorithm Implementation}{7}{8} \ganttnewline
-			\ganttmilestone{1st Assessment}{8} \ganttnewline
-			\ganttbar{FPGA Implementation}{9}{14} \ganttnewline
-			\ganttmilestone{Presentation}{10} \ganttnewline
-			\ganttbar{Concept Portfolio}{12}{15}\ganttnewline
-			
-			\ganttgroup{Evaluation}{16}{21} \ganttnewline
-			\ganttbar{Portfolio}{16}{18} \ganttnewline
-			\ganttmilestone{Final Assessment}{17} \ganttnewline
-			\ganttmilestone{Portfolio Hand-in}{18} \ganttnewline
-			\ganttbar{Presentation}{20}{21} \ganttnewline
-			
-			\ganttlink{elem5}{elem7}
-			\ganttlink{elem11}{elem14}
+				\ganttgroup[group left shift=0.5]{Realisation}{5}{15} \ganttnewline
+				\ganttbar[bar left shift=0.5]{Algorithm Implementation}{5}{8} \ganttnewline
+				\ganttmilestone{1st Assessment}{8} \ganttnewline
+				\ganttbar{FPGA Implementation}{9}{14} \ganttnewline
+				\ganttmilestone{Presentation}{10} \ganttnewline
+				\ganttbar{Concept Portfolio}{12}{15}\ganttnewline
+				
+				\ganttgroup{Evaluation}{16}{21} \ganttnewline
+				\ganttbar{Portfolio}{16}{18} \ganttnewline
+				\ganttmilestone{Final Assessment}{17} \ganttnewline
+				\ganttmilestone{Portfolio Hand-in}{18} \ganttnewline
+				\ganttbar{Presentation}{20}{21} \ganttnewline
+				
+				\ganttlink{elem5}{elem7}
+				\ganttlink{elem11}{elem14}
 
-		\end{ganttchart}
+			\end{ganttchart}
 		\end{figuur}
 		
 	\end{hoofdstuk}
