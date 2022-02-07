@@ -29,7 +29,7 @@ for pic in "${sample_pics[@]}";
 do 
 	echo "Extracting picture: $pic";
 	cp "$BDD_PATH/train/$pic" "$OUTPUT_PATH/$pic" &&
-	mogrify -compress none -format ppm "$OUTPUT_PATH/$pic";
+	mogrify -format ppm "$OUTPUT_PATH/$pic";
 done
 
 echo "Finished"
