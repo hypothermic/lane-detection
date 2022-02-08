@@ -12,6 +12,9 @@
  */
 #define LINE_BUFFER_SIZE	1024
 
+/**
+ * Macro for reading a line into a buffer.
+ */
 #define READ_LINE		\
 	if (!fgets(line_buffer, LINE_BUFFER_SIZE, file)) { \
 		return 2; \
@@ -71,7 +74,7 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	LANE_LOG_INFO("Input image is %u x %u", width, height);
 
 	if (width > MAX_IMAGE_DIMENSIONS || height > MAX_IMAGE_DIMENSIONS) {
-		LANE_LOG_ERROR("Image (%lu x %lu) is larger than allowed (%lu x %3$lu)",
+		LANE_LOG_ERROR("Image (%lu x %lu px) is larger than allowed (%lu x %3$lu px)",
 				width, height, MAX_IMAGE_DIMENSIONS);
 		return 6;
 	}
@@ -98,6 +101,42 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	LANE_LOG_INFO("Image data loaded into struct");
 	
 	free(raw);
+
+	return 0;
+}
+
+/**
+ * @inheritDoc
+ */
+int lane_image_ppm_to_file(FILE *file, lane_image_t *image) {
+	size_t acc = 0;
+	uint8_t write_buffer[3];
+	lane_pixel_t current_pixel;
+	
+	// Check if file stream is valid
+	if (!file) {
+		LANE_LOG_ERROR("No file specified");
+		return 1;
+	}
+
+	// write magic and header
+	fprintf(file, "P6\n%d %d\n255\n", image->width, image->height);
+
+	// Loop horizontally over the image, 
+	for (size_t col = 0; col < image->height; ++col) {
+		for (size_t row = 0; row < image->width; ++row) {
+
+			// Write all three color bytes at once
+			// by first loading them into a buffer
+			current_pixel = image->data[acc++];
+
+			write_buffer[0] = current_pixel.r;
+			write_buffer[1] = current_pixel.g;
+			write_buffer[2] = current_pixel.b;
+
+			fwrite(write_buffer, 1, 3, file);
+		}
+	}
 
 	return 0;
 }

@@ -4,7 +4,7 @@
 # 
 
 .PHONY: all
-all: compile
+all: clean compile test
 
 #
 # Options
@@ -13,8 +13,10 @@ all: compile
 LATEXMK_OUT	?= ./build/
 LATEXMK_OPTS	?= -silent -emulate-aux-dir -auxdir=docs/ -xelatex -output-directory=$(LATEXMK_OUT)
 
+LANE_SRCS	?= $(wildcard ./src/lane_*.c)
+LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
 LANE_OUT	?= ./build/lane
-LANE_OPTS	?= -Wall
+LANE_OPTS	?= -Wall -Werror -Wno-error=unknown-pragmas
 
 LATEXMK_EXEC	?= /usr/bin/latexmk
 GCC_EXEC	?= /usr/bin/gcc
@@ -66,7 +68,24 @@ clean: clean-docs clean-lane
 #
 
 run-lane:
-	$(LANE_OUT) data/0a0a0b1a-7c39d841.ppm
+	$(LANE_OUT) data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
 
 run: run-lane
+
+#
+# Test
+#
+
+test-lane-compile: compile-lane
+	$(GCC_EXEC) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_copy_test
+
+test-lane-exec: test-lane-compile
+	build/lane_copy_test data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
+
+test-lane-verify: test-lane-exec
+	test/lane_copy_test.sh
+
+test-lane: test-lane-verify
+
+test: test-lane
 
