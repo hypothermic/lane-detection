@@ -77,13 +77,13 @@ run: run-lane
 #
 
 test-lane-compile: compile-lane
-	$(GCC_EXEC) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_copy_test
+	$(GCC_EXEC) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_image_ppm_test
 
 test-lane-exec: test-lane-compile
-	build/lane_copy_test data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
+	build/lane_image_ppm_test data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
 
 test-lane-verify: test-lane-exec
-	test/lane_copy_test.sh
+	test/lane_image_ppm_test.sh
 
 test-lane: test-lane-verify
 
