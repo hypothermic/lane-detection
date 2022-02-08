@@ -3,8 +3,6 @@
 
 #include "lane_image.h"
 #include "lane_image_ppm.h"
-
-#define LANE_LOG_ENABLE
 #include "lane_log.h"
 
 int main(int argc, char **argv) {

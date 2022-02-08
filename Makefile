@@ -1,6 +1,6 @@
 #
 # Usage:
-# $ make {compile,clean}-{docs,lane,rtl}
+# $ make (DEBUG=true) {compile,clean}-{docs,lane,rtl}
 # 
 
 .PHONY: all
@@ -16,7 +16,12 @@ LATEXMK_OPTS	?= -silent -emulate-aux-dir -auxdir=docs/ -xelatex -output-director
 LANE_SRCS	?= $(wildcard ./src/lane_*.c)
 LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
 LANE_OUT	?= ./build/lane
-LANE_OPTS	?= -Wall -Werror -Wno-error=unknown-pragmas
+
+ifdef DEBUG
+LANE_OPTS	?= -Wall -Werror -Wno-error=unknown-pragmas -DLANE_LOG_ENABLE
+else
+LANE_OPTS	?= -Wno-error=unknown-pragmas
+endif
 
 LATEXMK_EXEC	?= /usr/bin/latexmk
 GCC_EXEC	?= /usr/bin/gcc
@@ -39,7 +44,7 @@ make-out-dir:
 compile-docs: make-out-dir compile-docs-project compile-docs-timetable
 
 compile-lane: make-out-dir
-	$(GCC_EXEC) src/lane_*.c -o $(LANE_OUT)
+	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT)
 
 compile: compile-docs compile-lane
 
@@ -77,7 +82,7 @@ run: run-lane
 #
 
 test-lane-compile: compile-lane
-	$(GCC_EXEC) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_image_ppm_test
+	$(GCC_EXEC) $(LANE_OPTS) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_image_ppm_test
 
 test-lane-exec: test-lane-compile
 	build/lane_image_ppm_test data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm

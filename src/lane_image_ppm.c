@@ -2,9 +2,7 @@
 
 #include <inttypes.h>
 
-#define LANE_LOG_ENABLE
 #include "lane_log.h"
-
 
 /**
  * The total length of the magic string,
@@ -62,7 +60,7 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	}
 
 	// Read image dimensions
-	result = sscanf(line_buffer, "%u %u", &width, &height);	
+	result = sscanf(line_buffer, "%hu %hu", &width, &height);	
 	if (result < 2) {
 		LANE_LOG_ERROR("Error while reading image dimensions");
 		return 5;
@@ -74,7 +72,7 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	LANE_LOG_INFO("Input image is %u x %u", width, height);
 
 	if (width > MAX_IMAGE_DIMENSIONS || height > MAX_IMAGE_DIMENSIONS) {
-		LANE_LOG_ERROR("Image (%lu x %lu px) is larger than allowed (%lu x %3$lu px)",
+		LANE_LOG_ERROR("Image (%1$hu x %2$hu px) is larger than allowed (%3$d x %3$d px)",
 				width, height, MAX_IMAGE_DIMENSIONS);
 		return 6;
 	}
@@ -86,7 +84,7 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	raw = malloc(width * height * sizeof(lane_pixel_t));
 	result = fread(raw, sizeof(lane_pixel_t), width * height, file);
 	if (result < width * height) {
-		LANE_LOG_ERROR("Expected %lu bytes, only %lu bytes read", (width * height), result);
+		LANE_LOG_ERROR("Expected %d bytes, only %d bytes read", (width * height), result);
 		return 7;
 	}
 
