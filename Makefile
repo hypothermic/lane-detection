@@ -56,16 +56,16 @@ compile: compile-docs compile-lane
 #
 
 clean-docs-project:
-	$(LATEXMK_EXEC) -CA docs/project.tex
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) -CA docs/project.tex
 
 clean-docs-timetable:
-	$(LATEXMK_EXEC) -CA docs/timetable.tex
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) -CA docs/timetable.tex
 
 clean-docs-research:
-	$(LATEXMK_EXEC) -CA docs/research.tex
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) -CA docs/research.tex
 
 delete-out-dir:
-	$(RM_EXEC) -r $(LATEXMK_OUT)
+	$(RM_EXEC) -rf $(LATEXMK_OUT)
 
 clean-docs: delete-out-dir clean-docs-project clean-docs-timetable clean-docs-research
 
