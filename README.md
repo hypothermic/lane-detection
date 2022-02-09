@@ -1,6 +1,8 @@
-# Lane Detection Internship
+# Lane Detection Internship [![Compile Documents](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml/badge.svg?branch=master&event=push)](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml)
 
-This repository contains the documentation and code.
+This repository contains the documentation and code for all of the deliverables.
+
+Automatically generated PDFs from the latest commit of the documents can be found on the [Actions Workflow](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml).
 
 ## Documentation
 
