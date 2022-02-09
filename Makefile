@@ -11,7 +11,7 @@ all: clean compile test
 #
 
 LATEXMK_OUT	?= ./build/
-LATEXMK_OPTS	?= -silent -emulate-aux-dir -auxdir=docs/ -xelatex -output-directory=$(LATEXMK_OUT)
+LATEXMK_OPTS	?= -emulate-aux-dir -auxdir=docs/ -xelatex -output-directory=$(LATEXMK_OUT)
 
 LANE_SRCS	?= $(wildcard ./src/lane_*.c)
 LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
@@ -38,10 +38,13 @@ compile-docs-project:
 compile-docs-timetable:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/timetable.tex
 
+compile-docs-research:
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/research.tex
+
 make-out-dir:
 	$(MKDIR_EXEC) -p $(LATEXMK_OUT)
 
-compile-docs: make-out-dir compile-docs-project compile-docs-timetable
+compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research
 
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT)
@@ -58,10 +61,13 @@ clean-docs-project:
 clean-docs-timetable:
 	$(LATEXMK_EXEC) -CA docs/timetable.tex
 
+clean-docs-research:
+	$(LATEXMK_EXEC) -CA docs/research.tex
+
 delete-out-dir:
 	$(RM_EXEC) -r $(LATEXMK_OUT)
 
-clean-docs: delete-out-dir clean-docs-project clean-docs-timetable
+clean-docs: delete-out-dir clean-docs-project clean-docs-timetable clean-docs-research
 
 clean-lane:
 	$(RM_EXEC) -f $(LANE_OUT)

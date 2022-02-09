@@ -69,7 +69,7 @@
 		This document describes how I am going to work on this project.
 		It describes all the factors which will have significant impact on the lifespan of this project, and proposes how I should handle these factors to make the project a success.
 		For this project, the scope definition is very important, because the assignment can be made too complex and too big to complete in the assigned timeframe.
-		In the paragraph \verwijzing{paragraaf}{Scope} I will describe exactly what the project does and does not entail.
+		In \verwijzing{paragraaf}{Scope} I will describe exactly what the project does and does not entail.
 		
 		\bigskip
 
@@ -78,7 +78,7 @@
 
 		\bigskip
 
-		Lastly, the planning of this project is described in chapter \verwijzing{hoofdstuk}{Planning}.
+		Lastly, the planning of this project is described in \verwijzing{hoofdstuk}{Planning}.
 		In the Gantt chart included with this document is visible how much time is allocated for each of the stages of this project.
 		Important milestones, like the evaluations and presentations, are also visualized in this chart.
 		
@@ -98,8 +98,11 @@
 	\begin{hoofdstuk}{Project Definition}
 
 		The goal of this project is to enable vehicles to be more autonomous by making them detect the road lane they're driving on.
-		AROBS is continually improving vehicles by making require less input from the driver while not compromising the safety of the vehicle.
+		AROBS is continually improving vehicles by making them require less input from the driver while not compromising the safety of the vehicle.
 		A system to detect if the vehicle is driving within the road lane is needed to guide the car on the road and to improve safety by preventing it from veering off the road.
+		This system will be built in-house, because we can make it cheaper and more performant than existing products.
+		Additionally, we can better regulate the quality of the product by building it ourselves, because we will be directly involved with creating it.
+		Previous projects at AROBS regarding obstacle detection and number plate recognition have provided knowledge of the inner workings of these technologies.
 		The final product -- a lane detection system -- is a digital logic layer which can be run on a Field Programmable Gate Array (hereafter referred to as a FPGA).
 		The digital logic layer will be able to detect the position of the vehicle relative to the road lane by processing video input from a camera mounted on the dashboard of the vehicle.
 
@@ -170,6 +173,8 @@
 		For this project I will deliver three separate, testable, products.
 		All of them are proof-of-concepts; they will not be brought on the market, however, they will deliver vital knowledge for AROBS which can be used to further develop their Advanced Driver-Assistance System (ADAS) warning system for autonomous vehicles.
 		At the end of the project, the products each need to meet the Definition of Done in order for them to be regarded as a success.
+		An additional three documents will be delivered which describe the functional and technical working of the products.
+		The timeframe for each of these deliverables is included in \verwijzing{hoofdstuk}{Planning}.
 
 		\begin{paragraaf}{Research Paper}
 		
@@ -197,7 +202,29 @@
 			With this product, a great amount of functional and technical documentation will be written, which will be useful for AROBS when integrating such a product in a vehicle.
 		
 		\end{paragraaf}
-		
+
+		\begin{paragraaf}{Functional Design}
+
+			In this document, the requirements and acceptance criteria of the system will be examined.
+			It will give a clear picture of what functionality will be included with the end product and what the product owner can expect to receive.
+			Although the products will not directly be used by the end user, their interests will also be represented.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Technical Design}
+
+			The knowledge which will be gained from this project will be vital to AROBS with regards to further developing their Advanced Driver-Assistance System.
+			It is important to capture this knowledge, so that it can be used later on.
+			This document will describe the inner workings of both the computer program and the hardware implementation.
+			The design choices and the reasoning behind them will also be explained in this document.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Testplan}
+
+			To verify the working of the program and the hardware, a  
+		\end{paragraaf}
+	
 	\end{hoofdstuk}
 
 	\begin{hoofdstuk}{Approach}
@@ -220,6 +247,13 @@
 			I can integrate feedback from the stakeholders and analyze the impact of my actions in each iteration of this loop.
 			During each iteration, I will pick up a task and make a Minimum Viable Product (MVP) that meets the Definition of Done.
 			Between iterations, I will reflect on the progress of the project.
+
+			\begin{figuur}{A visualization of the SIP-technique}
+
+				\includegraphics[width=0.5\textwidth]{sip.png}  \cite{dorman2012sip}
+
+			\end{figuur}
+
 			It is one of my personal goals to improve the way I work on projects alone, because I usually procrastinate too much or add too much unwanted functionaity to something just because I feel like it.
 			By using this technique for the first time, I want to try it out and bring some of the habits of this technique to my own planning.
 		
@@ -239,16 +273,16 @@
 			The reason behind this choice is because LaTeX is a flexible language written in plaintext files.
 			Last project, our working group encountered many issues with Microsoft Word, with large documents frequently corrupting or the program crashing.
 			Another justification for using LaTeX is that the bibliography is easily integrated with the document.
-			These documents can be exported to PDF-A, as required by the Internship and Graduation Manual \cite{windesheim2021handleiding}.
+			These documents can be exported to PDF/A, as required by the Internship and Graduation Manual \cite{windesheim2021handleiding}.
 
 		\end{paragraaf}
 
 		\begin{paragraaf}{Sequence}
 
-			As described in chapter \verwijzing{hoofdstuk}{Planning}, I will start this project with the research paper.
+			As described in \verwijzing{hoofdstuk}{Planning}, I will start this project with the research paper.
 			This is the first deliverable, and it will help me with choosing the most approriate algorithm for use in the second deliverable.
-			After the research has been completed, I will realise a computer program, as described in paragraph \verwijzing{paragraaf}{Computer Program}.
-			Finally, as mentioned in paragraph \verwijzing{paragraaf}{Hardware Implementation}, the proof-of-concept hardware description will be made.
+			After the research has been completed, I will realise a computer program, as described in \verwijzing{paragraaf}{Computer Program}.
+			Finally, as mentioned in \verwijzing{paragraaf}{Hardware Implementation}, the proof-of-concept hardware description will be made.
 			It will be made suitable to run on the FPGA board.
 			
 		\end{paragraaf}
@@ -324,9 +358,21 @@
 			These can be found in the enumeration below.
 
 			\begin{enumerate}
-				\item Lack of hardware availability -- impact: low, chance: low -- It may happen that the FPGA board or other hardware required in this project gets broken or is unavailable when needed. Fortunately, AROBS can buy replacement hardware within 1-3 days of notice.
-				\item Lack of time -- impact: medium, chance: low -- When improperly planned, projects can run out of time. For this reason, I chose to incorporate SIP, a standardised approach to planning, into this project. If this does occur, it will be mentioned in progress reports and I will fall back to a \enquote{KISS-approach}.
-				\item Office closure due to the Coronavirus -- impact: high, chance: medium -- If COVID-19 gets out of hand, the Romanian government may decide to issue a lock-down in parts of the country. This is a realistic scenario, because the government has made questionable decisions before, like introducing the need to wear face masks on the street. I have received a work laptop from AROBS which I may carry back to my apartment to work from home. I won't be able to take the rest of the hardware back home, which is why the project may be hindered.
+
+				\item	Lack of hardware availability -- impact: low, chance: low --
+					It may happen that the FPGA board or other hardware required in this project gets broken or is unavailable when needed.
+					Fortunately, AROBS can buy replacement hardware within 1-3 days of notice.
+				
+				\item	Lack of time -- impact: medium, chance: low --
+					When improperly planned, projects can run out of time.
+					For this reason, I chose to incorporate SIP, a standardised approach to planning, into this project.
+					If this does occur, it will be mentioned in progress reports and I will fall back to a \enquote{KISS-approach}.
+
+				\item	Office closure due to the Coronavirus -- impact: high, chance: medium --
+					If COVID-19 gets out of hand, the Romanian government may decide to issue a lock-down in parts of the country.
+					I have received a work laptop from AROBS which I may carry back to my apartment to work from home.
+					I won't be able to take the rest of the hardware back home, which is why the project may be hindered.
+
 			\end{enumerate}
 
 		\end{paragraaf}
@@ -360,10 +406,10 @@
 
 		\begin{paragraaf}{Configuration Management}
 
-			As described in paragraph \verwijzing{paragraaf}{Version Management}, all documentation and code regarding this project will be managed in a Git repository.
+			As described in \verwijzing{paragraaf}{Version Management}, all documentation and code regarding this project will be managed in a Git repository.
 			This allows me to track changes over time and gives me the opportunity to revert to a previous version, if needed.
-			As noted in chapter \verwijzing{hoofdstuk}{Planning}, the final portfolio needs to be handed in Week 18.
-			I will compile all project documents to PDF-A and submit them to the Windesheim ELO in this week.
+			As noted in \verwijzing{hoofdstuk}{Planning}, the final portfolio needs to be handed in Week 18.
+			I will compile all project documents to PDF/A and submit them to the Windesheim ELO in this week.
 			
 		\end{paragraaf}
 
@@ -398,34 +444,36 @@
 
 		The project will be spread over a total of 21 weeks.
 		The first week will start on \textit{Monday, 31 January 2022}.
-		An approximate planning on a weekly basis can be viewed in figure\verwijzing{figuur}{Project Timeline visualized in a Gantt Chart}.
-		Halfway the project, after the first term of 10 weeks, the first assessment will take place.
+		An approximate planning on a weekly basis can be viewed in \verwijzing{figuur}{Project Timeline visualized in a Gantt Chart}.
+		Halfway the project, after the first term of 10 weeks, the first evaluation will take place.
 		At the end of the project, the final assessment will take place and I will present the product to the company.
+		The portfolio will be handed in on \textit{Thursday, 2 June 2022}.
 
 		\begin{figuur}{Project Timeline visualized in a Gantt Chart}
 			\begin{ganttchart}{1}{21}
 				\gantttitle{Week \#}{21} \\
 				\gantttitlelist{1,...,21}{1} \\
 
-				\ganttgroup[group right shift=0.5]{Documentation}{1}{4} \\
+				\ganttgroup{Documentation}{1}{8} \\
 				\ganttbar{Plan of Action}{1}{2} \\
 				\ganttlinkedbar{Kick-Off}{2}{2} \ganttnewline
-				\ganttlinkedbar[bar right shift=0.5]{Research Paper}{3}{4} \ganttnewline
-
-				\ganttgroup[group left shift=0.5]{Realisation}{5}{15} \ganttnewline
-				\ganttbar[bar left shift=0.5]{Algorithm Implementation}{5}{8} \ganttnewline
-				\ganttmilestone{1st Assessment}{8} \ganttnewline
-				\ganttbar{FPGA Implementation}{9}{14} \ganttnewline
+				\ganttlinkedbar{Research Paper}{3}{7} \ganttnewline
+				\ganttbar[bar left shift=0.5]{Algorithm Implementation}{4}{8} \ganttnewline
+				\ganttmilestone{Mid-Term Evaluation}{8} \ganttnewline
+				\ganttgroup{Realisation}{9}{16} \ganttnewline
+				\ganttbar{Design}{9}{10} \ganttnewline
+				\ganttbar{FPGA Implementation}{11}{16} \ganttnewline
 				\ganttmilestone{Presentation}{10} \ganttnewline
-				\ganttbar{Concept Portfolio}{12}{15}\ganttnewline
 				
-				\ganttgroup{Evaluation}{16}{21} \ganttnewline
-				\ganttbar{Portfolio}{16}{18} \ganttnewline
-				\ganttmilestone{Final Assessment}{17} \ganttnewline
+				\ganttgroup{Evaluation}{17}{21} \ganttnewline
+				\ganttbar{Portfolio}{17}{18} \ganttnewline
+				\ganttmilestone{Final Evaluation}{17} \ganttnewline
 				\ganttmilestone{Portfolio Hand-in}{18} \ganttnewline
-				\ganttbar{Presentation}{20}{21} \ganttnewline
+				\ganttbar{Presentations}{20}{21} \ganttnewline
 				
-				\ganttlink{elem5}{elem7}
+				\ganttlink{elem4}{elem7}
+				\ganttlink{elem7}{elem8}
+				\ganttlink{elem8}{elem11}
 				\ganttlink{elem11}{elem14}
 
 			\end{ganttchart}

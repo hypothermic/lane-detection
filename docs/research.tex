@@ -1,6 +1,8 @@
 % !TEX program = xelatex
 \documentclass{matthijs}
 
+\newcolumntype{R}{>{\arraybackslash}m{10cm}}
+
 % Style for first and last page
 \usepackage{wallpaper}
 \usepackage{color}
@@ -101,7 +103,7 @@
 		
 		\bigskip
 
-		The goal of this research is to select the best suited algorithm for detecting road lane markings from a video feed and calculating the approximate location of the car relative to the lane.
+		The goal of this research is to select the best suited algorithm for detecting \textbf{road lane markings} from a video feed and calculating the approximate location of the car relative to the lane.
 		First of all, I will search for existing lane marking algorithms by using various online document aggregators, such as Google Scholar and ResearchGate.
 		I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
 		The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
@@ -109,8 +111,16 @@
 
 		\begin{enumerate}
 
-			\item	The effectiveness of the candidate algorithm on test images \textbf{[todo: how to measure? concrete criteria]}
+			\item	Accuracy of detection; the effectiveness of the candidate algorithm on test images.
+				This metric will be measured by implementing the algorithm into a computer program which can process test images.
+				The candidates will be ranked by how accurate the end result is compared to the reference result.
+
+			\item	Environmental suitability; how well the candidate algorithm works when put in different environments.
+				This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
+				A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
+
 			\item	The feasability of implementing the candidate algorithm in digital logic \textbf{[todo: how to measure? concrete criteria]}
+			
 			\item	The resources required to run such an algorithm in real-time.
 				We want as little delay as possible between the video frame being shot and the completion of the calculation.
 				The quicker the car can detect that it's veering off the lane, the quicker the situation can be rectified, and the safer the system becomes.
@@ -140,12 +150,12 @@
 			The test images were selected from the Berkeley DeepDrive 100K Dataset \cite{yu2020bdd100k} and converted to PPM format for easier manipulation.
 			A list of these images, along with the motivation behind why they were selected, can be found in \verwijzing{tabel}{List of test images}.
 
-			\begin{tabel}{List of test images}{l @{\extracolsep{\fill}} r}
+			\begin{tabel}{List of test images}{l @{\extracolsep{\fill}} R}
 				\emph{Image Name} & \emph{Motivation} \tabularnewline
-				0a0a0b1a-7c39d841.jpg & Clearly defined lane markings, with high contrast between the sky and the road
-				0b16507a-49b0aca9.jpg & Yellow lane marking, to test if the algorithm can detect multiple colors
-				0cf398b3-ce65ab54.jpg & Unclear, partially wiped-out lane markings. This image tests if the algorithm would work in night time as well
-				0d4268d5-3c617dd8.jpg & Off-center vehicle. It would be interesting whether the algorithm detects the left or the right lane
+				0a0a0b1a-7c39d841.jpg & Clearly defined lane markings, with high contrast between the sky and the road \tabularnewline
+				0b16507a-49b0aca9.jpg & Yellow lane marking, to test if the algorithm can detect multiple colors \tabularnewline
+				0cf398b3-ce65ab54.jpg & Unclear, partially wiped-out lane markings. This image tests if the algorithm would work in night time as well \tabularnewline
+				0d4268d5-3c617dd8.jpg & Off-center vehicle. It would be interesting whether the algorithm detects the left or the right lane \tabularnewline
 			\end{tabel}
 
 		\end{paragraaf}
