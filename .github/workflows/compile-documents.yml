@@ -1,0 +1,38 @@
+name: Compile Documents
+on: [push]
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git contents to container
+        uses: actions/checkout@v2
+      - name: Setup git authentication for dotfiles repo
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+      - name: Clone dotfiles
+        uses: actions/checkout@v2
+        with:
+          repository: hypothermic/dotfiles
+          submodules: recursive
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: dotfiles
+      - name: Compile LaTeX documents
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: |
+            docs/project.tex
+            docs/research.tex
+            docs/timetable.tex
+          work_in_root_file_dir: true
+          latexmk_use_xelatex: true
+        env:
+          TEXINPUTS: ".;/dotfiles/latex/texmf//;$TEXINPUTS;"
+      - name: Upload documents as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: PDFs
+          path: |
+            docs/project.pdf
+            docs/research.pdf
+            docs/timetable.pdf

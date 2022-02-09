@@ -59,22 +59,22 @@
 	\pagenumbering{arabic}
 	\thispagestyle{empty}
 
-	%\begin{hoofdstuk}{Abstract}
-	\savegeometry{oud}
-	\newgeometry{margin=2.75cm}
-	\renewcommand{\cftsecfont}{\normalfont\sffamily}
-	\setlength{\parindent}{0cm}
-	\setlength{\parskip}{0cm}
-	\singlespacing
-	\section*{Abstract}
-	\label{hoofdstuk:Abstract}
-	\onehalfspacing
+	\begin{hoofdstuk*}{Abstract}
+%	\savegeometry{oud}
+%	\newgeometry{margin=2.75cm}
+%	\renewcommand{\cftsecfont}{\normalfont\sffamily}
+%	\setlength{\parindent}{0cm}
+%	\setlength{\parskip}{0cm}
+%	\singlespacing
+%	\section*{Abstract}
+%	\label{hoofdstuk:Abstract}
+%	\onehalfspacing
 
 		abcd
 
-	\newpage
-	\loadgeometry{oud}
-	%\end{hoofdstuk}
+%	\newpage
+%	\loadgeometry{oud}
+	\end{hoofdstuk*}
 
 	\begin{inhoudspagina}
 
@@ -119,8 +119,10 @@
 				This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
 				A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
 
-			\item	The feasability of implementing the candidate algorithm in digital logic \textbf{[todo: how to measure? concrete criteria]}
-			
+			\item	The feasability of implementing the candidate algorithm in digital logic.
+				It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
+				For this reason, I will estimate the difficulty of implementing the algorithm in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
+
 			\item	The resources required to run such an algorithm in real-time.
 				We want as little delay as possible between the video frame being shot and the completion of the calculation.
 				The quicker the car can detect that it's veering off the lane, the quicker the situation can be rectified, and the safer the system becomes.
