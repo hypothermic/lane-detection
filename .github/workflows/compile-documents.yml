@@ -27,7 +27,7 @@ jobs:
           work_in_root_file_dir: true
           latexmk_use_xelatex: true
         env:
-          TEXINPUTS: ".:./dotfiles/latex/texmf//:"
+          TEXINPUTS: ".:../dotfiles/latex/texmf//:"
       - name: Upload documents as artifacts
         uses: actions/upload-artifact@v2
         with:
