@@ -4,6 +4,9 @@
 \usepackage{wallpaper}
 \usepackage{color}
 
+% Versioning
+\usepackage[maxdepth=2]{gitinfo2}
+
 \begin{document}
 
 	\taal{en}
@@ -11,15 +14,18 @@
 	\begin{titelpagina}
 		\color{white}
 
-		\titel{\vspace{50pt}Timetable}{\emph{Tijdschrijfformulier}}
+		\titel{\vspace{50pt}Timetable}{\emph{Project Lane Detection using FPGA's}}
 		\author{
 			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker\thanks{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl} \\
+				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
 				\textbf{Course:} & HBO-ICT ESA Full-Time \\
 				\\
 				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
 				\textbf{Company Supervisor:} & Pangyu Jeong \\
 				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\\
+				\textbf{Version:} & 1.0 \\
+				\textbf{Commit:} & \gitAbbrevHash @master \\
 			\end{tabular}
 			\vspace{4cm}
 		}
@@ -31,6 +37,13 @@
 
 		In this document, I kept track of how many hours I worked per day.
 		At the end of the project I should have put around 840 hours into the project (40 hours per week for a period of 21 weeks.)
+		
+		\bigskip
+
+		AROBS works with a time management tool which tracks how long you have been in the office each day.
+		I have partially based the hours in the table below on the data that was available in this time tracking tool.
+
+		\bigskip
 
 		\begin{tabel}{Timetable}{l @{\extracolsep{\fill}} c c l}
 			\emph{Date} & \emph{Hours} & \emph{Cm.Hrs} & \emph{Activity} \\
@@ -41,8 +54,8 @@
 			2-2-2022 & 8 & 13 & Meeting eachother at AROBS building \tabularnewline
 			3-2-2022 & 8 & 21 & Finish concept version of the Plan of Action \tabularnewline
 			4-2-2022 & 8 & 29 & Integrate feedback for the PoA and submit it \tabularnewline
-			7-2-2022 & 9 & 38 & Start writing the image file handling support for the computer program
-			8-2-2022 & 8 & 46 & Internship meeting + finish image file handling support for the computer program
+			7-2-2022 & 9 & 38 & Start writing the image file handling support for the computer program \tabularnewline
+			8-2-2022 & 8 & 46 & Internship meeting + finish image file handling support for the computer program \tabularnewline
 		\end{tabel}
 
 	\end{hoofdstuk}
