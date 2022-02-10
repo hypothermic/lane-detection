@@ -14,7 +14,7 @@
 \usepackage{pgfgantt}
 
 \usepackage{csquotes}
-\usepackage{biblatex}
+\usepackage[style=ieee]{biblatex}
 \addbibresource{research.bib}
 
 % Versioning
@@ -46,7 +46,7 @@
 				\textbf{Company Supervisor:} & Pangyu Jeong \\
 				\textbf{Windesheim Supervisor:} & Willie Conen \\
 				\\
-				\textbf{Version:} & 1.2 \\
+				\textbf{Version:} & 0.1 \\
 				\textbf{Commit:} & \gitAbbrevHash @master \\
 			\end{tabular}
 			\vspace{8ex}
@@ -60,20 +60,9 @@
 	\thispagestyle{empty}
 
 	\begin{hoofdstuk*}{Abstract}
-%	\savegeometry{oud}
-%	\newgeometry{margin=2.75cm}
-%	\renewcommand{\cftsecfont}{\normalfont\sffamily}
-%	\setlength{\parindent}{0cm}
-%	\setlength{\parskip}{0cm}
-%	\singlespacing
-%	\section*{Abstract}
-%	\label{hoofdstuk:Abstract}
-%	\onehalfspacing
 
-		abcd
+		\textbf{[todo:]}
 
-%	\newpage
-%	\loadgeometry{oud}
 	\end{hoofdstuk*}
 
 	\begin{inhoudspagina}
@@ -87,18 +76,18 @@
 		A run-off-road crash is a type of accident involving a single vehicle in which it veers off the road and collides with a natural or artificial object \cite{liu2009factors}.
 		A study conducted in 2008 by the U.S. Department of Transportation indicated that 45 percent of all fatal highway crashes in the USA that year were run-off-road crashes \cite{dod2011run}.
 		For more than 95 percent of these run-off-road crashes, the cause of the crash was attributed to the driver of the vehicle \cite{dod2011run}.
-		Another report published by the University of Minnesota shows that the afforementioned number may be as high as 53 percent \cite{edwards2013pilot}.
-		In that report, numerous countermeasures were proposed to alert the driver if their car was headed off the road, such as delivering haptic feedback through the steering wheel and giving audiotory warnings to the driver.
+		Another report published by the University of Minnesota shows that the aforementioned number may be as high as 53 percent \cite{edwards2013pilot}.
+		In that report, numerous countermeasures were proposed to alert the driver if their car was headed off the road, such as delivering haptic feedback through the steering wheel and giving auditory warnings to the driver.
 		However, while countermeasures were proposed, this paper did not clarify when these countermeasures should be triggered or how the car should detect if it is veering off the road.
 		
 		\bigskip
 
 		To improve the safety of vehicles, AROBS has been developing an Advanced Driver-Assistance System -- hereafter referred to as an ADAS.
 		This system comprises of numerous subsystems which monitor and control certain processes inside of the car.
-		One of these subsystems is the Lane Centering Subsystem.
-		As the name implies, this component of the ADAS assists the driver in keeping the vehicle centered in a road lane.
-		To detect if the car is properly centerred, a camera is positioned on the dashboard of the car and it is faced towards the road.
-		The approximate position of the vehicle relative to the road lane is calculated by feeding the video feed from the camera through an algorithmm.
+		One of these subsystems is the Lane Departure Warning System \cite{el2020novel}.
+		As the name implies, this component of the ADAS assists the driver in keeping the vehicle within in a road lane.
+		To detect if the car is properly centered, a camera is positioned on the dashboard of the car and it is faced towards the road.
+		The approximate position of the vehicle relative to the road lane is calculated by feeding the video feed from the camera through an algorithm.
 		If the result of this process indicates that the car is deterring from the lane, a signal is sent to the ADAS so that a warning can be provided to the driver of the vehicle.
 		
 		\bigskip
@@ -106,6 +95,11 @@
 		The goal of this research is to select the best suited algorithm for detecting \textbf{road lane markings} from a video feed and calculating the approximate location of the car relative to the lane.
 		It is vital that we spend time on making sure that the selected algorithm fits with the project, because the next phase of the project depends on the information that is gained from this research.
 
+		\bigskip
+
+		This paper is written using the IMRaD format, because it is what we were taught to use at Windesheim.
+		However, I realise that this might not be the best format to write the paper in, because the results section is exceptionally big compared to the other sections.
+		I have tried to spread out the findings in the results section as much as possible by creating (sub-)sections for different topics.
 
 	\end{hoofdstuk}
 
@@ -130,7 +124,7 @@
 				The selected test images, as seen in \verwijzing{tabel}{List of test images}, were captured under many different circumstances.
 				This metric is measured by the least amount of test images failed to process.
 
-			\item	The feasability of implementing the candidate algorithm in digital logic.
+			\item	The feasibility of implementing the candidate algorithm in digital logic.
 				It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
 				For this reason, I will estimate the difficulty of implementing the algorithm in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
 
@@ -176,6 +170,114 @@
 	\end{hoofdstuk}
 
 	\begin{hoofdstuk}{Results}
+
+		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before finally being ran through a feature extraction technique like the Hough Transform.
+		This preprocessing stage is of high importance, because it directly affects the effectiveness of the feature extraction phase.
+		If the features of the image are not properly highlighted, the level of detail remains too high and the feature extraction technique might pick up photographic artifacts as lines.\textbf{[todo: find source]}
+
+		\begin{paragraaf}{Image Preprocessing Techniques}
+
+			\begin{subparagraaf}{Grayscale Conversion}
+
+				\textbf{[todo:]}
+			
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Region of Interest Definition}
+
+				To reduce the computing resources needed to run the algorithm, regions of interest (ROIs) may be defined around where the left and right lane markings are supposed to be \cite{el2020novel}.
+				The pixels outside of the defined ROIs will not be processed by the algorithm.
+				
+				\bigskip
+
+				It can be assumed that the upper portion of a video frame captured by the dashboard camera is above the horizon, meaning that it is not worth scanning for road lanes.
+				Thus, it can be safely ignored to save computing resources.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Noise Reduction}
+
+				\textbf{[todo:]}
+
+				\begin{subsubparagraaf}{Average Filter}
+
+					\textbf{[todo:]}
+				
+				\end{subsubparagraaf}
+
+				\begin{subsubparagraaf}{Gaussian Filter}
+
+					\textbf{[todo:]}
+
+				\end{subsubparagraaf}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Edge Detection}
+
+				\textbf{[todo:]}
+
+				\begin{subsubparagraaf}{Sobel-Feldman Operator}
+
+					\textbf{[todo:]}
+
+				\end{subsubparagraaf}
+
+				\begin{subsubparagraaf}{Canny Edge Detector}
+
+					\textbf{[todo:]}
+
+				\end{subsubparagraaf}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Thresholding}
+
+				\textbf{[todo:]}
+
+			\end{subparagraaf}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Feature Extraction Techniques}
+
+			\textbf{[todo:]}
+
+			\begin{subparagraaf}{Hough Transform}
+
+				\begin{subsubparagraaf}{Vanishing Point-based Optimizations}
+
+					\textbf{[todo:]}
+
+				\end{subsubparagraaf}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Radon Transform}
+
+				\textbf{[todo:]}
+
+			\end{subparagraaf}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Comparison of Candidate Algorithms}
+
+			\textbf{[todo:]}
+
+		\end{paragraaf}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Conclusion}
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Discussion}
+
+		\textbf{[todo:]}
 
 	\end{hoofdstuk}
 
