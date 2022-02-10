@@ -7,6 +7,9 @@
 % Versioning
 \usepackage[maxdepth=2]{gitinfo2}
 
+% Long text column, automatically wraps to next line
+\newcolumntype{R}{>{\arraybackslash}m{10cm}}
+
 \begin{document}
 
 	\taal{en}
@@ -14,7 +17,7 @@
 	\begin{titelpagina}
 		\color{white}
 
-		\titel{\vspace{50pt}Timetable}{\emph{Project Lane Detection using FPGA's}}
+		\titel{\vspace{50pt}Timetable}{\emph{Project Lane Detection using FPGAs}}
 		\author{
 			\begin{tabular}{r l}
 				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
@@ -45,18 +48,19 @@
 
 		\bigskip
 
-		\begin{tabel}{Timetable}{l @{\extracolsep{\fill}} c c l}
+		\begin{tabel}{Timetable}{l @{\extracolsep{\fill}} c c R}
 			\emph{Date} & \emph{Hours} & \emph{Cm.Hrs} & \emph{Activity} \\
 			\midrule
 
 			31-1-2022 & 2 & 2 & Create this document and the project plan \tabularnewline
 			1-2-2022 & 3 & 5 & Start writing project plan and read stage guide \tabularnewline
-			2-2-2022 & 8 & 13 & Meeting eachother at AROBS building \tabularnewline
+			2-2-2022 & 8 & 13 & Meeting each other at AROBS building \tabularnewline
 			3-2-2022 & 8 & 21 & Finish concept version of the Plan of Action \tabularnewline
 			4-2-2022 & 8 & 29 & Integrate feedback for the PoA and submit it \tabularnewline
 			7-2-2022 & 9 & 38 & Start writing the image file handling support for the computer program \tabularnewline
 			8-2-2022 & 8 & 46 & Internship meeting + finish image file handling support for the computer program \tabularnewline
 			9-2-2022 & 8 & 54 & Start writing the research paper + integrate Actions workflow for documents \tabularnewline
+			10-2-2022 & 8 & 62 & Worked from home, collected papers and made progress with research \tabularnewline
 		\end{tabel}
 
 	\end{hoofdstuk}
