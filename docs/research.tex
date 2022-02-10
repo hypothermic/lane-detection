@@ -104,7 +104,16 @@
 		\bigskip
 
 		The goal of this research is to select the best suited algorithm for detecting \textbf{road lane markings} from a video feed and calculating the approximate location of the car relative to the lane.
-		First of all, I will search for existing lane marking algorithms by using various online document aggregators, such as Google Scholar and ResearchGate.
+		It is vital that we spend time on making sure that the selected algorithm fits with the project, because the next phase of the project depends on the information that is gained from this research.
+
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Methods}
+
+		\begin{paragraaf}{Literature Study}
+
+		First of all, I will set up a literature study to search for existing lane marking algorithms by using various online document aggregators, such as Google Scholar and ResearchGate.
 		I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
 		The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
 		A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
@@ -141,15 +150,10 @@
 
 		\end{enumerate}
 
-	\end{hoofdstuk}
-
-	\begin{hoofdstuk}{Methods}
-
-		\begin{paragraaf}{Literature Study}
-
+		The algorithm which scores the best overall on these metrics will be selected to be implemented in digital logic in the next phase of the project.
 		\end{paragraaf}
 
-		\begin{paragraaf}{Test Implementations}
+		\begin{paragraaf}{Sample Data Tests}
 
 			To prove the effectiveness of each algorithm, it must be implemented in a computer program which runs a set of test images through it.
 			The test images were hand selected from the Berkeley DeepDrive 100K Dataset \cite{yu2020bdd100k} and converted to PPM format for easier manipulation.
