@@ -118,6 +118,8 @@
 			\item	Environmental suitability; how well the candidate algorithm works when put in different environments.
 				This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
 				A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
+				The selected test images, as seen in \verwijzing{tabel}{List of test images}, were captured under many different circumstances.
+				This metric is measured by the least amount of test images failed to process.
 
 			\item	The feasability of implementing the candidate algorithm in digital logic.
 				It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
@@ -131,8 +133,9 @@
 
 				\begin{itemize}
 
-					\item The average amount of milliseconds it takes for a reference implementation to process one frame
-					\item The amount of Look-Up Tables, Flip-Flops and Block RAM a reference implementation occupies
+					\item	The average amount of milliseconds it takes for a reference implementation to process one frame
+					
+					\item	The amount of Look-Up Tables, Flip-Flops and Block RAM a reference implementation occupies
 
 				\end{itemize}
 
@@ -146,23 +149,25 @@
 
 		\end{paragraaf}
 
-		\begin{paragraaf}{Test Implementation}
+		\begin{paragraaf}{Test Implementations}
 
-			To prove the effectiveness of each algorithm, it is implemented in a computer program which runs a set of test images through it.
-			The test images were selected from the Berkeley DeepDrive 100K Dataset \cite{yu2020bdd100k} and converted to PPM format for easier manipulation.
+			To prove the effectiveness of each algorithm, it must be implemented in a computer program which runs a set of test images through it.
+			The test images were hand selected from the Berkeley DeepDrive 100K Dataset \cite{yu2020bdd100k} and converted to PPM format for easier manipulation.
 			A list of these images, along with the motivation behind why they were selected, can be found in \verwijzing{tabel}{List of test images}.
 
 			\begin{tabel}{List of test images}{l @{\extracolsep{\fill}} R}
+				
 				\emph{Image Name} & \emph{Motivation} \tabularnewline
 				0a0a0b1a-7c39d841.jpg & Clearly defined lane markings, with high contrast between the sky and the road \tabularnewline
 				0b16507a-49b0aca9.jpg & Yellow lane marking, to test if the algorithm can detect multiple colors \tabularnewline
 				0cf398b3-ce65ab54.jpg & Unclear, partially wiped-out lane markings. This image tests if the algorithm would work in night time as well \tabularnewline
 				0d4268d5-3c617dd8.jpg & Off-center vehicle. It would be interesting whether the algorithm detects the left or the right lane \tabularnewline
+				0d62200b-85aeaa3d.jpg & Unusual markings on the left side of the lane, not a clear separation between road and curb \tabularnewline
+				0fc0b0cc-75d5e23d.jpg & Bad lighting; sunflare disrupts the luminance of the road in the image \tabularnewline
+			
 			\end{tabel}
 
 		\end{paragraaf}
-
-		a
 
 	\end{hoofdstuk}
 
@@ -172,7 +177,9 @@
 
 	% Bibliography page
 	\begin{hoofdstuk}{References}
+
 		\printbibliography[heading=none]
+	
 	\end{hoofdstuk}
 
 	% Empty last page
