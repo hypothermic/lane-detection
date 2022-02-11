@@ -96,6 +96,11 @@ test-lane-exec: test-lane-compile
 test-lane-verify: test-lane-exec
 	test/lane_image_ppm_test.sh
 
+test-lane-man: compile-lane
+	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test
+	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).out.ppm"
+	xdg-open "data/$(ARG_SAMPLE).out.ppm"
+
 test-lane: test-lane-verify
 
 test: test-lane
