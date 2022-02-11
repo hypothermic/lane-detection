@@ -10,9 +10,6 @@
 %\definecolor{arobsblue}{HTML}{0f2c4c}
 \definecolor{arobsblue}{HTML}{0e335c}
 
-% Gantt chart for chapter Planning
-\usepackage{pgfgantt}
-
 \usepackage{csquotes}
 \usepackage[style=ieee]{biblatex}
 \addbibresource{research.bib}
@@ -107,44 +104,59 @@
 
 		\begin{paragraaf}{Literature Study}
 
-		First of all, I will set up a literature study to search for existing lane marking algorithms by using various online document aggregators, such as Google Scholar and ResearchGate.
-		I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
-		The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
-		A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
+			First of all, I will set up a literature study to search for existing lane marking algorithms by using various online document aggregators such as Google Scholar and ResearchGate.
+			It will be interesting to gauge which algorithms are used in similar projects, because it helps us narrow down on the wide choice of available algorithms.
+			Because some papers share common stages in their algorithm, like the usage of the Sobel operator or the Hough transform, I will gather more information on these stages and why they are used in this field.
+			It will also be helpful to search if people have made optimizations or variations upon these standard procedures.
+			An example of such a variation is an optimized straight-lane Hough Transform targeting FPGAs \cite{el2020novel} which has a higher performance ceiling because it can be parallelized.
 
-		\begin{enumerate}
+		\end{paragraaf}
 
-			\item	Accuracy of detection; the effectiveness of the candidate algorithm on test images.
-				This metric will be measured by implementing the algorithm into a computer program which can process test images.
-				The candidates will be ranked by how accurate the end result is compared to the reference result.
+		\begin{paragraaf}{Test Implementation}
 
-			\item	Environmental suitability; how well the candidate algorithm works when put in different environments.
-				This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
-				A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
-				The selected test images, as seen in \verwijzing{tabel}{List of test images}, were captured under many different circumstances.
-				This metric is measured by the least amount of test images failed to process.
+			A trend I have noticed among research on computer vision topics is that researchers first implement the proposed algorithms in MATLAB or a Python script before creating the end product.
+			This approach to researching sounds good to me because it gives me a chance to prove that I am not only able to write about these algorithms but that I'm also able to put them to use.
+			I'm not yet familiar with the previously mentioned programming languages, so I will use the C language instead.
 
-			\item	The feasibility of implementing the candidate algorithm in digital logic.
-				It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
-				For this reason, I will estimate the difficulty of implementing the algorithm in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
+			\bigskip
 
-			\item	The resources required to run such an algorithm in real-time.
-				We want as little delay as possible between the video frame being shot and the completion of the calculation.
-				The quicker the car can detect that it's veering off the lane, the quicker the situation can be rectified, and the safer the system becomes.
-				After all, the safety of human lives are at stake.\\
-				This metric will be measured by:
+			I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
+			The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
+			A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
 
-				\begin{itemize}
+			\begin{enumerate}
 
-					\item	The average amount of milliseconds it takes for a reference implementation to process one frame
-					
-					\item	The amount of Look-Up Tables, Flip-Flops and Block RAM a reference implementation occupies
+				\item	Accuracy of detection; the effectiveness of the candidate algorithm on test images.
+					This metric will be measured by implementing the algorithm into a computer program which can process test images.
+					The candidates will be ranked by how accurate the end result is compared to the reference result.
 
-				\end{itemize}
+				\item	Environmental suitability; how well the candidate algorithm works when put in different environments.
+					This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
+					A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
+					The selected test images, as seen in \verwijzing{tabel}{List of test images}, were captured under many different circumstances.
+					This metric is measured by the least amount of test images failed to process.
 
-		\end{enumerate}
+				\item	The feasibility of implementing the candidate algorithm in digital logic.
+					It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
+					For this reason, I will estimate the difficulty of implementing the algorithm in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
 
-		The algorithm which scores the best overall on these metrics will be selected to be implemented in digital logic in the next phase of the project.
+				\item	The resources required to run such an algorithm in real-time.
+					We want as little delay as possible between the video frame being shot and the completion of the calculation.
+					The quicker the car can detect that it's veering off the lane, the quicker the situation can be rectified, and the safer the system becomes.
+					After all, the safety of human lives are at stake.\\
+					This metric will be measured by:
+
+					\begin{itemize}
+
+						\item	The average amount of milliseconds it takes for a reference implementation to process one frame
+						
+						\item	The amount of Look-Up Tables, Flip-Flops and Block RAM a reference implementation occupies
+
+					\end{itemize}
+
+			\end{enumerate}
+
+			The algorithm which scores the best overall on these metrics will be selected to be implemented in digital logic in the next phase of the project.
 		\end{paragraaf}
 
 		\begin{paragraaf}{Sample Data Tests}
@@ -172,12 +184,21 @@
 
 	\begin{hoofdstuk}{Results}
 
-		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before finally being ran through a feature extraction technique like the Hough Transform.
+		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before being ran through a feature extraction technique like the Hough Transform, and finally being subjected to a line classification technique.
 		This preprocessing stage is of high importance, because it directly affects the effectiveness of the feature extraction phase.
 		If the features of the image are not properly highlighted, the level of detail remains too high and the feature extraction technique might pick up photographic artifacts as lines.\textbf{[todo: find source]}
 
 		\begin{paragraaf}{Image Preprocessing Techniques}
 
+			According to Malmir et al. \cite{malmir2019design} the main source of difficulty for lane detection is the variation of operating conditions in captured road images.
+			An example of this is the variation in colors of the paint used for drawing road markings.
+			White paint is common in Europe while yellow paint can be seen in North America.
+			The yellow gloom of the sunset can make it harder to detect yellow lane markings on a video frame because they blend in with the environment \cite{tumasov2021research}.
+			Though, the use of white paint has a disadvantage as well: pools of water can reflect sunlight and appear as white lane markings \cite{krine2021road}.
+			To generify our product and make it work in many different environments, we need to take into account such environmental factors.
+			The video feed needs to be preprocessed in such a way that as little artifacts as possible get fed into the Hough transform.
+			This decreases the chance that anomalies appear in the result of the Hough transform.
+			
 			\begin{subparagraaf}{Grayscale Conversion}
 
 				\textbf{[todo:]}
@@ -227,6 +248,7 @@
 				\begin{subsubparagraaf}{Canny Edge Detector}
 
 					\textbf{[todo:]}
+					This edge detection operator is not 
 
 				\end{subsubparagraaf}
 
@@ -246,7 +268,7 @@
 
 			\begin{subparagraaf}{Hough Transform}
 
-				\begin{subsubparagraaf}{Vanishing Point-based Optimizations}
+				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
 
 					\textbf{[todo:]}
 
@@ -257,6 +279,46 @@
 			\begin{subparagraaf}{Radon Transform}
 
 				\textbf{[todo:]}
+
+			\end{subparagraaf}
+		\end{paragraaf}
+
+		\begin{paragraaf}{Line Classification Techniques}
+
+			The resulting data from the Hough transform does not bear any meaning on its own.
+			It consists of a set of lines that can represent anything; from actual road markings to cracks in the road and even anomalies in the roadside.
+			The goal of the classification part of the algorithm is to detect which lines are the left and right lane markings.
+
+			\begin{subparagraaf}{K-Means Clustering of HT Results}
+
+				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
+				To convert this into usable data, it must be clustered and grouped into line segments.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Stripe Detection}
+
+				According to Malmir et al. \cite{malmir2019design}, the Hough transform stage achieves acceptable results 80 percent of the time.
+				They suggested that this number decreases during non-ideal conditions such as poor visibility and driving at night time.
+				In their work, they proposed a processing stage that occurs after an iteration of the Hough transform and provides reference data for the next iteration.
+
+				\bigskip
+
+				The basic premise of stripe detection is that the difference between video frames is not substantial because they are captured at a high rate.
+				Therefore, we may use the stored coordinates of the detected lines in the previous frame as a reference while processing the current frame \cite{malmir2019design}.
+				If the difference between the position of the lines in the previous frame and the current frame is within a predefined threshold, we can assume that are the same.
+				Else, we distribute candidate points -- so-called 'particles' -- around the position of the line from the previous frame.
+				Each particle has a rectangular search area around it.
+				In this search area, a convolutional directional edge detection filter is applied to magnify the image features.
+				Two kernels are used to find the left- and right edges of the lane marking.
+				Once these edges are found, an additional test makes sure that the average brightness of the pixels between the edges on the grayscale image is brighter than that of the surrounding pixels.
+				The position of the lane marking is found by stringing together the valid particles.
+
+				\bigskip
+
+				As mentioned in the paper, the effectiveness of this algorithm is highly dependent on the integrity of the result of the Hough transform that is carried out on the first frame of the video feed.
+				This is because the algorithm bases its conception of correctness on previous frames of the video.
+				The authors tried to overcome this issue by processing the video feed with a stricter threshold until a valid lane marking is found \cite{malmir2019design}.
 
 			\end{subparagraaf}
 
