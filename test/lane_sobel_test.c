@@ -9,8 +9,6 @@
 #include "lane_sobel.h"
 #include "lane_threshold.h"
 
-#define ARTIFACT_THRESHOLD	250
-
 /**
  * @see test/lane_gaussian_test.c#GAUSSIAN_SIZE
  */
@@ -19,7 +17,12 @@
 /**
  * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
  */
-#define GAUSSIAN_VARIANCE	(1.0)
+#define GAUSSIAN_VARIANCE	(3.0)
+
+/**
+ * The level of thresholding applied after the Sobel filter
+ */
+#define ARTIFACT_THRESHOLD	(192)
 
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
@@ -48,6 +51,11 @@ int main(int argc, char **argv) {
 	if (input_file) {
 		fclose(input_file);
 	}
+
+	// 1. convert to grayscale
+	// 2. apply gaussian blur
+	// 3. apply sobel filter
+	// 4. only keep pixels which are fully white
 
 	lane_grayscale_apply(input);
 	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);

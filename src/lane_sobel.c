@@ -2,16 +2,19 @@
 
 #include "math.h"
 
+#define KERNEL_DIAMETER	3 // predefined Sobel kernel diameter
+#define KERNEL_RADIUS	1 // result of (3-1)/2
+
 /**
  * Horizontal kernel of the Sobel operator
  */
-const int kx[3][3] = {
+const int kx[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{-1,  0,  1},
 	{-2,  0,  2},
 	{-1,  0,  1}
 };
 
-const int ky[3][3] = {
+const int ky[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{ 1,  2,  1},
 	{ 0,  0,  0},
 	{-1, -2, -1},
@@ -22,21 +25,25 @@ const int ky[3][3] = {
  */
 void lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest) {
 	lane_image_t *out;
-	int x, y, mx, my, m, i, j;
+	int x, y, mx, my, m, i, j, si, ci;
 
-	out = lane_image_new(src->width, src->height);
+	// Because the kernel cannot be convoluted with the 1 pixel
+	// border of the input image (there are no neighbor pixels)
+	// we have to cut off a part of the image and correct for it.
+	out = lane_image_new(src->width - KERNEL_RADIUS * 2, src->height - KERNEL_RADIUS * 2);
 
 	// For each pixel
-	for (y = 1; y < src->height-2; ++y) {
-		for (x = 1; x < src->width-2; ++x) {
+	for (y = KERNEL_RADIUS; y < src->height - KERNEL_RADIUS; ++y) {
+		for (x = KERNEL_RADIUS; x < src->width - KERNEL_RADIUS; ++x) {
 			mx = my = 0;
 			
 			// Convolve kernels with the original image to get
 			// the horizontal and vertical magnitudes (mx, my)
-			for (i = 0; i < 3; ++i) {
-				for (j = 0; j < 3; ++j) {
-					mx += src->data[(y - 1 + i) * src->width + x - 1 + j].r * kx[i][j];
-					my += src->data[(y - 1 + i) * src->width + x - 1 + j].r * ky[i][j];
+			for (i = 0; i < KERNEL_DIAMETER; ++i) {
+				for (j = 0; j < KERNEL_DIAMETER; ++j) {
+					si = (y - KERNEL_RADIUS + i) * src->width + x - KERNEL_RADIUS + j;
+					mx += src->data[si].r * kx[i][j];
+					my += src->data[si].r * ky[i][j];
 				}
 			}
 
@@ -46,10 +53,15 @@ void lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest) {
 			// Restrict the gradient magnitude within bounds
 			if (m < 0) m = 0;
 			if (m > 255) m = 255;
+	
+			// Calculate the corrected index of the target image
+			// (this takes into consideration the cropping)
+			ci = ((y - KERNEL_RADIUS) * out->width) + (x - KERNEL_RADIUS);
 
-        		out->data[(y * src->width) + x].r = m;
-        		out->data[(y * src->width) + x].g = m;
-        		out->data[(y * src->width) + x].b = m;
+			// Update the output pixel
+        		out->data[ci].r = m;
+        		out->data[ci].g = m;
+        		out->data[ci].b = m;
 		}
 	}
 

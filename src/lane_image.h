@@ -47,6 +47,16 @@ struct image {
 lane_image_t *lane_image_new(uint16_t width, uint16_t height);
 
 /**
+ * Fill an image with a solid color.<br />
+ * <br />
+ * This is useful for testing if an image has been cropped correctly.
+ *
+ * @param image		The image that will be altered
+ * @param color		The color that will be set for each pixel
+ */
+void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color);
+
+/**
  * Deallocates an image and its associated data.
  *
  * @param image		The image to be deallocated

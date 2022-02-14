@@ -1,6 +1,8 @@
 #include "lane_gaussian.h"
 
-#include "math.h"
+#include <math.h>
+
+#include "lane_log.h"
 
 /**
  * @inheritDoc
@@ -9,7 +11,7 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 	lane_image_t *out;
 	lane_pixel_t next;
 	double kernel[size][size], total, r, g, b;
-	int x, y, i, j, index, radius, ir;
+	int x, y, i, j, si, ci, radius, ir;
 
 	// Assuming that 'size' is an odd number,
 	// the radius of the kernel is ((size-1)/2)
@@ -17,7 +19,12 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 	// The inclusive radius is the radius plus the center point
 	ir = radius + 1;
 
-	out = lane_image_new(src->width, src->height);
+	// It's kinda confusing because we have to crop the image.
+	// The borders of the source image won't be used if there are
+	// no pixels for the kernel te be applied to. So we always
+	// end up with a smaller output image than input image.
+	// Variable si is the source index and ci is the corrected index
+	out = lane_image_new(src->width - (2 * ir), src->height - (2 * ir));
 
 	// Calculate the values for the kernel assuming its size
 	for (y = 0; y < size; ++y) {
@@ -35,18 +42,23 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 	}
 
 	// Iterate over each pixel in a horizontal manner
-	for (y = ir; y < src->height - (ir * 2); ++y) {
-		for (x = ir; x < src->width - (ir * 2); ++x) {
+	for (y = ir; y < src->height - ir; ++y) {
+		for (x = ir; x < src->width - ir; ++x) {
 			r = g = b = 0.0;
-			index = (y * src->width) + x;
+			// The source index (si) corresponds to the pixel
+			// in the src image and the corrected index (ci)
+			// is the relative index in the cropped output image
+			// This was a nightmare to debug.......
+			ci = ((y - ir) * out->width) + (x - ir);
 
 			// Convolve the kernel with the image around the
 			// current pixel to calculate the RGB value for x,y
 			for (i = 0; i < size; ++i) {
 				for (j = 0; j < size; ++j) {
-					r += src->data[(y - radius + i) * src->width + x - radius + j].r * kernel[i][j];
-					g += src->data[(y - radius + i) * src->width + x - radius + j].g * kernel[i][j];
-					b += src->data[(y - radius + i) * src->width + x - radius + j].b * kernel[i][j];
+					si = (y - radius + i) * src->width + x - radius + j;
+					r += src->data[si].r * kernel[i][j];
+					g += src->data[si].g * kernel[i][j];
+					b += src->data[si].b * kernel[i][j];
 				}
 			}
 
@@ -55,7 +67,7 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 			next.r = r;
 			next.g = g;
 			next.b = b;
-			out->data[index] = next;
+			out->data[ci] = next;
 		}
 	}
 
