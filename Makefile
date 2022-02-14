@@ -25,6 +25,10 @@ else
 LANE_OPTS	?= -Wno-error=unknown-pragmas
 endif
 
+DATA_EXEC	?= ./data/extract.sh
+DATA_OUT	?= ./data/
+DATA_TARGETS	?= $(wildcard $(DATA_OUT).ppm)$(wildcard $(DATA_OUT).jpg)
+
 LATEXMK_EXEC	?= /usr/bin/latexmk
 GCC_EXEC	?= /usr/bin/gcc
 RM_EXEC		?= /usr/bin/rm

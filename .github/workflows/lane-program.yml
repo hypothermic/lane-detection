@@ -6,6 +6,11 @@ jobs:
     steps:
       - name: Clone git contents to container
         uses: actions/checkout@v2
+      - name: Download and prepare 10K test data set
+        run: |
+          curl -OJLu "${{ env.DATASET_USERNAME }}:${{ env.DATASET_PASSWORD }}" lfs.hypothermic.nl/bdd100k_images_10k.zip
+          unzip bdd100k_images_10k.zip
+          data/extract.sh bdd100k/images/10k
       - name: Clean the project files
         run: make clean-lane
       - name: Compilation
