@@ -3,7 +3,7 @@ on: [push]
 jobs:
   test_lane:
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - name: Clone git contents to container
         uses: actions/checkout@v2
       - name: Clean the project files
