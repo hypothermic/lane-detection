@@ -2,31 +2,28 @@
 #include <stdlib.h>
 
 #include "lane_gaussian.h"
-#include "lane_grayscale.h"
 #include "lane_image.h"
 #include "lane_image_ppm.h"
 #include "lane_log.h"
-#include "lane_sobel.h"
-#include "lane_threshold.h"
-
-#define ARTIFACT_THRESHOLD	250
 
 /**
- * @see test/lane_gaussian_test.c#GAUSSIAN_SIZE
+ * The size of the Gaussian kernel.
  */
-#define GAUSSIAN_SIZE		(5)
+#define GAUSSIAN_SIZE		(7)
 
 /**
- * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
+ * The sigma term; the impact of the
+ * neighboring pixels on the target pixel.<br />
+ * <br />
+ * Increasing this will make the image seem more blurred.
  */
-#define GAUSSIAN_VARIANCE	(1.0)
+#define GAUSSIAN_VARIANCE	(6.0)
 
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
 	     *output_file = NULL;
-	lane_image_t *input = NULL,
-		     *blurred = NULL,
-		     *output = NULL;
+	lane_image_t *image = NULL,
+		     *out = NULL;
 
 	if (argc < 3) {
 		LANE_LOG_ERROR("Argument 1 must be the filename of the PPM image and argument 2 must be a destination");
@@ -40,7 +37,7 @@ int main(int argc, char **argv) {
 		return 2;
 	}
 
-	if (lane_image_ppm_from_file(input_file, &input)) {
+	if (lane_image_ppm_from_file(input_file, &image)) {
 		LANE_LOG_ERROR("Error while loading image from file '%s'", argv[1]);
 		return 3;
 	}
@@ -48,11 +45,8 @@ int main(int argc, char **argv) {
 	if (input_file) {
 		fclose(input_file);
 	}
-
-	lane_grayscale_apply(input);
-	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
-	lane_sobel_apply(blurred, &output);
-	lane_threshold_apply(output, ARTIFACT_THRESHOLD, 255, 0);
+	
+	lane_gaussian_apply(image, &out, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 
 	output_file = fopen(argv[2], "wb");
 
@@ -60,7 +54,7 @@ int main(int argc, char **argv) {
 		LANE_LOG_ERROR("Output file '%s' cannot be opened", argv[2]);
 	}
 
-	if (lane_image_ppm_to_file(output_file, output)) {
+	if (lane_image_ppm_to_file(output_file, out)) {
 		LANE_LOG_ERROR("Error while outputting to file '%s'", argv[2]);
 		return 4;
 	}
@@ -71,4 +65,5 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
+
 
