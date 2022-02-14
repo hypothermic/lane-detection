@@ -6,11 +6,9 @@
 /**
  * Apply an iteration of the Sobel-Feldman operator to an image
  *
- * @param image		The input image, which contents will be
- * 			modified by this function
- * @param threshold	The threshold to decide whether a pixel
- * 			should be discarded or not
+ * @param src		The input image, which data will be read
+ * @param dest		The output image, which will be (over)written to
  */
-void lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest, uint8_t threshold);
+void lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest);
 
 #endif /* LANE_SOBEL_H */

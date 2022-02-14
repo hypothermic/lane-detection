@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	}
 
 	lane_grayscale_apply(image);
-	lane_sobel_apply(image, &out, 254);
+	lane_sobel_apply(image, &out);
 
 	output_file = fopen(argv[2], "wb");
 
