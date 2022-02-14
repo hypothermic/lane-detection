@@ -99,8 +99,8 @@ test-lane-verify: test-lane-exec
 
 test-lane-man: compile-lane
 	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
-	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).out.ppm"
-	xdg-open "data/$(ARG_SAMPLE).out.ppm"
+	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
+	xdg-open "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 
 test-lane: test-lane-verify
 
