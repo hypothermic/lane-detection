@@ -3,7 +3,7 @@
 # $ make (DEBUG=true) {compile,clean}-{docs,lane,rtl}
 # 
 
-.PHONY: all
+.DEFAULT_GOAL: all
 all: clean compile test
 
 #
@@ -15,7 +15,8 @@ LATEXMK_OPTS	?= -emulate-aux-dir -auxdir=docs/ -xelatex -output-directory=$(LATE
 
 LANE_DEPS	?= -lm
 LANE_SRCS	?= $(wildcard ./src/lane_*.c)
-LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
+#LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
+LANE_TESTS	?= ./test/lane_image_ppm_test.c
 LANE_OUT	?= ./build/lane
 
 ifdef DEBUG

@@ -1,0 +1,15 @@
+name: Compile & Unit Tests for the Lane Program
+on: [push]
+jobs:
+  test_lane:
+    runs-on: ubuntu-latest
+      steps:
+      - name: Clone git contents to container
+        uses: actions/checkout@v2
+      - name: Clean the project files
+        run: make clean-lane
+      - name: Compilation
+        run: make compile-lane
+      - name: Execute tests
+        run: make test-lane
+
