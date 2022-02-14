@@ -6,6 +6,9 @@
 #include "lane_image_ppm.h"
 #include "lane_log.h"
 #include "lane_sobel.h"
+#include "lane_threshold.h"
+
+#define ARTIFACT_THRESHOLD	250
 
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
@@ -36,6 +39,7 @@ int main(int argc, char **argv) {
 
 	lane_grayscale_apply(image);
 	lane_sobel_apply(image, &out);
+	lane_threshold_apply(out, ARTIFACT_THRESHOLD, 255, 0);
 
 	output_file = fopen(argv[2], "wb");
 
