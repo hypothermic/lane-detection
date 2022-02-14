@@ -13,6 +13,7 @@ all: clean compile test
 LATEXMK_OUT	?= ./build/
 LATEXMK_OPTS	?= -emulate-aux-dir -auxdir=docs/ -xelatex -output-directory=$(LATEXMK_OUT)
 
+LANE_DEPS	?= -lm
 LANE_SRCS	?= $(wildcard ./src/lane_*.c)
 LANE_TESTS	?= $(wildcard ./test/lane_*_test.c)
 LANE_OUT	?= ./build/lane
@@ -47,7 +48,7 @@ make-out-dir:
 compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research
 
 compile-lane: make-out-dir
-	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT)
+	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
 
 compile: compile-docs compile-lane
 
@@ -88,7 +89,7 @@ run: run-lane
 #
 
 test-lane-compile: compile-lane
-	$(GCC_EXEC) $(LANE_OPTS) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_image_ppm_test
+	$(GCC_EXEC) $(LANE_OPTS) $(LANE_TESTS) $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/lane_image_ppm_test $(LANE_DEPS)
 
 test-lane-exec: test-lane-compile
 	build/lane_image_ppm_test data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
@@ -97,7 +98,7 @@ test-lane-verify: test-lane-exec
 	test/lane_image_ppm_test.sh
 
 test-lane-man: compile-lane
-	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test
+	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
 	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).out.ppm"
 	xdg-open "data/$(ARG_SAMPLE).out.ppm"
 
