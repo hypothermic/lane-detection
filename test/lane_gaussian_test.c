@@ -9,7 +9,7 @@
 /**
  * The size of the Gaussian kernel.
  */
-#define GAUSSIAN_SIZE		(7)
+#define GAUSSIAN_SIZE		(5)
 
 /**
  * The sigma term; the impact of the
