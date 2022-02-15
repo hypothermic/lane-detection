@@ -6,10 +6,28 @@
 % Style for first and last page
 \usepackage{wallpaper}
 \usepackage{color}
-%\definecolor{arobsblue}{HTML}{0e2642}
+\definecolor{arobsblue2}{HTML}{0e2642}
 %\definecolor{arobsblue}{HTML}{0f2c4c}
 \definecolor{arobsblue}{HTML}{0e335c}
+\definecolor{invisible}{rgb}{1,1,1}
+\ULCornerWallPaper{1}{asset_bg_top.jpg}
 
+% Confirm geometry (already set in cls)
+% This is needed for fancyhdr
+\geometry{a4paper} %paper format
+\geometry{margin=2.75cm} %margins
+
+% Page numbering
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\lfoot{\textcolor{invisible}{\gitAbbrevHash~\gitAuthorName~\gitAuthorIsoDate}}
+\rfoot{\textbf{\thepage}\hspace{1ex}of\hspace{1ex}\pageref{LastPage}}
+
+% Bibliography
 \usepackage{csquotes}
 \usepackage[style=ieee]{biblatex}
 \addbibresource{research.bib}
@@ -18,13 +36,25 @@
 \usepackage[maxdepth=2]{gitinfo2}
 
 % Figures
-\usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{tikz}
+%\usetikzlibrary{fadings}
+%\tikzfading[
+%	name=arobsfade,
+%	inner color=transparent!0,
+%	outer color=transparent!100
+%]
 
 %\usepackage{atbegshi}
 %\AtBeginShipout{
 %	\begin{tikzpicture}[remember picture,overlay]
-%		\fill (current page.north west) node[below right,fill=arobsblue,draw=arobsblue,minimum width=\paperwidth,minimum height=2ex] (box) {};
+%		\fill (current page.north west) node[below right,fill=arobsblue2,draw=arobsblue2,minimum width=\paperwidth,minimum height=2ex] (box) {};
+%		\clip (current page.north west) node[below right,draw=none,minimum width=\paperwidth,minimum height=2ex] (box) {};
+ %      	%\clip (current page.north west) node[minimum width=\paperwidth, minimum height=2ex, preaction={fill=arobsblue2, draw=arobsblue2}] (box) {};
+%		\clip[preaction={fill=red,draw=red}] (current page.south east) rectangle (5cm, 5cm);
+%		\clip (current page.south west) rectangle (current page.north east);
+%
+%		\fill (current page.north west) [below right, overlay, green, path fading=arobsfade, draw=none] circle (20cm);
 %	\end{tikzpicture}
 %}
 
@@ -32,6 +62,9 @@
 
 	% Set language to English
 	\taal{en}
+
+	% Turn off page numbering
+	\pagenumbering{gobble}
 
 	% Cover page
 	\begin{titelpagina}
@@ -57,10 +90,9 @@
 		
 	\end{titelpagina}
 
-	\pagenumbering{arabic}
-	\thispagestyle{empty}
-
 	\begin{hoofdstuk*}{Abstract}
+
+		\thispagestyle{empty}
 
 		\textbf{[todo:]}
 
@@ -298,6 +330,46 @@
 
 					\textbf{[todo:]}
 
+					\begin{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}
+
+						\begin{tabular}{ccc}
+							
+							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
+							
+							\begin{tikzpicture}
+								\draw[-to, white](0,0) -- (1,0);
+								\draw[-to, thick](0,1.2) -- (1,1.2);
+							\end{tikzpicture} &
+							
+							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
+
+						\end{tabular}
+
+					\end{figuur}
+
+					When we apply the operator to an unfiltered grayscale version of our test image, many photographic artifacts can be observed.
+					To reduce these artifacts, it is common practice to apply noise reduction \textbf{before} applying the Sobel filter.
+					An example of this, using a Gaussian blur with $ x=y=5 $ and $ \sigma = 2.0 $ beforehand, can be seen in \verwijzing{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}.
+
+					\begin{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}
+
+						\begin{tabular}{ccc}
+							
+							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
+							
+							\begin{tikzpicture}
+								\draw[-to, white](0,0) -- (1,0);
+								\draw[-to, thick](0,1.2) -- (1,1.2);
+							\end{tikzpicture} &
+							
+							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
+							$ x=y=5 $ && \\
+							$ \sigma = 2.0 $ \\
+
+						\end{tabular}
+
+					\end{figuur}
+
 				\end{subsubparagraaf}
 
 				\begin{subsubparagraaf}{Canny Edge Detector}
@@ -313,6 +385,28 @@
 
 				\textbf{[todo:]}
 
+				If we apply a threshold with an intensity of $ T = 80\% $ to the output of the Sobel operator seen in \verwijzing{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}, we can discard a lot of artifacts from the image.
+				The lane markings persist, but many of the details in the roadside get discarded.
+
+
+				\begin{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.2) -- (1,1.2);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
+
+															  	&& $ T = 80\% $
+					\end{tabular}
+
+				\end{figuur}
+
 			\end{subparagraaf}
 
 		\end{paragraaf}
@@ -322,6 +416,8 @@
 			\textbf{[todo:]}
 
 			\begin{subparagraaf}{Hough Transform}
+
+				\textbf{[todo:]}
 
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
 
@@ -348,6 +444,8 @@
 
 				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
 				To convert this into usable data, it must be clustered and grouped into line segments.
+
+				\textbf{[todo:]}
 
 			\end{subparagraaf}
 
@@ -382,6 +480,10 @@
 		\begin{paragraaf}{Comparison of Candidate Algorithms}
 
 			\textbf{[todo:]}
+			
+			\bigskip
+
+			\textbf{[todo: table with candidates horizontally and criteria vertically]}
 
 		\end{paragraaf}
 

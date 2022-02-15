@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "lane_gaussian.h"
+#include "lane_grayscale.h"
 #include "lane_image.h"
 #include "lane_image_ppm.h"
 #include "lane_log.h"
@@ -46,6 +47,7 @@ int main(int argc, char **argv) {
 		fclose(input_file);
 	}
 	
+	lane_grayscale_apply(image);
 	lane_gaussian_apply(image, &out, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 
 	output_file = fopen(argv[2], "wb");

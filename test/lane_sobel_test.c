@@ -17,12 +17,12 @@
 /**
  * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
  */
-#define GAUSSIAN_VARIANCE	(3.0)
+#define GAUSSIAN_VARIANCE	(4.0)
 
 /**
  * The level of thresholding applied after the Sobel filter
  */
-#define ARTIFACT_THRESHOLD	(192)
+#define ARTIFACT_THRESHOLD	(250)
 
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 
 	lane_grayscale_apply(input);
 	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
-	lane_sobel_apply(blurred, &output);
+	lane_sobel_apply(input, &output);
 	lane_threshold_apply(output, ARTIFACT_THRESHOLD, 255, 0);
 
 	output_file = fopen(argv[2], "wb");
