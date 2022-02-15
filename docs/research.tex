@@ -305,14 +305,14 @@
 
 						\begin{tabular}{ccc}
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.png} &
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
 							
 							\begin{tikzpicture}
 								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.2) -- (1,1.2);
+								\draw[-to, thick](0,1.65) -- (1,1.65);
 							\end{tikzpicture} &
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
 
 							&& $ x = y = 10 $ \\
 							&& $ \sigma = 6,0 $
@@ -337,14 +337,14 @@
 
 						\begin{tabular}{ccc}
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
 							
 							\begin{tikzpicture}
 								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.2) -- (1,1.2);
+								\draw[-to, thick](0,1.65) -- (1,1.65);
 							\end{tikzpicture} &
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
 
 						\end{tabular}
 
@@ -358,14 +358,14 @@
 
 						\begin{tabular}{ccc}
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
 							
 							\begin{tikzpicture}
 								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.2) -- (1,1.2);
+								\draw[-to, thick](0,1.65) -- (1,1.65);
 							\end{tikzpicture} &
 							
-							\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
+							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
 							$ x=y=5 $ && \\
 							$ \sigma = 2.1 $ \\
 
@@ -389,6 +389,7 @@
 				\textbf{[todo:]}
 
 				If we apply a threshold with an intensity of $ T = 80\% $ to the output of the Sobel operator seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator} we can discard a lot of artifacts from the image.
+				The result of this operation can be seen in \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}.
 				The lane markings persist, but many of the details in the roadside get discarded.
 
 
@@ -396,14 +397,14 @@
 
 					\begin{tabular}{ccc}
 							
-						\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
 							
 						\begin{tikzpicture}
 							\draw[-to, white](0,0) -- (1,0);
-							\draw[-to, thick](0,1.2) -- (1,1.2);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
 						\end{tikzpicture} &
 							
-						\includegraphics[width=0.3\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
 
 															  	&& $ T = 80\% $
 					\end{tabular}
