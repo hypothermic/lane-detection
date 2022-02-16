@@ -132,8 +132,9 @@
 		\bigskip
 
 		This paper is written using the IMRaD format, because it is what we were taught to use at Windesheim.
-		However, I realise that this might not be the best format to write the paper in, because the results section is exceptionally big compared to the other sections.
-		I have tried to spread out the findings in the results section as much as possible by creating (sub-)sections for different topics.
+		However, I realised that this might not be the best format to write the paper in, because the literature study section was exceptionally big compared to the other sections.
+		As advised by my mentor, I moved the literature study to a separate section before the main part of the paper.
+		I tried to spread out the findings in this section as much as possible by creating (sub-)paragraphs for different topics.
 
 	\end{hoofdstuk}
 	
@@ -163,10 +164,10 @@
 			
 			\begin{subparagraaf}{Grayscale Conversion}
 
-				\textbf{[todo:]}
-
-				Formally, the value of a pixel in a grayscale image is called \textit{luminance} \cite{itu2017recommendation}. 
-
+				A grayscale image is one in which the only colors are shades of gray \cite{fisher2003hypermedia}.
+				The benefit of converting an image to grayscale is that the contrast between the black/gray part of the road and the bright white/yellow road markings increases \cite{tanksale2019finding}.
+				Formally, the intensity value of a pixel in a grayscale image is called \textit{luminance} \cite{itu2017recommendation}.
+				The luminance ranges from black at the weakest intensity to white at the strongest \cite{johnson2006stephen}.
 				I chose to pick the values recommended by the BT.601-7 standard \cite{itu2017recommendation} because these have also been used in the \textit{rgb2gray} function in the MATLAB standard library.
 				The formula that will be applied to each pixel pixel is mentioned in \verwijzingb{figuur}{Formula for calculating the luminance of a pixel}.
 				In this formula, $E_Y$ is the luminance of the pixel and $E_{R,G,B}$ are the values of the color channels.
@@ -175,23 +176,6 @@
 					\begin{equation*}
 						E_Y = 0.299 E_R + 0.587 E_G + 0.114 E_B
 					\end{equation*}
-				\end{figuur}
-				
-				\begin{figuur}{Example of an image converted to grayscale}
-
-					\begin{tabular}{ccc}
-						
-						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
-						
-						\begin{tikzpicture}
-							\draw[-to, white](0,0) -- (1,0);
-							\draw[-to, thick](0,1.65) -- (1,1.65);
-						\end{tikzpicture} &
-						
-						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} \\
-
-					\end{tabular}
-
 				\end{figuur}
 			
 			\end{subparagraaf}
@@ -206,7 +190,7 @@
 				It can be assumed that the upper portion of a video frame captured by the dashboard camera is above the horizon, meaning that it is not worth scanning for road lanes.
 				Thus, it can be safely ignored to save computing resources.
 
-				\textbf{[todo: example]}
+				\textbf{[todo:]}
 
 			\end{subparagraaf}
 
@@ -222,7 +206,26 @@
 
 				\begin{subsubparagraaf}{Gaussian Filter}
 
-					To smooth the image and prevent false detection of edges, a Gaussian blur is applied to the image.
+					In order to reduce the noise in the Hough Transform accumulator, a blur is applied to the image beforehand.
+					The blur reduces detail and eliminates noise in the source image \cite{fan2016faster}.
+					The advantage of using Gaussian Blur is that edges in the image get treated similarly no matter their direction \cite{waltz1998efficient}.
+					Another advantage is that this algorithm uses filter kernels which can be convoluted with the source image in parallel \cite{stroem2016parallel}.
+					
+					\bigskip
+
+					\begin{figuur}{Formula of a two-dimensional Gaussian function}
+
+					\begin{equation*}
+						G(x,y) = \frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}
+					\end{equation*}\cite{haddad1991class}
+					
+					\end{figuur}
+
+					\bigskip
+
+					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough Transform, but that the lane marking lines will be kept intact.
+					Fan et al. \cite{fan2016faster} recommended a kernel size of $ x=y=3 $ and a strength of $ \sigma = 1.5 $ for this purpose.
+
 
 					\bigskip
 
@@ -255,26 +258,6 @@
 						\end{equation*}
 					\end{figuur}
 
-					\begin{figuur}{Example of an image blurred by a Gaussian function}
-
-						\begin{tabular}{ccc}
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
-							
-							\begin{tikzpicture}
-								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.65) -- (1,1.65);
-							\end{tikzpicture} &
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
-
-							&& $ x = y = 10 $ \\
-							&& $ \sigma = 6,0 $
-							
-						\end{tabular}
-
-					\end{figuur}
-
 				\end{subsubparagraaf}
 
 			\end{subparagraaf}
@@ -286,46 +269,6 @@
 				\begin{subsubparagraaf}{Sobel-Feldman Operator}
 
 					\textbf{[todo:]}
-
-					\begin{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}
-
-						\begin{tabular}{ccc}
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
-							
-							\begin{tikzpicture}
-								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.65) -- (1,1.65);
-							\end{tikzpicture} &
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
-
-						\end{tabular}
-
-					\end{figuur}
-
-					As can be seen in \verwijzingb{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}, when we apply the operator to an unfiltered grayscale version of our test image, many photographic artifacts can be observed.
-					To reduce these artifacts, it is common practice to apply noise reduction \textbf{before} applying the Sobel filter.
-					An example of this, using a Gaussian blur with $ x=y=5 $ and $ \sigma = 2.0 $ beforehand, can be seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}.
-
-					\begin{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}
-
-						\begin{tabular}{ccc}
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
-							
-							\begin{tikzpicture}
-								\draw[-to, white](0,0) -- (1,0);
-								\draw[-to, thick](0,1.65) -- (1,1.65);
-							\end{tikzpicture} &
-							
-							\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
-							$ x=y=5 $ && \\
-							$ \sigma = 2.1 $ \\
-
-						\end{tabular}
-
-					\end{figuur}
 
 				\end{subsubparagraaf}
 
@@ -341,29 +284,6 @@
 			\begin{subparagraaf}{Thresholding}
 
 				\textbf{[todo:]}
-
-				If we apply a threshold with an intensity of $ T = 80\% $ to the output of the Sobel operator seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator} we can discard a lot of artifacts from the image.
-				The result of this operation can be seen in \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}.
-				The lane markings persist, but many of the details in the roadside get discarded.
-
-
-				\begin{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}
-
-					\begin{tabular}{ccc}
-							
-						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
-							
-						\begin{tikzpicture}
-							\draw[-to, white](0,0) -- (1,0);
-							\draw[-to, thick](0,1.65) -- (1,1.65);
-						\end{tikzpicture} &
-							
-						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
-
-															  	&& $ T = 80\% $
-					\end{tabular}
-
-				\end{figuur}
 
 			\end{subparagraaf}
 
@@ -516,6 +436,115 @@
 	\end{hoofdstuk}
 
 	\begin{hoofdstuk}{Results}
+
+		\begin{paragraaf}{Application of Techniques}
+
+			\textbf{[todo: write a story around the results; what is the final chosen processing pipeline? display in activity diagram]}
+
+			\textbf{[todo: fix image floats]}
+
+			\bigskip
+
+			\begin{figuur}{Example of an image converted to grayscale}
+
+				\begin{tabular}{ccc}
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+						
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} \\
+
+				\end{tabular}
+
+			\end{figuur}
+
+			\begin{figuur}{Example of an image blurred by a Gaussian function}
+
+				\begin{tabular}{ccc}
+							
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+							
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+					
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
+
+					&& $ x = y = 10 $ \\
+					&& $ \sigma = 6,0 $
+					
+				\end{tabular}
+
+			\end{figuur}
+
+			\begin{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}
+
+				\begin{tabular}{ccc}
+					
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
+					
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+					
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
+
+				\end{tabular}
+
+			\end{figuur}
+		
+			As can be seen in \verwijzingb{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}, when we apply the operator to an unfiltered grayscale version of our test image, many photographic artifacts can be observed.
+			To reduce these artifacts, it is common practice to apply noise reduction \textbf{before} applying the Sobel filter.
+			An example of this, using a Gaussian blur with $ x=y=5 $ and $ \sigma = 2.0 $ beforehand, can be seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}.
+
+			\begin{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}
+
+				\begin{tabular}{ccc}
+					
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
+					
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+					
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
+					$ x=y=5 $ && \\
+					$ \sigma = 2.1 $ \\
+
+				\end{tabular}
+
+			\end{figuur}
+
+			If we apply a threshold with an intensity of $ T = 80\% $ to the output of the Sobel operator seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator} we can discard a lot of artifacts from the image.
+			The result of this operation can be seen in \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}.
+			The lane markings persist, but many of the details in the roadside get discarded.
+
+			\begin{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}
+
+				\begin{tabular}{ccc}
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
+						
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
+
+															&& $ T = 80\% $
+				\end{tabular}
+
+			\end{figuur}
+		
+		\end{paragraaf}
 
 		\begin{paragraaf}{Comparison of Candidate Algorithms}
 
