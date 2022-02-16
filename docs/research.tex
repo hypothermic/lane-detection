@@ -241,6 +241,35 @@
 			\begin{subparagraaf}{Grayscale Conversion}
 
 				\textbf{[todo:]}
+
+				Formally, the value of a pixel in a grayscale image is called \textit{luminance} \cite{itu2017recommendation}. 
+
+				I chose to pick the values recommended by the BT.601-7 standard \cite{itu2017recommendation} because these have also been used in the \textit{rgb2gray} function in the MATLAB standard library.
+				The formula that will be applied to each pixel pixel is mentioned in \verwijzingb{figuur}{Formula for calculating the luminance of a pixel}.
+				In this formula, $E_Y$ is the luminance of the pixel and $E_{R,G,B}$ are the values of the color channels.
+
+				\begin{figuur}{Formula for calculating the luminance of a pixel}
+					\begin{equation*}
+						E_Y = 0.299 E_R + 0.587 E_G + 0.114 E_B
+					\end{equation*}
+				\end{figuur}
+				
+				\begin{figuur}{Example of an image converted to grayscale}
+
+					\begin{tabular}{ccc}
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+						
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} \\
+
+					\end{tabular}
+
+				\end{figuur}
 			
 			\end{subparagraaf}
 
@@ -253,6 +282,8 @@
 
 				It can be assumed that the upper portion of a video frame captured by the dashboard camera is above the horizon, meaning that it is not worth scanning for road lanes.
 				Thus, it can be safely ignored to save computing resources.
+
+				\textbf{[todo: example]}
 
 			\end{subparagraaf}
 
@@ -447,7 +478,12 @@
 			\begin{subparagraaf}{K-Means Clustering of HT Results}
 
 				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
-				To convert this into usable data, it must be clustered and grouped into line segments.
+				To convert these extremes into usable data, it must be clustered and grouped into line segments.
+				From the side and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
+
+				\bigskip
+
+				A two dimensional of the Lloyd algorithm is used because each pixel has a $x$ and $y$ value.
 
 				\textbf{[todo:]}
 
