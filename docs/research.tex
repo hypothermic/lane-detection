@@ -146,7 +146,9 @@
 		It will also be helpful to search if people have made optimizations or variations upon these standard procedures.
 		An example of such a variation is an optimized straight-lane Hough Transform targeting FPGAs \cite{el2020novel} which has a higher performance ceiling because it can be parallelized.
 		By taking into account existing optimizations and previous work from other research, we can speed up the process and increase the quality of the product.
-	
+
+		\bigskip
+
 		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before being ran through a feature extraction technique like the Hough Transform, and finally being subjected to a line classification technique.
 		This preprocessing stage is of high importance, because it directly affects the effectiveness of the feature extraction phase.
 		If the features of the image are not properly highlighted, the level of detail remains too high and the feature extraction technique might pick up photographic artifacts as lines \cite{felix2003low}.
@@ -166,6 +168,10 @@
 
 				A grayscale image is one in which the only colors are shades of gray \cite{fisher2003hypermedia}.
 				The benefit of converting an image to grayscale is that the contrast between the black/gray part of the road and the bright white/yellow road markings increases \cite{tanksale2019finding}.
+				The contrast within the image significantly increases which makes the feature extraction phase more effective \cite{ebrahimpour2012vanishing}.
+
+				\bigskip
+
 				Formally, the intensity value of a pixel in a grayscale image is called \textit{luminance} \cite{itu2017recommendation}.
 				The luminance ranges from black at the weakest intensity to white at the strongest \cite{johnson2006stephen}.
 				I chose to pick the values recommended by the BT.601-7 standard \cite{itu2017recommendation} because these have also been used in the \textit{rgb2gray} function in the MATLAB standard library.
@@ -175,7 +181,7 @@
 				\begin{figuur}{Formula for calculating the luminance of a pixel}
 					\begin{equation*}
 						E_Y = 0.299 E_R + 0.587 E_G + 0.114 E_B
-					\end{equation*}
+					\end{equation*}\cite{itu2017recommendation}
 				\end{figuur}
 			
 			\end{subparagraaf}
@@ -295,6 +301,10 @@
 
 			\begin{subparagraaf}{Hough Transform}
 
+				The Hough Transform is a technique which can be used to isolate features of a particular shape within an image \cite{fisher2003hypermedia}.
+				The classical variant is of this technique is mostly used to detect basic predefined shapes such as lines and ellipses.
+				Derivations of this variant such as the Generalized Hough Transform can be employed in applications where a simple analytic description of a feature is not possible \cite{fisher2003hypermedia}.
+
 				\textbf{[todo:]}
 
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
@@ -318,16 +328,18 @@
 			It consists of a set of lines that can represent anything; from actual road markings to cracks in the road and even anomalies in the roadside.
 			The goal of the classification part of the algorithm is to detect which lines are the left and right lane markings.
 
-			\begin{subparagraaf}{K-Means Clustering of HT Results}
+			\begin{subparagraaf}{$k$-means Clustering of HT Results}
 
 				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
 				To convert these extremes into usable data, it must be clustered and grouped into line segments.
 				From the side and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
+				$k$-means clustering allows us to find groups of similar entries within a dataset such that the total variance within groups is minimised \cite{martin2019implementing}.
 
 				\bigskip
 
-				A two dimensional of the Lloyd algorithm is used because each pixel has a $x$ and $y$ value.
-
+				For grouping lines, a two dimensional variant of the Lloyd algorithm is used because each pixel of the line has a $x$ and $y$ value.
+				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each Hough line to find the averages of these lines and to find the vanishing point of the image.
+				They found that four iterations of Lloyd's algorithm are enough to reliably determine the averages of the lines.
 				\textbf{[todo:]}
 
 			\end{subparagraaf}
@@ -371,7 +383,6 @@
 			I'm not yet familiar with the previously mentioned programming languages, so I will use the C language instead.
 			F\'elix et al. \cite{felix2003low} concluded from their research that modeling algorithms in ANSI C before modeling them in VHDL helped to reduce the time needed for the hardware implementation.
 			This justifies the time that will be spent on the computer program.
-			\bigskip
 
 			I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
 			The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.

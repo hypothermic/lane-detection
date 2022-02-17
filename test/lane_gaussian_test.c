@@ -18,7 +18,7 @@
  * <br />
  * Increasing this will make the image seem more blurred.
  */
-#define GAUSSIAN_VARIANCE	(6.0)
+#define GAUSSIAN_VARIANCE	(1.0)
 
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,

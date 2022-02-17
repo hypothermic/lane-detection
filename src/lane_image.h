@@ -57,6 +57,18 @@ lane_image_t *lane_image_new(uint16_t width, uint16_t height);
 void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color);
 
 /**
+ * Draw a simple line on an image using Bresenham.
+ *
+ * @param image		The image that will be altered
+ * @param color		The color that will be set for each pixel
+ * @param x1		The X coordinate of the first point
+ * @param y1		The Y coordinate of the first point
+ * @param x2		The X coordinate of the second point
+ * @param y2		The Y coordinate of the second point
+ */
+void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+
+/**
  * Deallocates an image and its associated data.
  *
  * @param image		The image to be deallocated
