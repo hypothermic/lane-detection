@@ -65,6 +65,9 @@ int main(int argc, char **argv) {
 		fclose(output_file);
 	}
 
+	lane_image_free(image);
+	lane_image_free(out);
+
 	return 0;
 }
 

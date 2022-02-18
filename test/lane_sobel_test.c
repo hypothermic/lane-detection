@@ -77,6 +77,10 @@ int main(int argc, char **argv) {
 		fclose(output_file);
 	}
 
+	lane_image_free(input);
+	lane_image_free(blurred);
+	lane_image_free(output);
+
 	return 0;
 }
 
