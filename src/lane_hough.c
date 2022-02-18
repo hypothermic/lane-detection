@@ -116,9 +116,12 @@ static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_spac
 	size_t amount, alloc;
 	uint16_t rho, th;
 	
+
+	// I use calloc here because the struct members will be "initialized"
+	// and Valgrind won't complain anymore...
 	amount = 0;
 	alloc = INITIAL_ARRAY_SIZE;
-	results = malloc(alloc * sizeof(lane_hough_normal_t));
+	results = calloc(alloc, sizeof(lane_hough_normal_t));
 
 	if (!results) {
 		LANE_LOG_ERROR("Unable to allocate memory for lines; aborting");

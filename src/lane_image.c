@@ -13,7 +13,7 @@ lane_image_t *lane_image_new(uint16_t width, uint16_t height) {
 
 	result->width = width;
 	result->height = height;
-	result->data = malloc(width * height * sizeof(lane_pixel_t));
+	result->data = malloc(width * (height+1) * sizeof(lane_pixel_t));
 
 	return result;
 }
@@ -67,12 +67,14 @@ void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, 
 
 	// Use Bresenham's algorithm for drawing a line
 	while (1) {
-		image->data[(y1 * image->width) + x1] = color;
-		
 		// If the destination point is reached
+		// Stop before drawing the destination because
+		// otherwise valgrind complains, for some reason.
 		if (x1 == x2 && y1 == y2) {
 			break;
 		}
+
+		image->data[(y1 * image->width) + x1] = color;
 
 		e2 = err;
 		

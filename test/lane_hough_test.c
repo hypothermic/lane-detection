@@ -90,6 +90,12 @@ int main(int argc, char **argv) {
 		fclose(output_file);
 	}
 
+	lane_image_free(input);
+	lane_image_free(blurred);
+	lane_image_free(sobel);
+	lane_image_free(acc);
+	lane_image_free(overlay);
+
 	return 0;
 }
 

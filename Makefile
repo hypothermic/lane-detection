@@ -25,6 +25,8 @@ else
 LANE_OPTS	?= -Wno-error=unknown-pragmas
 endif
 
+VALGRIND_EXEC	?= /usr/bin/valgrind
+VALGRIND_OPTS	?= --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1
 DATA_EXEC	?= ./data/extract.sh
 DATA_OUT	?= ./data/
 DATA_TARGETS	?= $(wildcard $(DATA_OUT).ppm)$(wildcard $(DATA_OUT).jpg)
@@ -104,7 +106,7 @@ test-lane-verify: test-lane-exec
 
 test-lane-man: compile-lane
 	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
-	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
+	$(VALGRIND_EXEC) $(VALGRIND_OPTS) --log-file="build/$(ARG_TEST).valgrind.log" build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 	xdg-open "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 
 test-lane: test-lane-verify
