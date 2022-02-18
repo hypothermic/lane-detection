@@ -1,5 +1,7 @@
 #include "lane_image.h"
 
+#include <math.h>
+
 /**
  * @inheritDoc
  */

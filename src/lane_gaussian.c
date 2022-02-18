@@ -2,8 +2,6 @@
 
 #include <math.h>
 
-#include "lane_log.h"
-
 /**
  * @inheritDoc
  */
@@ -18,6 +16,8 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 	radius = (size - 1) / 2;
 	// The inclusive radius is the radius plus the center point
 	ir = radius + 1;
+	// Reset the total value
+	total = 0;
 
 	// It's kinda confusing because we have to crop the image.
 	// The borders of the source image won't be used if there are
@@ -67,6 +67,7 @@ void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uin
 			next.r = r;
 			next.g = g;
 			next.b = b;
+
 			out->data[ci] = next;
 		}
 	}

@@ -1,6 +1,6 @@
 #include "lane_sobel.h"
 
-#include "math.h"
+#include <math.h>
 
 #define KERNEL_DIAMETER	3 // predefined Sobel kernel diameter
 #define KERNEL_RADIUS	1 // result of (3-1)/2
