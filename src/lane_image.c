@@ -1,6 +1,7 @@
 #include "lane_image.h"
 
 #include <math.h>
+#include <string.h>
 
 #include "lane_log.h"
 
@@ -14,6 +15,17 @@ lane_image_t *lane_image_new(uint16_t width, uint16_t height) {
 	result->height = height;
 	result->data = malloc(width * height * sizeof(lane_pixel_t));
 
+	return result;
+}
+
+/**
+ * @inheritDoc
+ */
+lane_image_t *lane_image_copy(const lane_image_t *const image) {
+	lane_image_t *result = lane_image_new(image->width, image->height);
+
+	memcpy(result->data, image->data, image->width * image->height * sizeof(lane_pixel_t));
+	
 	return result;
 }
 

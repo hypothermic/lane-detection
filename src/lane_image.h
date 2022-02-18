@@ -47,6 +47,14 @@ struct image {
 lane_image_t *lane_image_new(uint16_t width, uint16_t height);
 
 /**
+ * Allocates a new image, copying the data from another.
+ *
+ * @param image		Image to be copied
+ * @return		A newly allocated image
+ */
+lane_image_t *lane_image_copy(const lane_image_t *const image);
+
+/**
  * Fill an image with a solid color.<br />
  * <br />
  * This is useful for testing if an image has been cropped correctly.
