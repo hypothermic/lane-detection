@@ -304,10 +304,55 @@
 				The Hough Transform is a technique which can be used to isolate features of a particular shape within an image \cite{fisher2003hypermedia}.
 				The classical variant is of this technique is mostly used to detect basic predefined shapes such as lines and ellipses.
 				Derivations of this variant such as the Generalized Hough Transform can be employed in applications where a simple analytic description of a feature is not possible \cite{fisher2003hypermedia}.
+				The advantage of the Hough transform is that pixels lying in one line need not all be contiguous.\cite{kahl2000hough}
+				This is useful when trying to detect road markings because these lines often have breaks in them.
 
-				\textbf{[todo:]}
+				\begin{figuur}{Equation of a line using Hesse normal form}
+					\begin{equation*}
+						\rho = x \cdot cos \theta + y \cdot sin \theta
+					\end{equation*}\cite{caltech2009line}
+				\end{figuur}
 
+				Lines can be uniquely represented by using the distance from the line to the origin and the angle of the line.
+				These parameters are represented by $\rho$ and $\theta$ respectively \cite{caltech2009line}.
+				The idea behind the Hough Transform is that we map the Cartesian space of the image (represented by $x,y$) to the parameter space of lines \cite{solberg2009hough}.
+				For each pixel in the Cartesian space, we can represent all the possible lines through it by a single line in the parameter \mbox{space (see \verwijzingb{figuur}{Transformation of a single point to a line in the Hough space}).}
+				This means that all pixels which lie on the same line in the Cartesian space are represented by lines which all pass through a single point in the parameter space \cite{kahl2000hough}.
+
+				\begin{figuur}{Transformation of a single point to a line in the Hough space}
+					\includegraphics[width=0.9\textwidth]{caltech2009line-img1.png}
+					\cite{caltech2009line}
+				\end{figuur}
+
+				\bigskip
+
+				First, the parameter space gets quantized into a two-dimensional matrix $ A[\rho,\theta] $ which is initialized with zeroes \cite{solberg2009hough}.
+				This matrix is often referred to as the accumulator or the Hough space.
+				Then, we loop over the image in Cartesian space and increment each element of the accumulator which corresponds to an edge point determined by our preprocessing stage.
+				The accumulator can be visualized as a histogram which shows the frequency of the edge points corresponding to values in the parameter space (i.e. those that lie on a common line) \cite{kahl2000hough}.
+				The peaks of this histogram correspond to lines in the \mbox{Cartesian space (see \verwijzingb{figuur}{Examples of the accumulator spaces of Hough transforms}).}
+				Finally, we can determine the position $\rho,\theta$ of the lines by thresholding the values from the histogram so that we only keep the peaks.
+
+				\begin{figuur}{Examples of the accumulator spaces of Hough transforms}
+					\includegraphics[width=0.5\textwidth]{solberg2009hough-img1.png}
+					\cite{solberg2009hough}
+				\end{figuur}
+
+
+				
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
+
+					Road lane markings are typically at an angle between 45 and 90 degrees when viewed from a dashboard camera.
+					Knowing this, we can adapt the Hough Transform to only compute between these angles.
+					There exist multiple ways to do this:
+
+					\begin{itemize}
+
+						\item Specify subdivisions in the $\rho\theta$ plane such that the peaks outside these areas are not taken into account in the thresholding phase \cite{solberg2009hough}
+						\item Restrict the accumulation stage to only increase the accumulator values that correspond to $ max > \theta > min $ \cite{looges1993hough}
+					\end{itemize}
+
+					However, we can further decrease the angle by looking at the vanishing point position in the road scene \cite{shang2011lane}.
 
 					\textbf{[todo:]}
 
@@ -325,7 +370,7 @@
 		\begin{paragraaf}{Line Classification Techniques}
 
 			The resulting data from the Hough transform does not bear any meaning on its own.
-			It consists of a set of lines that can represent anything; from actual road markings to cracks in the road and even anomalies in the roadside.
+			It consists of a set of lines that can represent anything; from actual road markings to anomalies in the roadside or cracks in the road.
 			The goal of the classification part of the algorithm is to detect which lines are the left and right lane markings.
 
 			\begin{subparagraaf}{$k$-means Clustering of HT Results}
@@ -555,6 +600,57 @@
 
 			\end{figuur}
 		
+			Usually, the Hough Transform is implemented with a voting phase to classify the lines.
+			However, due to it being simpler and more efficient, I implemented the line classification using a kernel-based approach.
+			The kernel detects peaks in the accumulator space to determine where the lines are located.
+			This is a very similar approach to the Hough-Green Transform as proposed by Shapiro et al \cite{shapiro2006accuracy}.
+			In their paper, they conducted an accuracy assessment against the Classical Hough Transform and found the Hough-Green variant almost as accurate.
+			Based on this information and the fact that I am more familiar with kernel-based image processing, I decided to implement the kernel-based peak detection.
+
+			\begin{figuur}{Example of the Hough Transform used with a too low threshold}
+
+				\begin{tabular}{ccc}
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
+						
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t40.out.png} \\
+
+													       && $ T_H \approx 15\% $
+				\end{tabular}
+
+			\end{figuur}
+
+			The threshold of the peaks in the histogram can be arbitrarily modified in my Hough implementation.
+			I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{Example of the Hough Transform used with a too low threshold}.
+			As can be seen in the image, many lines get picked up including roadside artifacts and those from the outline of the car in front.
+		
+			\begin{figuur}{Example of the Hough Transform used with a reasonable threshold}
+
+				\begin{tabular}{ccc}
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
+						
+					\begin{tikzpicture}
+						\draw[-to, white](0,0) -- (1,0);
+						\draw[-to, thick](0,1.65) -- (1,1.65);
+					\end{tikzpicture} &
+						
+					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t150.out.png} \\
+
+													       && $ T_H \approx 60\% $
+				\end{tabular}
+
+			\end{figuur}
+
+
+			After some testing, I found that a thresholds around 60 percent worked well with the images from the test dataset.
+			Though, for the end product to be suitable for many different environments, this threshold needs to be configurable.
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{Comparison of Candidate Algorithms}
