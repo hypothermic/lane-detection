@@ -789,6 +789,8 @@
 
 				\end{figuur}
 
+				\bigskip
+
 				The threshold of the peaks in the histogram can be arbitrarily modified in my Hough implementation.
 				I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{A test image processed with Hough Transform using a too low threshold}.
 				As can be seen in the image, many lines get picked up including roadside artifacts and those from the outline of the car in front.
@@ -810,6 +812,8 @@
 					\end{tabular}
 
 				\end{figuur}
+
+				\bigskip
 
 				After some testing, I found that thresholds around 60 percent worked well with the images from the test dataset.
 				Though, for the end product to be suitable for many different environments, this threshold needs to be configurable.
@@ -886,11 +890,80 @@
 
 		\begin{paragraaf}{Comparison of Candidate Algorithms}
 
-			\textbf{[todo:]}
-			
-			\bigskip
+			Because I analyzed a large number of research papers, I figured it would be wise to sort out the best algorithms and only go into detail on those.
+			I prepared a list of criteria and went through all of the papers to see which ones they covered, which ones they improved upon, and which ones they did not include.
+			This list is represented in \verwijzingb{tabel}{Observations of techniques used in research papers}.
+			A black dot indicates that the feature is used, and a black diamond indicates that the researchers made changes or improvements to it.
 
-			\textbf{[todo: table with candidates horizontally and criteria vertically]}
+			% inspired by https://tex.stackexchange.com/questions/377638/how-to-create-a-compact-comparison-table-like-this
+			\newcommand*\rot[1]{\hbox to1em{\hss\rotatebox[origin=br]{-65}{\small#1}}}
+			\newcommand*\feature[1]{\ifcase#1 -\or\ensuremath{\textbullet}\or\ensuremath{\symbol{"2726}}\fi}
+			\newcommand*\f[3]{\feature#1&\feature#2&\feature#3}
+			\newcolumntype{G}{c@{}c@{}c}
+			\newcolumntype{Z}{c@{}c}
+			\begin{tabel}{Observations of techniques used in research papers}{@{}l @{\extracolsep{\fill}} GG !{\kern1em} G !{\kern1em} Z@{}}
+
+				Candidate &
+				\multicolumn{6}{c}{Preprocessing} &
+				\multicolumn{3}{c}{Extraction} &
+				\multicolumn{2}{c}{Classification} \\
+
+				\midrule
+
+				&
+				\rot{Grayscale Conversion} &
+				\rot{ROI Definition} &
+				\rot{Noise Reduction} &
+
+				\rot{Sobel Operator} &
+				\rot{Canny Edge Detection} &
+				\rot{Thresholding} &
+
+				\rot{Hough Transform} &
+				\rot{Radon Transform} &
+				\rot{Clustering} &
+
+				\rot{Unsupervised} &
+				\rot{Supervised} \\
+
+				\midrule
+
+				Hajjouji et al. \cite{el2020novel} &
+				\f{1}{1}{0} &
+				\f{0}{0}{1} &
+				\f{2}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+				
+				Malmir et al. \cite{malmir2019design} &
+				\f{1}{1}{1} &
+				\f{1}{0}{1} &
+				\f{1}{0}{1} &
+				\feature{1} &
+				\feature{0} \\
+
+				Tumasov et al. \cite{tumasov2021research} &
+				\f{1}{0}{0} &
+				\f{0}{1}{1} &
+				\f{1}{0}{1} &
+				\feature{1} &
+				\feature{0} \\
+
+				Shang et al. \cite{shang2011lane} &
+				\f{1}{0}{0} &
+				\f{0}{1}{1} &
+				\f{2}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+
+				Gupta et al. \cite{gupta2016automated} &
+				\f{1}{0}{0} &
+				\f{0}{0}{1} &
+				\f{1}{0}{2} &
+				\feature{0} &
+				\feature{1} \\
+
+			\end{tabel}
 
 		\end{paragraaf}
 
