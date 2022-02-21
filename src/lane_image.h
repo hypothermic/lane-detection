@@ -21,7 +21,9 @@ typedef struct pixel	lane_pixel_t;
 typedef struct image	lane_image_t;
 
 /**
- * A dot on the screen with a mixture of red, green, and blue colors.
+ * A dot on the screen with a mixture of red, green, and blue colors.<br />
+ * <br />
+ * For grayscale images, r=g=b. But we still use all those channels.
  */
 struct pixel {
 	lane_color_t r, g, b;

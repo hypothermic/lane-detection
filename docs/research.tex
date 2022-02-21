@@ -3,14 +3,16 @@
 
 \newcolumntype{R}{>{\arraybackslash}m{10cm}}
 
-% Style for first and last page
+% First/last page style and page ornaments
 \usepackage{wallpaper}
 \usepackage{color}
 \definecolor{arobsblue2}{HTML}{0e2642}
 %\definecolor{arobsblue}{HTML}{0f2c4c}
 \definecolor{arobsblue}{HTML}{0e335c}
 \definecolor{invisible}{rgb}{1,1,1}
-\ULCornerWallPaper{1}{asset_bg_top.jpg}
+%\ULCornerWallPaper{1}{asset_bg_top.jpg}
+%\LRCornerWallPaper{1}{asset_ornament.png}
+%\LLCornerWallPaper{1}{asset_ornament_3f.png}
 
 % Confirm geometry (already set in cls)
 % This is needed for fancyhdr
@@ -36,9 +38,16 @@
 % Versioning
 \usepackage[maxdepth=2]{gitinfo2}
 
+% This lets the text look really juicy
+\usepackage[verbose=errors,babel=true]{microtype}
+\usepackage{extdash}
+
 % Figures
 \usepackage{amsmath}
 \usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.18}
 %\usetikzlibrary{fadings}
 %\tikzfading[
 %	name=arobsfade,
@@ -58,6 +67,15 @@
 %		\fill (current page.north west) [below right, overlay, green, path fading=arobsfade, draw=none] circle (20cm);
 %	\end{tikzpicture}
 %}
+
+\usepackage{environ}
+\NewEnviron{largequation}{
+	\begin{equation*}
+		\scalebox{1.2}{
+			$\BODY$
+		}
+	\end{equation*}
+}
 
 \begin{document}
 
@@ -105,6 +123,9 @@
 
 	\pagenumbering{arabic}
 
+	\lefthyphenmin=3
+	\righthyphenmin=3
+	
 	\begin{hoofdstuk}{Introduction}
 
 		A run-off-road crash is a type of accident involving a single vehicle in which it veers off the road and collides with a natural or artificial object \cite{liu2009factors}.
@@ -116,7 +137,7 @@
 		
 		\bigskip
 
-		To improve the safety of vehicles, AROBS has been developing an Advanced Driver-Assistance System -- hereafter referred to as an ADAS.
+		To improve the safety of vehicles, AROBS has been developing an Advanced Driver\Hyphdash Assistance System -- hereafter referred to as an ADAS.
 		This system comprises of numerous subsystems which monitor and control certain processes inside of the car.
 		One of these subsystems is the Lane Departure Warning System \cite{el2020novel}.
 		As the name implies, this component of the ADAS assists the driver in keeping the vehicle within in a road lane.
@@ -172,7 +193,7 @@
 
 				\bigskip
 
-				Formally, the intensity value of a pixel in a grayscale image is called \textit{luminance} \cite{itu2017recommendation}.
+				Formally, the intensity value of a pixel in a grayscale image is called the \textit{luminance} \cite{itu2017recommendation}.
 				The luminance ranges from black at the weakest intensity to white at the strongest \cite{johnson2006stephen}.
 				I chose to pick the values recommended by the BT.601-7 standard \cite{itu2017recommendation} because these have also been used in the \textit{rgb2gray} function in the MATLAB standard library.
 				The formula that will be applied to each pixel pixel is mentioned in \verwijzingb{figuur}{Formula for calculating the luminance of a pixel}.
@@ -190,23 +211,55 @@
 
 				To reduce the computing resources needed to run the algorithm, regions of interest (ROIs) may be defined around where the left and right lane markings are supposed to be \cite{el2020novel}.
 				The pixels outside of the defined ROIs will not be processed by the algorithm.
-				
+								
 				\bigskip
 
+				The location of the ROI depends on the installation position, height and viewing angle of the camera and has to be calibrated once per installation \cite{malmir2019design}.
 				It can be assumed that the upper portion of a video frame captured by the dashboard camera is above the horizon, meaning that it is not worth scanning for road lanes.
 				Thus, it can be safely ignored to save computing resources.
+				An example of this scenario can be seen in \verwijzingb{figuur}{Example use case of a Region of Interest}, where \textit{(a)} is the input image and \textit{(b)} is the defined ROI.
 
-				\textbf{[todo:]}
+				\begin{figuur}{Example use case of a Region of Interest}
+					\includegraphics[width=0.5\textwidth]{malmir2019design-img1.png}
+					\cite{malmir2019design}
+				\end{figuur}
 
 			\end{subparagraaf}
 
 			\begin{subparagraaf}{Noise Reduction}
 
-				\textbf{[todo:]}
+				It is inevitable that images from a camera will contain some amount of noise.
+				To prevent that noise is mistaken for edges in the edge filtering phase of our algorithm, the image must be cleaned up before it is delivered to the edge detector \cite{sarab2020canny}.
 
-				\begin{subsubparagraaf}{Average Filter}
+				\begin{subsubparagraaf}{Pixel Average Filter}
 
-					\textbf{[todo:]}
+					A pixel average filter operates by computing an average or arithmetic mean of the grayscale intensity values for each pixel position in a set of captured images from the same scene \cite{spring2001image}.
+					Neighbor pixels don't affect the value of a target pixel, which makes this technique highly suited to be implemented in parallel.
+					
+					\begin{figuur}{Equation for a pixel average filter on a sequence of video frames}
+
+						\begin{equation*}
+							A (N, x, y) = \frac{1}{N} \cdot \sum_{i=1}^{N} I (i, x, y)
+						\end{equation*}\cite{spring2001image}
+					
+					\end{figuur}
+
+					The equation in \verwijzingb{figuur}{Equation for a pixel average filter on a sequence of video frames} can be used to determine the intensity value $I$ of the pixel at the coordinate $(x,y)$ in frame $i$ out of $N$ total frames.
+					A downside of this algorithm in the form of the aforementioned equation is that it needs historic data; applying it on a single frame won't have any effect on the output of that frame.
+					This historic data also needs to be kept available in order for future frames to be calculated, requiring computer memory.
+					It is also possible to use a variant of the algorithm which uses a rolling average instead of historic data \cite{spring2001image} as seen in \verwijzingb{figuur}{Equation for a rolling average variant of a pixel averaging filter}.
+
+					\begin{figuur}{Equation for a rolling average variant of a pixel averaging filter}
+
+						\begin{equation*}
+							A (N, x, y) = \frac{I (x, y) + (N - 1) \cdot A (N - 1, x, y)}{N}
+						\end{equation*}\cite{spring2001image}
+					
+					\end{figuur}
+
+					The equation looks complex, but the storage of the rolling average value can be easily implemented in VHDL using an intermediate variable or signal.
+					Accessing the little amount of memory that a FPGA has is time intensive, making memory operations expensive.
+					Therefore, the method as described in \verwijzingb{figuur}{Equation for a rolling average variant of a pixel averaging filter} is more suitable for implementation on FPGAs.
 				
 				\end{subsubparagraaf}
 
@@ -217,36 +270,64 @@
 					The advantage of using Gaussian Blur is that edges in the image get treated similarly no matter their direction \cite{waltz1998efficient}.
 					Another advantage is that this algorithm uses filter kernels which can be convoluted with the source image in parallel \cite{stroem2016parallel}.
 					
-					\bigskip
+					\begin{figuur}{Formula for generating a two-dimensional Gaussian kernel}
 
-					\begin{figuur}{Formula of a two-dimensional Gaussian function}
-
-					\begin{equation*}
-						G(x,y) = \frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}
-					\end{equation*}\cite{haddad1991class}
+						\begin{largequation}
+							K(x,y) = e^{-(\frac{(x - x_o)^2}{2 \sigma x^2} + \frac{(x - y_o)^2}{2 \sigma y^2})}
+						\end{largequation}\cite{gedraite2011investigation}
 					
 					\end{figuur}
 
 					\bigskip
 
-					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough Transform, but that the lane marking lines will be kept intact.
-					Fan et al. \cite{fan2016faster} recommended a kernel size of $ x=y=3 $ and a strength of $ \sigma = 1.5 $ for this purpose.
-
+					In \verwijzingb{figuur}{Formula for generating a two-dimensional Gaussian kernel} the $ (x_0,y_0) $ is the origin and $x$ and $y$ are the distances from the origin in Cartesian space \cite{gedraite2011investigation}.
+					Symbol $\sigma$ represents the standard deviation of the Gaussian distribution, which affects how much the neighbor points are weighed; thus affecting the strength of \mbox{the blur \cite{haddad1991class}.}
+					The output of the function, $K(x,y)$, is the resulting kernel which we can convolute with an image.
+					This kernel is a matrix which is used to determine which weights need to be applied to the neighbors of a specific pixel in the image; each pixel's new value is a weighted average of that pixel's neighborhood \cite{gedraite2011investigation}.
+					Convoluting it with an image has a similar effect to a low-pass filter, smoothing the lines of the image \cite{haddad1991class}\cite{ferreira2010imagej}.
 
 					\bigskip
 
-					\textbf{[todo:]}
+					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough Transform, but that the lane marking lines will be kept intact.
+					\mbox{Fan et al. \cite{fan2016faster} recommended} a kernel size of $ K_x = K_y = 3 $ and a strength of $ \sigma = 1.5 $ for this purpose.
+					A visual representation of this kernel with approximate values is shown in \verwijzingb{figuur}{Example of a Gaussian kernel}.
+					
+					\begin{figuur}{Example of a Gaussian kernel}
 
-					\textbf{[todo: how is kernel calculated?]}
+						\vspace{-2ex}% this thing is big! uwu
 
-					\textbf{[todo: kernel in scaled brackets (https://latex-tutorial.com/tutorials/amsmath/)]}
+						\begin{equation*}
+							\begin{bmatrix}
+								0.094742 & 0.118318 & 0.094742 \\
+								0.118318 & 0.147761 & 0.118318 \\
+								0.094742 & 0.118318 & 0.094742 
+							\end{bmatrix}
+						\end{equation*}
 
-					\textbf{[todo: how is kernel convoluted with the image?]}
+						$K_x = K_y = 3$ \\
+						$\sigma = 1.5$
+					
+					\end{figuur}
+					
+					\bigskip
+
+					The convolution of the Gaussian kernel with the image can be described as in the formula in \verwijzingb{figuur}{Formula for two-dimensional image convolution}, where $K$ is the kernel matrix and $x,y$ are the kernel indices.
+					The input image is represented as $a$, the output image as $b$, and the indices of these images as the parameters $i$ and $j$.
+					
+					\begin{figuur}{Formula for two-dimensional image convolution}
+
+						\begin{equation*}
+							b(i, j) = \sum_{x = -\infty}^{\infty} \sum_{y = -\infty}^{\infty} K(x, y) \cdot a(i - x, j - y)
+						\end{equation*}
+						\cite{sneha2018convolution} (modified symbols to fit with text)
+					
+					\end{figuur}
 
 					\bigskip
 
 					To determine the value of a pixel, the Gaussian kernel must have information on the neighboring pixels.
 					Because the pixels at the edge of the image don't have neighboring pixels (assuming the kernel size is larger than one) they get cut off.
+					Is is also visible in the formula in \verwijzingb{figuur}{Formula for two-dimensional image convolution} that the pixels get cut off (see $x(i-x, j-y)$).
 					This explains why the resolution of the output image is smaller than that of the input image.
 					\verwijzingb{figuur}{Formulae for calculating the dimensions of the result image} suggests how to calculate the width and height of the resulting image based on the resolution of the initial image and the size of the Gaussian kernel.
 					In these formulae, $w$ is the width of an image and $h$ is the height of an image.
@@ -254,15 +335,23 @@
 
 					\begin{figuur}{Formulae for calculating the dimensions of the result image}
 						\begin{equation*}
-							w_{out} = w_{in} - 2 * (\lfloor(x - 1) / 2\rfloor + 1)
+							w_{out} = w_{in} - 2 * (\lfloor\frac{x - 1}{2}\rfloor + 1)
 						\end{equation*}
 
 						\vspace{-4ex}
 					
 						\begin{equation*}
-							h_{out} = h_{in} - 2 * (\lfloor(y - 1) / 2\rfloor + 1)
+							h_{out} = h_{in} - 2 * (\lfloor\frac{y - 1}{2}\rfloor + 1)
 						\end{equation*}
 					\end{figuur}
+
+					\bigskip
+
+					In scenarios where the aforementioned pixel cutoff is undesirable, a technique known as \textit{zero padding} can be applied.
+					\mbox{According to Sneha \cite{sneha2018convolution}, zero} padding is done when there are no image pixels to overlap the kernel pixels, like at the borders of an image.
+					At the place of each non-overlapping pixel of the kernel matrix, a zero-valued image pixel gets inserted.
+					When convolution is done, a zero-padded value will remain to be zero because the resulting product of the multiplication of all the color channels is also zero.
+					The benefit of this technique is that the addition of zeroes to the image does not alter the image in any sense except for its size \cite{sneha2018convolution}.
 
 				\end{subsubparagraaf}
 
@@ -273,6 +362,8 @@
 				\textbf{[todo:]}
 
 				\begin{subsubparagraaf}{Sobel-Feldman Operator}
+
+					Sampling window
 
 					\textbf{[todo:]}
 
@@ -338,7 +429,23 @@
 					\cite{solberg2009hough}
 				\end{figuur}
 
+				The polar coordinates of the resulting lines can be converted to Cartesian coordinates using the formulae in \verwijzingb{figuur}{Formulae for converting polar coordinates of a line to Cartesian coordinates} where $p$ can be the first or second point of the line.
+				
+				\begin{figuur}{Formulae for converting polar coordinates of a line to Cartesian coordinates}
+					\begin{equation*}
+						x_p = \frac{(\rho - y_p sin \theta)}{cos \theta}
+					\end{equation*}
 
+					\vspace{-2ex}
+
+					\begin{equation*}
+						y_p = \frac{(\rho - x_p cos \theta)}{sin \theta}
+					\end{equation*}
+
+					\vspace{1ex}
+
+					\cite{dawkins2018polar}
+				\end{figuur}
 				
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
 
@@ -353,8 +460,6 @@
 					\end{itemize}
 
 					However, we can further decrease the angle by looking at the vanishing point position in the road scene \cite{shang2011lane}.
-
-					\textbf{[todo:]}
 
 				\end{subsubparagraaf}
 
@@ -409,7 +514,7 @@
 
 				\bigskip
 
-				As mentioned in the paper, the effectiveness of this algorithm is highly dependent on the integrity of the result of the Hough transform that is carried out on the first frame of the video feed.
+				As mentioned in their paper, the effectiveness of this algorithm is highly dependent on the integrity of the result of the Hough transform that is carried out on the first frame of the video feed.
 				This is because the algorithm bases its conception of correctness on previous frames of the video.
 				The authors tried to overcome this issue by processing the video feed with a stricter threshold until a valid lane marking is found \cite{malmir2019design}.
 
@@ -496,160 +601,286 @@
 		\begin{paragraaf}{Application of Techniques}
 
 			\textbf{[todo: write a story around the results; what is the final chosen processing pipeline? display in activity diagram]}
+	
+			\begin{subparagraaf}{Image Handling}
 
-			\textbf{[todo: fix image floats]}
+				To start the practical testing phase of this research, I coded the functionality to read images into memory.
+				I chose to store the test images in the binary portable pixmap \mbox{format (PPM) \cite{pawar2011implementation}} because this file format is easy to work with.
+				An image is represented in memory as a one-dimensional array using the row-major order technique.
+				To accomplish this, I used vectorization as shown in \verwijzingb{figuur}{Conventions for vectorizing a two-dimensional matrix} where $I$ is the image matrix of size $x \times y$.
+				By using this vectorization technique I can avoid using loops in many scenarios and instead use just one call to memset/memcpy/fread to perform the operation.
 
-			\bigskip
+				\begin{figuur}{Conventions for vectorizing a two-dimensional matrix}
+					\onehalfspacing
+					A matrix $y \xleftarrow{\hspace{1ex}I\hspace{1ex}} k \times x$ can be thinned into $k \times x \xleftarrow{\hspace{1ex}vec(I)\hspace{1ex}} y$ \cite{macedo2013typing}, \\
+					meaning that if row-major order is used, rows $i$ are organized as in:
 
-			\begin{figuur}{Example of an image converted to grayscale}
+					\vspace{-3ex}
 
-				\begin{tabular}{ccc}
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
-						
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} \\
+					\begin{largequation}
+						vec (I) = (i_1',i_2',\dots,i_y')'
+					\end{largequation}
 
-				\end{tabular}
+					\vspace{-1ex}% dit moet omdat we 1,5spacing gebruiken
+					\cite{dhrymes2000mathematics}
+				\end{figuur}
 
-			\end{figuur}
+				I chose to use a color depth of 24 bits to match that of the sample images in the test dataset.
+				The three byte-sized color values of a pixel are kept together in data structures of which the data arrays are made.
+				This means that to store the pixel data for an $x \times y$ sized image, $3xy$ bytes are allocated.
+				A pointer to this memory block, along with the dimensions of the image, are neatly grouped together in a structure.
 
-			\begin{figuur}{Example of an image blurred by a Gaussian function}
+			\end{subparagraaf}
 
-				\begin{tabular}{ccc}
+			\begin{subparagraaf}{Filter Development}
+			
+				The first image operation I implemented was the grayscale filter.
+				It simply converts the values of the color channels to a luminance value by multiplying them with predefined weights.
+				I chose to use the conversion weights as defined in the BT.601-7 standard \cite{itu2017recommendation} because they are commonly used in Europe and because I gained familiarity with them while doing the literature study.
+
+				\bigskip
+
+				This grayscale filter was simple to implement and gave me visual confirmation that the image handling part of the program worked successfully.
+				An example of the filter being applied to my favorite test image can be seen in \verwijzingb{figuur}{A test image converted to grayscale}.
+
+				\begin{figuur}{A test image converted to grayscale}
+
+					\begin{tabular}{ccc}
 							
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
 							
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} \\
+
+					\end{tabular}
+
+				\end{figuur}
+
+				\bigskip
+
+				Next, I coded a function to apply a Gaussian blur to an image.
+				This function takes arbitrary arguments for the standard \mbox{deviation $\sigma$ and} for the \mbox{kernel size $K_s = K_x = K_y$}.
+				Note \mbox{that $K_{s} \geq 1 \wedge K_{s} \equiv 1 \bmod 2$ to be a valid size.}
+				First, the function calculates the kernel values according to the mentioned parameters.
+				It does this by using a derivation of the formula seen in \verwijzingb{figuur}{Formula for generating a two-dimensional Gaussian kernel} that gives the value for one value in the kernel.
+				I have shown this derivation in \verwijzingb{figuur}{Formula for the weight of one value within a Gaussian kernel}, where $K_r = \frac{(K_s - 1)}{2}$ and $x,y$ are the absolute coordinates of the point within the kernel.
+
+				\begin{figuur}{Formula for the weight of one value within a Gaussian kernel}
 					
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
+					\begin{largequation}
+						K = e^{-(\frac{(y - K_r)^2 + (x - K_r)^2}{2 * \sigma^2})}
+					\end{largequation}
 
-					&& $ x = y = 10 $ \\
-					&& $ \sigma = 6,0 $
-					
-				\end{tabular}
+				\end{figuur}
 
-			\end{figuur}
+				\begin{figuur}{A test image blurred by a Gaussian function}
 
-			\begin{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}
+					\begin{tabular}{ccc}
+								
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+								
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.gaussian.out.png} \\
 
-				\begin{tabular}{ccc}
-					
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
-					
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-					
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
+						&& $ K_x = K_y = 10 $ \\
+						&& $ \sigma = 6,0 $
+						
+					\end{tabular}
 
-				\end{tabular}
+				\end{figuur}
 
-			\end{figuur}
+				\begin{figuur}{A grayscale test image subjected to the Sobel-Feldman operator}
+
+					\begin{tabular}{ccc}
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
+						
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.gn.tn.out.png}
+
+					\end{tabular}
+
+				\end{figuur}
+			
+				As can be seen in \verwijzingb{figuur}{A grayscale test image subjected to the Sobel-Feldman operator}, when we apply the Sobel operator to an unfiltered grayscale version of our test image, many photographic artifacts can be observed.
+				To reduce these artifacts, it is common practice to apply noise reduction \textbf{before} applying the Sobel filter.
+				An example of this, using a Gaussian blur with $ K_x=K_y=5 $ and $ \sigma = 2.1 $ beforehand, can be seen \mbox{in \verwijzingb{figuur}{A fully preprocessed test image subjected to the Sobel-Feldman operator}.}
+				The difference is noticeable and because of this, although the filter is computationally expensive, I have chosen to implement the blur.
+
+				\begin{figuur}{A fully preprocessed test image subjected to the Sobel-Feldman operator}
+
+					\begin{tabular}{ccc}
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
+						
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+						
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
+						$ K_x = K_y = 5 $ && \\
+						$ \sigma = 2.1 $ \\
+
+					\end{tabular}
+
+				\end{figuur}
+
+				If we apply a threshold with an intensity of $ T_G = 80\% $ to the output of the Sobel operator seen \mbox{in \verwijzingb{figuur}{A fully preprocessed test image subjected to the Sobel-Feldman operator} we} can discard a lot of artifacts from the image.
+				The result of this operation can be seen \mbox{in \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}.}
+				The lane markings persist, but many of the details in the roadside get discarded.
+
+				\begin{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
+
+						&& $ T_G = 80\% $
+					\end{tabular}
+
+				\end{figuur}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Hough Transform Implementation}
 		
-			As can be seen in \verwijzingb{figuur}{Example of a grayscale image subjected to the Sobel-Feldman operator}, when we apply the operator to an unfiltered grayscale version of our test image, many photographic artifacts can be observed.
-			To reduce these artifacts, it is common practice to apply noise reduction \textbf{before} applying the Sobel filter.
-			An example of this, using a Gaussian blur with $ x=y=5 $ and $ \sigma = 2.0 $ beforehand, can be seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}.
+				Usually, the Hough Transform is implemented with a voting phase to classify the lines.
+				However, due to it being simpler and more efficient, I chose to implement the line classification using a kernel-based approach.
+				The kernel detects peaks in the accumulator space to determine where the lines are located.
+				This is a very similar approach to the Hough-Green Transform as proposed by Shapiro et al \cite{shapiro2006accuracy}.
+				In their paper, they conducted an accuracy assessment against the Classical Hough Transform and found the Hough-Green variant almost as accurate.
+				Based on this information and the fact that I am more familiar with kernel-based image processing, I decided to implement the kernel-based peak detection.
 
-			\begin{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator}
+				\begin{figuur}{A test image processed with Hough Transform using a too low threshold}
 
-				\begin{tabular}{ccc}
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t40.out.png} \\
+
+														       && $ T_H \approx 15\% $
+					\end{tabular}
+
+				\end{figuur}
+
+				The threshold of the peaks in the histogram can be arbitrarily modified in my Hough implementation.
+				I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{A test image processed with Hough Transform using a too low threshold}.
+				As can be seen in the image, many lines get picked up including roadside artifacts and those from the outline of the car in front.
+			
+				\begin{figuur}{A test image processed with Hough Transform using a reasonable threshold}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t150.out.png} \\
+
+						&& $ T_H \approx 60\% $ 
+					\end{tabular}
+
+				\end{figuur}
+
+				After some testing, I found that thresholds around 60 percent worked well with the images from the test dataset.
+				Though, for the end product to be suitable for many different environments, this threshold needs to be configurable.
+				Using the value of 60 percent on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} resulted in \verwijzingb{figuur}{A test image processed with Hough Transform using a reasonable threshold}.
+				The Hough space that resulted from this transformation is visualized in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}.
+				In this figure, the luminance of each pixel is the raw accumulator value, capped at the value of 255 because of color channel size restrictions.
+				The white blobs near $(50,400)$ represent the left lane marking.
+				The two clearly defined peaks near $(150,500)$ represent the edges of the right lane marking.
+				If we overlay a polar grid as in \verwijzingb{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} centered on the vanishing point}, we can see that the $\theta$-values match up.
+				This proves that my implementation of the Hough Transform is correct.
+
+				\begin{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}
+
+					% ok dit is echt hele lelijke code...
+					\begin{tikzpicture}
 					
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.pre.out.png} &
-					
+						\node[anchor=south west, inner sep=0] (image) at (0,0) {
+							\includegraphics[width=0.8\textwidth]{0a0a0b1a-7c39d841.hough-t150-histogram.out.png}
+						};
+
+						\begin{scope}[x={(image.south east)}, y={(image.north west)}]
+							
+%							\draw[help lines, xstep=.1, ystep=.25] (0,0) grid (1,1);
+
+							% horizontale lijnen
+							\draw [black, anchor=north] (0,-0.05) to (1,-0.05);
+							\foreach \x in {0,1,...,5} {
+								\node [anchor=north] at (\x*2/10,-0.13) {{\footnotesize\the\numexpr\x*180\relax}};
+								\draw [black, anchor=north] (\x/5,-0.05) to (\x/5,-0.13);
+							}
+							\foreach \x in {0,1,...,20} {
+								\draw [black, anchor=north] (\x/20,-0.05) to (\x/20,-0.10);
+							}
+%							\node[anchor=north] at (0.1,-0.13) {{\footnotesize$\rho$}};
+							
+							\node[anchor=north east] at (-0.0195, -0.13) {{$(\small\theta,\rho)$}};
+
+							% verticale lijnen
+							\draw [black] (-0.0095,0) to (-0.0095,1);
+							\foreach \y in {0,1,...,4} {
+								\node [anchor=east] at (-0.0295,\y*2.5/10) {{\footnotesize\the\numexpr\y*45\relax}};
+								\draw [black, anchor=east] (-0.0095,\y*2.5/10) to (-0.0295,\y*2.5/10);
+
+							}
+							
+						\end{scope}
+
+					\end{tikzpicture}
+
+				\end{figuur}
+
+				\begin{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} centered on the vanishing point}
+
 					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-					
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} \\
-					$ x=y=5 $ && \\
-					$ \sigma = 2.1 $ \\
 
-				\end{tabular}
+						\begin{polaraxis}[
+							grid=both,
+							xmin=0,xmax=180,
+							ytick=\empty,
+							minor tick num=5
+							]
 
-			\end{figuur}
+							\addplot[white,color=white] coordinates {(1,1)};
+							\node[] at (rel axis cs:0,0) {\includegraphics[width=0.9\textwidth]{0a0a0b1a-7c39d841.hough-t150.out.crop.png}};
 
-			If we apply a threshold with an intensity of $ T = 80\% $ to the output of the Sobel operator seen in \verwijzingb{figuur}{Example of a fully pre-processed image subjected to the Sobel-Feldman operator} we can discard a lot of artifacts from the image.
-			The result of this operation can be seen in \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}.
-			The lane markings persist, but many of the details in the roadside get discarded.
+						\end{polaraxis}
+					\end{tikzpicture}
 
-			\begin{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator}
+				\end{figuur}
 
-				\begin{tabular}{ccc}
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.tn.out.png} &
-						
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} \\
-
-															&& $ T = 80\% $
-				\end{tabular}
-
-			\end{figuur}
-		
-			Usually, the Hough Transform is implemented with a voting phase to classify the lines.
-			However, due to it being simpler and more efficient, I implemented the line classification using a kernel-based approach.
-			The kernel detects peaks in the accumulator space to determine where the lines are located.
-			This is a very similar approach to the Hough-Green Transform as proposed by Shapiro et al \cite{shapiro2006accuracy}.
-			In their paper, they conducted an accuracy assessment against the Classical Hough Transform and found the Hough-Green variant almost as accurate.
-			Based on this information and the fact that I am more familiar with kernel-based image processing, I decided to implement the kernel-based peak detection.
-
-			\begin{figuur}{Example of the Hough Transform used with a too low threshold}
-
-				\begin{tabular}{ccc}
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
-						
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t40.out.png} \\
-
-													       && $ T_H \approx 15\% $
-				\end{tabular}
-
-			\end{figuur}
-
-			The threshold of the peaks in the histogram can be arbitrarily modified in my Hough implementation.
-			I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{Example of the Hough Transform used with a too low threshold}.
-			As can be seen in the image, many lines get picked up including roadside artifacts and those from the outline of the car in front.
-		
-			\begin{figuur}{Example of the Hough Transform used with a reasonable threshold}
-
-				\begin{tabular}{ccc}
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.sobel.out.png} &
-						
-					\begin{tikzpicture}
-						\draw[-to, white](0,0) -- (1,0);
-						\draw[-to, thick](0,1.65) -- (1,1.65);
-					\end{tikzpicture} &
-						
-					\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t150.out.png} \\
-
-													       && $ T_H \approx 60\% $
-				\end{tabular}
-
-			\end{figuur}
-
-
-			After some testing, I found that a thresholds around 60 percent worked well with the images from the test dataset.
-			Though, for the end product to be suitable for many different environments, this threshold needs to be configurable.
+			\end{subparagraaf}
 
 		\end{paragraaf}
 

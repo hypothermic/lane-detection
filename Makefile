@@ -1,13 +1,13 @@
 #
 # Usage:
-# $ make (DEBUG=true) {compile,clean}-{docs,lane,rtl}
+# $ make (DEBUG=true) {compile,test,clean}-{docs,lane,rtl}
 # 
 
 .DEFAULT_GOAL: all
 all: clean compile test
 
 #
-# Options
+# Options; can be overridden by environment variables
 #
 
 LATEXMK_OUT	?= ./build/
@@ -25,14 +25,38 @@ else
 LANE_OPTS	?= -Wno-error=unknown-pragmas
 endif
 
-VALGRIND_EXEC	?= /usr/bin/valgrind
 VALGRIND_OPTS	?= --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1
+
 DATA_EXEC	?= ./data/extract.sh
 DATA_OUT	?= ./data/
 DATA_TARGETS	?= $(wildcard $(DATA_OUT).ppm)$(wildcard $(DATA_OUT).jpg)
 
+RTL_SRCS	?= $(wildcard ./rtl/hw_*.vhd)
+RTL_OUT		?= ./build/
+RTL_TARGET	?= hw_grayscale
+RTL_SIMTIME	?= 100ns
+RTL_WAVE	?= $(RTL_OUT)$(RTL_TARGET).vcd
+
+ifdef DEBUG
+RTL_GOALS	?= "-a ../rtl/$(RTL_TARGET).vhd" \
+		   "-e $(RTL_TARGET)" \
+		   "-r $(RTL_TARGET) --vcd=$(RTL_TARGET).vcd --stop-time=$(RTL_SIMTIME)"
+else
+# als we niet willen debuggen is analysis en elaboration genoeg
+RTL_GOALS	?= "-a ../rtl/$(RTL_TARGET).vhd" \
+		   "-e $(RTL_TARGET)"
+endif
+
+#
+# Executable paths; can be overridden by env vars
+#
+
 LATEXMK_EXEC	?= /usr/bin/latexmk
 GCC_EXEC	?= /usr/bin/gcc
+VALGRIND_EXEC	?= /usr/bin/valgrind
+GHDL_EXEC	?= /usr/bin/ghdl
+GTKWAVE_EXEC	?= /usr/bin/gtkwave
+XDG_OPEN_EXEC	?= /usr/bin/xdg-open
 RM_EXEC		?= /usr/bin/rm
 MKDIR_EXEC	?= /usr/bin/mkdir
 
@@ -57,7 +81,14 @@ compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-d
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
 
-compile: compile-docs compile-lane
+compile-rtl: make-out-dir
+	# GHDL uses current directory as output, so cd into build dir first
+	#(cd $(RTL_OUT) && eval "$(GHDL_EXEC) ${goal}");
+	for goal in $(RTL_GOALS); do \
+		(cd $(RTL_OUT); echo "$$goal"; eval "ghdl $$goal"); \
+	done
+
+compile: compile-docs compile-lane compile-rtl
 
 #
 # Cleaning-related targets
@@ -72,24 +103,43 @@ clean-docs-timetable:
 clean-docs-research:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) -CA docs/research.tex
 
-delete-out-dir:
+clean-docs: clean-docs-project clean-docs-timetable clean-docs-research
 	$(RM_EXEC) -rf $(LATEXMK_OUT)
 
-clean-docs: delete-out-dir clean-docs-project clean-docs-timetable clean-docs-research
-
 clean-lane:
-	$(RM_EXEC) -f $(LANE_OUT)
+	$(RM_EXEC) -rf $(LANE_OUT)
 
-clean: clean-docs clean-lane
+clean-rtl:
+	$(RM_EXEC) -rf $(RTL_OUT)
+
+clean: clean-docs clean-lane clean-rtl
 
 #
 # Program execution target
+# (todo: remove because lane_main.c is not used anymore, only test cases are used)
 #
 
 run-lane:
 	$(LANE_OUT) data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
 
 run: run-lane
+
+#
+# Inspect-** targets can be used on desktop to open
+# the output of tasks in a GUI application.
+#
+
+inspect-rtl:
+	$(GTKWAVE_EXEC) $(RTL_WAVE)
+
+inspect-docs-project:
+	$(XDG_OPEN_EXEC) docs/project.tex
+
+inspect-docs-timetable:
+	$(XDG_OPEN_EXEC) docs/timetable.tex
+
+inspect-docs-research:
+	$(XDG_OPEN_EXEC) docs/research.tex
 
 #
 # Test
@@ -104,10 +154,11 @@ test-lane-exec: test-lane-compile
 test-lane-verify: test-lane-exec
 	test/lane_image_ppm_test.sh
 
+# Manual test, needs env vars ARG_SAMPLE and ARG_TEST
 test-lane-man: compile-lane
 	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
 	$(VALGRIND_EXEC) $(VALGRIND_OPTS) --log-file="build/$(ARG_TEST).valgrind.log" build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
-	xdg-open "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
+	$(XDG_OPEN_EXEC) "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 
 test-lane: test-lane-verify
 
