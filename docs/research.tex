@@ -446,7 +446,29 @@
 
 					\cite{dawkins2018polar}
 				\end{figuur}
-				
+			
+				\begin{subsubparagraaf}{Time and Space Complexity}
+					Although the Hough transform is widely used, its high time and space complexity are serious downsides that are challenging to manage when implementing it on embedded systems \cite{dongkyun2008real}.
+					Assuming the size of a video frame is 1280 by 720 pixels and 10 percent of these pixels are edge points, the total number of multiplications are $1280 \cdot 720 \cdot 0.1\theta \cdot 2 $ and the total number of additions is $1280 \cdot 720 \cdot 0.1\theta$ \cite{dongkyun2008real}.
+					The space complexity is related to the memory needed to store the parameter space, which is influenced by the image resolution, $\rho$ and $\theta$.
+					Assuming the size of a video frame is 1280 by 720 pixels, the size of one accumulator cell is $\lceil (log_e(1280)/log_e(2)) \rceil$ bits and the size of the accumulator is $\rho \cdot \theta$.
+					Theoretically, we need at least 2 bytes of memory to fit each accumulator cell, meaning that we need a total of $16 \cdot(900 \cdot 2) \cdot 180$ bytes to store the parameter space for a 1280 by 720 video frame.
+					The main bottleneck of the Hough Transform comes from the amount of chained read and write memory operations; some cell values in the parameter space are read and increased by one, so the next calculated value must wait until this accumulating operation is finished \cite{dongkyun2008real}.
+					
+					\bigskip
+
+					The Arty A7 35T -- our target FPGA development board -- only has 1800 kibibits \cite{digilent2020arty} of fast Block RAM, meaning that we cannot fit the entire accumulator in it.
+					We have to decide if we want to use the slower DDR3L RAM of which we have plenty, or decrease the needed space for the accumulator by using other prescribed techniques such as downscaling or ROI definition.
+					According to the Arty A7 reference manual \cite{digilent2020arty}, the Artix FPGA chip includes $90$ DSP slices of type 48E1.
+					These can be used to implement fully parallel digital signal processing algorithms like FIR filters, Fast Fourier transforms and NN pattern detection \cite{xilinx2018series}.
+					Zhou et al. \cite{zhou2013efficient} used a combination of $178$ DSP48E1 slices and $3240$ kibibits of BRAM to create a parallel Hough implementation which can process a 512 by 512 image with 33232 edge points in $\approx 135.75 \mu s$.
+					This was done on a very expensive Virtex FPGA which had plenty of DSP slices and BRAM available, and thus not realistic to implement as a product.
+					Chuquimia et al \cite{chuquimia2018fpga} proposed a real time Hough Transform architecture on an Artix-7 FPGA using $2800$ kibibytes of BRAM and $153$ DSP48E1 slices for processing a 1920 by 1080 image in $\approx 32 ms$
+					In addition to my assigned FPGA development board only having ninety DSP slices, I have no prior experience with them and there doesn't seem to be much documentation about them from Digilent.
+					Therefore, I am not too keen on using this technology.
+
+				\end{subsubparagraaf}
+
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
 
 					Road lane markings are typically at an angle between 45 and 90 degrees when viewed from a dashboard camera.
@@ -897,7 +919,7 @@
 
 			% inspired by https://tex.stackexchange.com/questions/377638/how-to-create-a-compact-comparison-table-like-this
 			\newcommand*\rot[1]{\hbox to1em{\hss\rotatebox[origin=br]{-65}{\small#1}}}
-			\newcommand*\feature[1]{\ifcase#1 -\or\ensuremath{\textbullet}\or\ensuremath{\symbol{"2726}}\fi}
+			\newcommand*\feature[1]{\ifcase#1 \or\ensuremath{\textbullet}\or\ensuremath{\symbol{"2726}}\fi}
 			\newcommand*\f[3]{\feature#1&\feature#2&\feature#3}
 			\newcolumntype{G}{c@{}c@{}c}
 			\newcolumntype{Z}{c@{}c}
@@ -962,6 +984,10 @@
 				\f{1}{0}{2} &
 				\feature{0} &
 				\feature{1} \\
+
+				\midrule
+
+				\multicolumn{12}{c}{\small\ensuremath{\textbullet} = uses technology \hspace{4ex} \ensuremath{\symbol{"2726}} = improved variant} \\
 
 			\end{tabel}
 
