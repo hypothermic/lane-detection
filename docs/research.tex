@@ -1040,6 +1040,15 @@
 
 			\end{subparagraaf}
 
+			\begin{subparagraaf}{$k$-means Implementation}
+
+				As can be seen in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}, multiple lines are left over per lane marking.
+				To get the average of these results, I decided to implement Lloyd's algorithm.
+				Because we don't determine the exact start and end of the detected lines, we can't use an approach like Ebrahimpour et al. \cite{ebrahimpour2012vanishing} did.
+				Therefore, I decided to use an imaginary point at the middle of each line and use that two determine the clusters.
+
+			\end{subparagraaf}
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{The Final Chosen Pipeline}

@@ -38,6 +38,8 @@ int main(int argc, char **argv) {
 		     *sobel = NULL,
 		     *acc = NULL,
 		     *overlay = NULL;
+	lane_hough_resolved_line_t *lines = NULL;
+	size_t lines_amount;
 
 	if (argc < 3) {
 		LANE_LOG_ERROR("Argument 1 must be the filename of the PPM image and argument 2 must be a destination");
@@ -70,7 +72,9 @@ int main(int argc, char **argv) {
 	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 	lane_sobel_apply(blurred, &sobel);
 	lane_threshold_apply(sobel, ARTIFACT_THRESHOLD, 255, 0);
-	lane_hough_apply(sobel, &acc, &overlay, 0, 180, HOUGH_THRESHOLD);
+	lines_amount = lane_hough_apply(sobel, &acc, &overlay, &lines, 0, 180, HOUGH_THRESHOLD);
+
+	LANE_LOG_INFO("%lu lines were resolved", lines_amount);
 
 	(void) acc;
 	(void) overlay;
@@ -95,6 +99,7 @@ int main(int argc, char **argv) {
 	lane_image_free(sobel);
 	lane_image_free(acc);
 	lane_image_free(overlay);
+	free(lines);
 
 	return 0;
 }
