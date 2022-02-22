@@ -498,23 +498,35 @@
 
 		\begin{paragraaf}{Line Classification Techniques}
 
-			The resulting data from the Hough transform does not bear any meaning on its own.
+			The resulting data from the Hough transform does not bear any meaning on its own \cite{gupta2016automated}.
 			It consists of a set of lines that can represent anything; from actual road markings to anomalies in the roadside or cracks in the road.
 			The goal of the classification part of the algorithm is to detect which lines are the left and right lane markings.
 
-			\begin{subparagraaf}{\texorpdfstring{$k$}{k}-means Clustering of HT Results }
+			\begin{subparagraaf}{Clustering of HT Results}
 
 				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
 				To convert these extremes into usable data, it must be clustered and grouped into line segments.
-				From the side and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
+				Clustering is grouping of unlabeled data points in such a way that the data points within the same group are similar to each other and the data points in different groups are dissimilar to each other \cite{sharma2020kmeans}.
+				From the size and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
+				\bigskip
+
 				$k$-means clustering allows us to find groups of similar entries within a dataset such that the total variance within groups is minimised \cite{martin2019implementing}.
+				For grouping lines, a two dimensional variant of the Lloyd algorithm is used because each pixel of the line has a $x$ and $y$ value.
+				A special attribute of the Lloyd algorithm is that the accuracy of clustering is increased at every iteration.
+				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each probabilistic Hough line to find the averages of these lines and to find the vanishing point of the image.
+				They found that four iterations of Lloyd's algorithm are enough to reliably determine the averages of the lines.
+				Dias et al. \cite{dias2020parallel} designed a FPGA architecture for Lloyd's algorithm that can run an iteration on 4096 two-dimensional data points within $8500 \mu s$.
+				It required around 50 percent of the registers and around 80 percent of the LUTs available on their Kintex-7 FPGA, making it too exhaustive to run on an Artix-7.
 
 				\bigskip
 
-				For grouping lines, a two dimensional variant of the Lloyd algorithm is used because each pixel of the line has a $x$ and $y$ value.
-				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each Hough line to find the averages of these lines and to find the vanishing point of the image.
-				They found that four iterations of Lloyd's algorithm are enough to reliably determine the averages of the lines.
-				\textbf{[todo:]}
+				Tumasov et al. \cite{tumasov2021research} proposed to use the DBSCAN algorithm to cluster the lines from the Hough Transform.
+				This algorithm is highly suitable for situations in which different groups have a small difference in density.
+				Line segments belonging to a lane have densities which are uniform or nearly uniform \cite{niu2016robust}.
+				The difference between DBSCAN and $k$-means clustering is that the latter is a partitioned algorithm, which means that the final goal of the algorithm is to find the nearest densest neightbours instead of the transitive closure computation \cite{shi2014fpga}.
+				What this means in our situation is that outliers like roadside artifacts will get ignored in DBSCAN clustering and only the high density areas such as the lines will get clustered.
+				If we were to use $k$-means clustering, all of the input data would get considered when forming a result, including the outliers.
+				Shi et al. \cite{shi2014fpga} implemented parallel DBSCAN which can be horizontally scaled over a FPGA.
 
 			\end{subparagraaf}
 
@@ -558,27 +570,30 @@
 			F\'elix et al. \cite{felix2003low} concluded from their research that modeling algorithms in ANSI C before modeling them in VHDL helped to reduce the time needed for the hardware implementation.
 			This justifies the time that will be spent on the computer program.
 
-			I will implement each of the candidate algorithms in a computer program and run test images through them to determine how effective they are.
-			The final chosen algorithm will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
-			A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
+			I will implement the algorithms that are most widely used among the mentioned research papers.
+			These will be implemented in a computer program which will be able to run test images through them to determine how effective they are.
+			The final chosen algorithm pipeline will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
+%			A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
+
+			This final pipeline will be judged on the following factors:
 
 			\begin{enumerate}
 
-				\item	Accuracy of detection; the effectiveness of the candidate algorithm on test images.
-					This metric will be measured by implementing the algorithm into a computer program which can process test images.
-					The candidates will be ranked by how accurate the end result is compared to the reference result.
+				\item	Accuracy of detection; the effectiveness of the pipeline on test images.
+					This metric will be measured by implementing the pipeline into a computer program which can process test images.
+					The pipeline will be ranked by how accurate the end result is compared to the reference result.
 
-				\item	Environmental suitability; how well the candidate algorithm works when put in different environments.
-					This criteria involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
-					A particular algorithm might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
+				\item	Environmental suitability; how well the pipeline works when put in different environments.
+					This criterium involves using test images that were captured in different weather conditions, lighting conditions and different areas of the world.
+					Particular detection techniques might work better than others in bright lighting, but may not work at all when the vehicle is driving through a tunnel or at night time.
 					The selected test images, as seen in \verwijzingb{tabel}{List of test images}, were captured under many different circumstances.
 					This metric is measured by the least amount of test images failed to process.
 
-				\item	The feasibility of implementing the candidate algorithm in digital logic.
-					It is hard to set up concrete criteria for measuring this metric, because the time and knowledge required to implement a particular algorithm depends on many factors, and it can't be properly calculated in advance.
-					For this reason, I will estimate the difficulty of implementing the algorithm in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
+				\item	The feasibility of implementing the pipeline in digital logic.
+					It is hard to set up concrete criterium for measuring this metric, because the time and knowledge required to implement particular algorithms depends on many factors, and it can't be properly calculated in advance.
+					For this reason, I will estimate the difficulty of implementing the pipeline in hardware and I will assign it a score between one and five, with five meaning it would be very difficult to implement.
 
-				\item	The resources required to run such an algorithm in real-time.
+				\item	The resources required to run such an pipeline in real-time.
 					We want as little delay as possible between the video frame being shot and the completion of the calculation.
 					The quicker the car can detect that it's veering off the lane, the quicker the situation can be rectified, and the safer the system becomes.
 					After all, the safety of human lives are at stake.\\
@@ -599,7 +614,7 @@
 
 		\begin{paragraaf}{Sample Data Tests}
 
-			To prove the effectiveness of each algorithm, it must be implemented in a computer program which runs a set of test images through it.
+			To prove the effectiveness of the algorithms, they must be implemented in a computer program which runs a set of test images through them.
 			The test images were hand selected from the Berkeley DeepDrive 100K Dataset \cite{yu2020bdd100k} and converted to PPM format for easier manipulation.
 			A list of these images, along with the motivation behind why they were selected, can be found in \verwijzing{tabel}{List of test images}.
 
@@ -622,8 +637,125 @@
 
 	\begin{hoofdstuk}{Results}
 
+		\begin{paragraaf}{Listing of Candidate Algorithms}
+
+			Because I analyzed a large number of research papers, I figured it would be wise to sort out the best algorithms and only go into detail on those.
+			I prepared a list of criteria and went through all of the papers to see which ones they covered, which ones they improved upon, and which ones they did not include.
+			This list is represented in \verwijzingb{tabel}{Observations of techniques used in research papers}.
+			A black dot indicates that the feature is used, and a black diamond indicates that the researchers made changes or improvements to it.
+
+			% inspired by https://tex.stackexchange.com/questions/377638/how-to-create-a-compact-comparison-table-like-this
+			\newcommand*\rot[1]{\hbox to1em{\hss\rotatebox[origin=br]{-65}{\small#1}}}
+			\newcommand*\feature[1]{\ifcase#1 \or\ensuremath{\textbullet}\or\ensuremath{\symbol{"2726}}\fi}
+			\newcommand*\f[3]{\feature#1&\feature#2&\feature#3}
+			\newcolumntype{G}{c@{}c@{}c}
+			\newcolumntype{Z}{c@{}c}
+			\begin{tabel}{Observations of techniques used in research papers}{@{}l @{\extracolsep{\fill}} GG !{\kern1em} G !{\kern1em} Z@{}}
+
+				Candidate &
+				\multicolumn{6}{c}{Preprocessing} &
+				\multicolumn{3}{c}{Extraction} &
+				\multicolumn{2}{c}{Classification} \\
+
+				\midrule
+
+				&
+				\rot{Grayscale Conversion} &
+				\rot{ROI Definition} &
+				\rot{Noise Reduction} &
+
+				\rot{Sobel Operator} &
+				\rot{Canny Edge Detection} &
+				\rot{Thresholding} &
+
+				\rot{Hough Transform} &
+				\rot{Radon Transform} &
+				\rot{Clustering} &
+
+				\rot{Unsupervised} &
+				\rot{Supervised} \\
+
+				\midrule
+
+				Hajjouji et al. \cite{el2020novel} &
+				\f{1}{1}{0} &
+				\f{0}{0}{1} &
+				\f{2}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+
+				Wu et al. \cite{wu2019end} &
+				\f{1}{0}{1} &
+				\f{0}{1}{0} &
+				\f{1}{0}{1} &
+				\feature{0} &
+				\feature{1} \\
+				
+				Malmir et al. \cite{malmir2019design} &
+				\f{1}{1}{1} &
+				\f{1}{0}{1} &
+				\f{1}{0}{1} &
+				\feature{1} &
+				\feature{0} \\
+
+				Gao et al. \cite{gao2012development} &
+				\f{1}{1}{0} &
+				\f{1}{0}{1} &
+				\f{1}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+				
+				Tumasov et al. \cite{tumasov2021research} &
+				\f{1}{0}{0} &
+				\f{0}{1}{1} &
+				\f{1}{0}{1} &
+				\feature{1} &
+				\feature{0} \\
+
+				Shang et al. \cite{shang2011lane} &
+				\f{1}{0}{0} &
+				\f{0}{1}{1} &
+				\f{2}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+
+				Gupta et al. \cite{gupta2016automated} &
+				\f{1}{0}{0} &
+				\f{0}{0}{1} &
+				\f{1}{0}{2} &
+				\feature{0} &
+				\feature{1} \\
+
+				Li et al. \cite{li2009novel} &
+				\f{1}{1}{0} &
+				\f{1}{0}{1} &
+				\f{1}{0}{0} &
+				\feature{1} &
+				\feature{0} \\
+
+				\midrule
+
+				\multicolumn{12}{c}{\small\ensuremath{\textbullet} = uses technology \hspace{4ex} \ensuremath{\symbol{"2726}} = improved variant} \\
+
+			\end{tabel}
+
+			Based on the findings in \verwijzingb{tabel}{Observations of techniques used in research papers} I have made the following conclusions:
+
+			\begin{itemize}
+				\item Grayscale Conversion and Thresholding are widely used
+				\item Edge Detection is often used; Sobel and the derived Canny algorithm are both popular
+				\item The Hough Transform is widely used, with various improved methods having been suggested
+				\item Clustering of Hough results is sometimes used, with DBSCAN or $k$-means clustering
+			\end{itemize}
+
+			I decided not to go with a supervised approach because this is always done in conjuncture with machine learning.
+			Unsupervised approaches are better suited for cheap end user products because they require less computing resources to function.
+
+		\end{paragraaf}
+
 		\begin{paragraaf}{Application of Techniques}
 
+			Next up, I wrote a computer program which implemented the most used processing steps from \verwijzingb{paragraaf}{Listing of Candidate Algorithms}.
 			\textbf{[todo: write a story around the results; what is the final chosen processing pipeline? display in activity diagram]}
 	
 			\begin{subparagraaf}{Image Handling}
@@ -788,12 +920,10 @@
 
 			\begin{subparagraaf}{Hough Transform Implementation}
 		
-				Usually, the Hough Transform is implemented with a voting phase to classify the lines.
-				However, due to it being simpler and more efficient, I chose to implement the line classification using a kernel-based approach.
-				The kernel detects peaks in the accumulator space to determine where the lines are located.
-				This is a very similar approach to the Hough-Green Transform as proposed by Shapiro et al \cite{shapiro2006accuracy}.
-				In their paper, they conducted an accuracy assessment against the Classical Hough Transform and found the Hough-Green variant almost as accurate.
-				Based on this information and the fact that I am more familiar with kernel-based image processing, I decided to implement the kernel-based peak detection.
+				The range of orientations of the Hough Transform can be fitted in two ways: $\pi \leq \theta < 0$ where $\rho$ holds both negative and positive values, or $0 \leq \theta < \pi$ where $\rho$ holds only positive values \cite{anvari2010fpga}.
+				I chose to go with the former approach because it allows the use of fixed point values, which is useful when implementing it in digital logic.
+				This is the reason why in my implementation, the height of the Hough space is $\sqrt{2} \cdot I_x$ where $I_x$ is the image width.
+				I also considered the Hough-Green transform as proposed by Shapiro et al. \cite{shapiro2006accuracy} because it is a kernel-based approach, but I realized that it would require even more memory operations than the classical Hough transform due to it needing information about neighbor pixels during the voting phase.
 
 				\begin{figuur}{A test image processed with Hough Transform using a too low threshold}
 
@@ -912,86 +1042,29 @@
 
 		\end{paragraaf}
 
-		\begin{paragraaf}{Comparison of Candidate Algorithms}
+		\begin{paragraaf}{The Final Chosen Pipeline}
 
-			Because I analyzed a large number of research papers, I figured it would be wise to sort out the best algorithms and only go into detail on those.
-			I prepared a list of criteria and went through all of the papers to see which ones they covered, which ones they improved upon, and which ones they did not include.
-			This list is represented in \verwijzingb{tabel}{Observations of techniques used in research papers}.
-			A black dot indicates that the feature is used, and a black diamond indicates that the researchers made changes or improvements to it.
+			After having researched the widely used candidate algorithms and having implemented them myself, I am able to judge which of these algorithms would make up a sufficient lane detection pipeline.
+			I decide to implement a pipeline using the following algorithms sequentially:
 
-			% inspired by https://tex.stackexchange.com/questions/377638/how-to-create-a-compact-comparison-table-like-this
-			\newcommand*\rot[1]{\hbox to1em{\hss\rotatebox[origin=br]{-65}{\small#1}}}
-			\newcommand*\feature[1]{\ifcase#1 \or\ensuremath{\textbullet}\or\ensuremath{\symbol{"2726}}\fi}
-			\newcommand*\f[3]{\feature#1&\feature#2&\feature#3}
-			\newcolumntype{G}{c@{}c@{}c}
-			\newcolumntype{Z}{c@{}c}
-			\begin{tabel}{Observations of techniques used in research papers}{@{}l @{\extracolsep{\fill}} GG !{\kern1em} G !{\kern1em} Z@{}}
+			\begin{enumerate}
 
-				Candidate &
-				\multicolumn{6}{c}{Preprocessing} &
-				\multicolumn{3}{c}{Extraction} &
-				\multicolumn{2}{c}{Classification} \\
+				\item	Grayscale conversion -- this strategy is widely used to turn the input video frame from the camera into a single-channel image composed only of the luminance of each pixel.
+					The advantages of using grayscale images is that less memory is required to store them and less computational power is required to process them, while keeping the same information.
+				\item	Gaussian blur -- from the testing done using the sample data, it turns out that lots of noise gets eliminated from the picture if the image is blurred before the edge detection operator is applied.
+					Therefore, I decided that it is worthwile to implement a Gaussian filter.
+				\item	Sobel operator -- I decided to use the plain Sobel operator instead of the full-fledged Canny Edge Detector because the latter didn't provide a much better result to make it worth my time.
+					The plain Sobel operator clearly defines the edges in every sample picture while being relatively simple to implement.
+				\item	Thresholding -- The output from the Sobel operator is still measured in a luminance values, meaning we have to convert it to a binary image first by applying a threshold.
+					This technique is easy to implement and my testing concluded that it reduces a lot of the leftover image artifacts.
+				\item	Hough Transform -- Although it is challenging to implement this algorithm on an FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
+					Because there are multiple approaches to implementing it on a FPGA, I think it will be possible for me to achieve this.
+					I chose the Hough Transform over other methods because it is perfect for detecting dashed lines, which makes it perfect for detecting lane markings.
+				\item	$k$-means clustering -- To group the results from the Hough Transform, I decided to use a clustering technique.
+					I chose to use $k$-means clustering over DBSCAN because the former only requires one parameter -- the cluster size -- which we know beforehand.
+					The parameters used in DBSCAN clustering depend on a given situation and need to be configured afterwards, making it harder to implement.
 
-				\midrule
-
-				&
-				\rot{Grayscale Conversion} &
-				\rot{ROI Definition} &
-				\rot{Noise Reduction} &
-
-				\rot{Sobel Operator} &
-				\rot{Canny Edge Detection} &
-				\rot{Thresholding} &
-
-				\rot{Hough Transform} &
-				\rot{Radon Transform} &
-				\rot{Clustering} &
-
-				\rot{Unsupervised} &
-				\rot{Supervised} \\
-
-				\midrule
-
-				Hajjouji et al. \cite{el2020novel} &
-				\f{1}{1}{0} &
-				\f{0}{0}{1} &
-				\f{2}{0}{0} &
-				\feature{1} &
-				\feature{0} \\
-				
-				Malmir et al. \cite{malmir2019design} &
-				\f{1}{1}{1} &
-				\f{1}{0}{1} &
-				\f{1}{0}{1} &
-				\feature{1} &
-				\feature{0} \\
-
-				Tumasov et al. \cite{tumasov2021research} &
-				\f{1}{0}{0} &
-				\f{0}{1}{1} &
-				\f{1}{0}{1} &
-				\feature{1} &
-				\feature{0} \\
-
-				Shang et al. \cite{shang2011lane} &
-				\f{1}{0}{0} &
-				\f{0}{1}{1} &
-				\f{2}{0}{0} &
-				\feature{1} &
-				\feature{0} \\
-
-				Gupta et al. \cite{gupta2016automated} &
-				\f{1}{0}{0} &
-				\f{0}{0}{1} &
-				\f{1}{0}{2} &
-				\feature{0} &
-				\feature{1} \\
-
-				\midrule
-
-				\multicolumn{12}{c}{\small\ensuremath{\textbullet} = uses technology \hspace{4ex} \ensuremath{\symbol{"2726}} = improved variant} \\
-
-			\end{tabel}
+			\end{enumerate}
 
 		\end{paragraaf}
 
