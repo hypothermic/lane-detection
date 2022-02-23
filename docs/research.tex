@@ -510,7 +510,7 @@
 				From the size and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
 				\bigskip
 
-				$k$-means clustering allows us to find groups of similar entries within a dataset such that the total variance within groups is minimised \cite{martin2019implementing}.
+				$k$-means is an unsupervised clustering method that allows us to find groups of similar entries within a dataset such that the total variance within groups is minimised \cite{martin2019implementing}.
 				For grouping lines, a two dimensional variant of the Lloyd algorithm is used because each pixel of the line has a $x$ and $y$ value.
 				A special attribute of the Lloyd algorithm is that the accuracy of clustering is increased at every iteration.
 				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each probabilistic Hough line to find the averages of these lines and to find the vanishing point of the image.
@@ -1046,7 +1046,7 @@
 				To get the average of these results, I decided to implement Lloyd's algorithm.
 				Because we don't determine the exact start and end of the detected lines, we can't use an approach like Ebrahimpour et al. \cite{ebrahimpour2012vanishing} did.
 				Therefore, I decided to cluster the lines based on their angle.
-				I figured that the lines from the left lane marking will always have $\theta < 90$ and those from the right marking will have $\theta > 90$.
+				I figured that the lines from the same lane marking will always have a similar enough angle.
 				Lloyd's algorithm is suited for multidimensional datasets, but I decided to try it in a one-dimensional way and see if it works.
 
 			\end{subparagraaf}

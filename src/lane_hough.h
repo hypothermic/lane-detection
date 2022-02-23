@@ -54,12 +54,13 @@ struct resolved_line {
  * @param acc		A visual representation of the accumulator
  * @param ov		An overlayed image with detected lines
  * @param rlines	Output for the resolved lines array
+ * @param rnormals	Output for the normals array
  * @param min		Minimum value of theta to compute rho for
  * @param max		Maximum value of theta to compute rho for
  * @param thres		Threshold for accumulator values
  * @return		Zero or higher, indicating the amount of
  * 			lines that were detected
  */
-size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_image_t **ov, lane_hough_resolved_line_t **rlines, uint8_t min, uint8_t max, uint16_t thres);
+size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_image_t **ov, lane_hough_resolved_line_t **rlines, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres);
 
 #endif /* LANE_HOUGH_H */

@@ -31,7 +31,7 @@ static inline void plot_graph(lane_image_t *image, const lane_hough_space_t *con
 /**
  * @inheritDoc
  */
-size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_image_t **ov, lane_hough_resolved_line_t **rlines, uint8_t min, uint8_t max, uint16_t thres) {
+size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_image_t **ov, lane_hough_resolved_line_t **rlines, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres) {
 	lane_image_t *graph, *overlay;
 	lane_hough_space_t space;
 	lane_hough_normal_t *lines;
@@ -67,12 +67,12 @@ size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_
 
 	plot_graph(graph, &space);
 
-	free(lines);
 	free(space.acc);
 
 	(*acc) = graph;
 	(*ov) = overlay;
 	(*rlines) = resolved;
+	(*rnormals) = lines;
 
 	return lines_amount;
 }

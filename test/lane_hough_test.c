@@ -7,6 +7,7 @@
 #include "lane_image.h"
 #include "lane_image_ppm.h"
 #include "lane_log.h"
+#include "lane_kmeans.h"
 #include "lane_sobel.h"
 #include "lane_threshold.h"
 
@@ -39,7 +40,9 @@ int main(int argc, char **argv) {
 		     *acc = NULL,
 		     *overlay = NULL;
 	lane_hough_resolved_line_t *lines = NULL;
-	size_t lines_amount;
+	lane_hough_normal_t *normals = NULL;
+	lane_kmeans_mapped_value_t *clustered = NULL;
+	size_t lines_amount, i;
 
 	if (argc < 3) {
 		LANE_LOG_ERROR("Argument 1 must be the filename of the PPM image and argument 2 must be a destination");
@@ -72,7 +75,12 @@ int main(int argc, char **argv) {
 	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 	lane_sobel_apply(blurred, &sobel);
 	lane_threshold_apply(sobel, ARTIFACT_THRESHOLD, 255, 0);
-	lines_amount = lane_hough_apply(sobel, &acc, &overlay, &lines, 0, 180, HOUGH_THRESHOLD);
+	lines_amount = lane_hough_apply(sobel, &acc, &overlay, &lines, &normals, 0, 180, HOUGH_THRESHOLD);
+	lane_kmeans_apply(normals, lines_amount, &clustered, 100, 2);
+
+	for (i = 0; i < lines_amount; ++i) {
+		LANE_LOG_INFO("Line th=%d c=%d", clustered[i].line->theta, clustered[i].cluster);
+	}
 
 	LANE_LOG_INFO("%lu lines were resolved", lines_amount);
 
@@ -100,6 +108,8 @@ int main(int argc, char **argv) {
 	lane_image_free(acc);
 	lane_image_free(overlay);
 	free(lines);
+	free(normals);
+	free(clustered);
 
 	return 0;
 }
