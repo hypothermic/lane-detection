@@ -22,59 +22,118 @@ static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_spac
 
 static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t rho, uint16_t th);
 
-static inline lane_hough_resolved_line_t resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line);
-
-static inline void plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line);
-
-static inline void plot_graph(lane_image_t *image, const lane_hough_space_t *const space);
-
 /**
  * @inheritDoc
  */
-size_t lane_hough_apply(const lane_image_t *const src, lane_image_t **acc, lane_image_t **ov, lane_hough_resolved_line_t **rlines, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres) {
-	lane_image_t *graph, *overlay;
-	lane_hough_space_t space;
+size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **rspace, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres) {
+	lane_hough_space_t *space;
 	lane_hough_normal_t *lines;
-	lane_hough_resolved_line_t *resolved;
 	double height, rads;
-	size_t lines_amount, i;//, x, y;
+	size_t lines_amount;//, x, y;
 	
 	rads = max - min;
 	height = (sqrt(HEIGHT_FACTOR) * (double)(src->height>src->width?src->height:src->width)) / HEIGHT_FACTOR;
 	
-	space.width = rads;
-	space.height = height * HEIGHT_FACTOR;
-	space.size = space.width * space.height;
-	space.acc = calloc(space.size, sizeof(uint32_t));
-
-	graph = lane_image_new(space.width, space.height);
-	overlay = lane_image_copy(src);
+	space = malloc(sizeof(lane_hough_space_t));
+	space->width = rads;
+	space->height = height * HEIGHT_FACTOR;
+	space->size = space->width * space->height;
+	space->acc = calloc(space->size, sizeof(uint32_t));
 	
-	if (!space.acc) {
+	if (!space->acc) {
 		LANE_LOG_ERROR("Allocating of accumulator failed; aborting");
 
 		return 0;
 	}
 
-	quantize(src, &space, height, min, max);
-	lines_amount = classify(&lines, &space, thres);
+	quantize(src, space, height, min, max);
+	lines_amount = classify(&lines, space, thres);
 
-	resolved = calloc(lines_amount, sizeof(lane_hough_resolved_line_t));
-	for (i = 0; i < lines_amount; ++i) {
-		resolved[i] = resolve_line(overlay, &space, lines[i]);
-		plot_line(overlay, &(resolved[i]));
-	}
+//	resolved = calloc(lines_amount, sizeof(lane_hough_resolved_line_t));
+//	for (i = 0; i < lines_amount; ++i) {
+//		resolved[i] = resolve_line(overlay, &space, lines[i]);
+//		plot_line(overlay, &(resolved[i]));
+//	}
+//
+//	plot_graph(graph, &space);
+//
+//	free(space.acc);
 
-	plot_graph(graph, &space);
-
-	free(space.acc);
-
-	(*acc) = graph;
-	(*ov) = overlay;
-	(*rlines) = resolved;
+	(*rspace) = space;
 	(*rnormals) = lines;
 
 	return lines_amount;
+}
+
+/**
+ * @inheritDoc
+ */
+lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line) {
+	lane_hough_resolved_line_t result;
+	uint16_t x1, y1, x2, y2;
+
+	// Check from which corner we need to base the line
+	if (IS_LINE_HORIZONTAL(line)) {
+		x1 = 0;
+		y1 = POLARIZE(x1, image->width, image->height, line, space, cos, sin);
+		x2 = image->width;
+		y2 = POLARIZE(x2, image->width, image->height, line, space, cos, sin);
+	} else {
+		y1 = 0;
+		x1 = POLARIZE(y1, image->height, image->width, line, space, sin, cos);
+		y2 = image->height;
+		x2 = POLARIZE(y2, image->height, image->width, line, space, sin, cos);
+	}
+
+	result.x1 = x1;
+	result.y1 = y1;
+	result.x2 = x2;
+	result.y2 = y2;
+
+	LANE_LOG_INFO("Resolved line with rho=%04d, th=%03d, estimating from (%04d, %04d) to (%04d, %04d)", line.rho, line.theta, x1, y1, x2, y2);
+
+	return result;
+}
+
+/**
+ * @inheritDoc
+ */
+void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line) {
+	lane_image_draw_line(image, (lane_pixel_t) {255, 0, 0}, line->x1, line->y1, line->x2, line->y2);
+}
+
+/**
+ * @inheritDoc
+ */
+void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const space) {
+	lane_pixel_t pixel;
+	int x, y, val;
+
+	// Most values from HT are within 0-300 so it's not worth
+	// to correct them on a scale
+	// Peaks will be fully white on grayscale anyway
+
+	// Copy pixel-by-pixel and cutoff the value to fit it
+	// within the 8-bit color channel of the output
+	for (y = 0; y < space->height; ++y) {
+		for (x = 0; x < space->width; ++x) {
+			val = (int) space->acc[(y * space->width) + x];
+
+			if (val < 0) { // uint8_t min
+				val = 0;
+			}
+
+			if (val > 255) { // uint8_t max
+				val = 255;
+			}
+
+			pixel.r = val;
+			pixel.g = val;
+			pixel.b = val;
+
+			image->data[(y * space->width) + x] = pixel;
+		}
+	}
 }
 
 static inline void quantize(const lane_image_t *const image, lane_hough_space_t *space, double h, uint8_t min, uint8_t max) {
@@ -169,67 +228,5 @@ static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_spac
 	(*lines) = results;
 
 	return amount;
-}
-
-static inline lane_hough_resolved_line_t resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line) {
-	lane_hough_resolved_line_t result;
-	uint16_t x1, y1, x2, y2;
-
-	// Check from which corner we need to base the line
-	if (IS_LINE_HORIZONTAL(line)) {
-		x1 = 0;
-		y1 = POLARIZE(x1, image->width, image->height, line, space, cos, sin);
-		x2 = image->width;
-		y2 = POLARIZE(x2, image->width, image->height, line, space, cos, sin);
-	} else {
-		y1 = 0;
-		x1 = POLARIZE(y1, image->height, image->width, line, space, sin, cos);
-		y2 = image->height;
-		x2 = POLARIZE(y2, image->height, image->width, line, space, sin, cos);
-	}
-
-	result.x1 = x1;
-	result.y1 = y1;
-	result.x2 = x2;
-	result.y2 = y2;
-
-	LANE_LOG_INFO("Resolved line with rho=%04d, th=%03d, estimating from (%04d, %04d) to (%04d, %04d)", line.rho, line.theta, x1, y1, x2, y2);
-
-	return result;
-}
-
-static inline void plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line) {
-	lane_image_draw_line(image, (lane_pixel_t) {255, 0, 0}, line->x1, line->y1, line->x2, line->y2);
-}
-
-static inline void plot_graph(lane_image_t *image, const lane_hough_space_t *const space) {
-	lane_pixel_t pixel;
-	int x, y, val;
-
-	// Most values from HT are within 0-300 so it's not worth
-	// to correct them on a scale
-	// Peaks will be fully white on grayscale anyway
-
-	// Copy pixel-by-pixel and cutoff the value to fit it
-	// within the 8-bit color channel of the output
-	for (y = 0; y < space->height; ++y) {
-		for (x = 0; x < space->width; ++x) {
-			val = (int) space->acc[(y * space->width) + x];
-
-			if (val < 0) { // uint8_t min
-				val = 0;
-			}
-
-			if (val > 255) { // uint8_t max
-				val = 255;
-			}
-
-			pixel.r = val;
-			pixel.g = val;
-			pixel.b = val;
-
-			image->data[(y * space->width) + x] = pixel;
-		}
-	}
 }
 

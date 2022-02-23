@@ -31,17 +31,26 @@
  */
 #define HOUGH_THRESHOLD		(150)
 
+/**
+ * Minimum angle of the range.
+ */
+#define HOUGH_ANGLE_MIN		(0)
+
+/**
+ * Maximum angle of the range.
+ */
+#define HOUGH_ANGLE_MAX		(180)
+
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
 	     *output_file = NULL;
 	lane_image_t *input = NULL,
 		     *blurred = NULL,
 		     *sobel = NULL,
-		     *acc = NULL,
 		     *overlay = NULL;
 	lane_hough_resolved_line_t *lines = NULL;
 	lane_hough_normal_t *normals = NULL;
-	lane_kmeans_mapped_value_t *clustered = NULL;
+	lane_hough_space_t *space = NULL;
 	size_t lines_amount, i;
 
 	if (argc < 3) {
@@ -75,17 +84,17 @@ int main(int argc, char **argv) {
 	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 	lane_sobel_apply(blurred, &sobel);
 	lane_threshold_apply(sobel, ARTIFACT_THRESHOLD, 255, 0);
-	lines_amount = lane_hough_apply(sobel, &acc, &overlay, &lines, &normals, 0, 180, HOUGH_THRESHOLD);
-	lane_kmeans_apply(normals, lines_amount, &clustered, 100, 2);
+	lines_amount = lane_hough_apply(sobel, &space, &normals, HOUGH_ANGLE_MIN, HOUGH_ANGLE_MAX, HOUGH_THRESHOLD);
 
+	// plot lines onto copy of current image to create a nice overlay
+	overlay = lane_image_copy(sobel);
+	lines = calloc(lines_amount, sizeof(lane_hough_resolved_line_t));
 	for (i = 0; i < lines_amount; ++i) {
-		LANE_LOG_INFO("Line th=%d c=%d", clustered[i].line->theta, clustered[i].cluster);
+		lines[i] = lane_hough_resolve_line(overlay, space, normals[i]);
+		lane_hough_plot_line(overlay, &(lines[i]));
 	}
 
-	LANE_LOG_INFO("%lu lines were resolved", lines_amount);
-
-	(void) acc;
-	(void) overlay;
+	LANE_LOG_INFO("%lu lines were plotted", lines_amount);
 
 	output_file = fopen(argv[2], "wb");
 
@@ -105,11 +114,11 @@ int main(int argc, char **argv) {
 	lane_image_free(input);
 	lane_image_free(blurred);
 	lane_image_free(sobel);
-	lane_image_free(acc);
 	lane_image_free(overlay);
 	free(lines);
 	free(normals);
-	free(clustered);
+	free(space->acc);
+	free(space);
 
 	return 0;
 }
