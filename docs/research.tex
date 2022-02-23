@@ -609,7 +609,8 @@
 
 			\end{enumerate}
 
-			The algorithm which scores the best overall on these metrics will be selected to be implemented in digital logic in the next phase of the project.
+			This pipeline will be selected to be implemented in digital logic in the next phase of the project.
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{Sample Data Tests}
@@ -756,8 +757,8 @@
 		\begin{paragraaf}{Application of Techniques}
 
 			Next up, I wrote a computer program which implemented the most used processing steps from \verwijzingb{paragraaf}{Listing of Candidate Algorithms}.
-			\textbf{[todo: write a story around the results; what is the final chosen processing pipeline? display in activity diagram]}
-	
+			The program takes two arguments: a path to an input image and a destination path that points to a location where the output image should be written to.
+
 			\begin{subparagraaf}{Image Handling}
 
 				To start the practical testing phase of this research, I coded the functionality to read images into memory.
@@ -1045,9 +1046,58 @@
 				As can be seen in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}, multiple lines are left over per lane marking.
 				To get the average of these results, I decided to implement Lloyd's algorithm.
 				Because we don't determine the exact start and end of the detected lines, we can't use an approach like Ebrahimpour et al. \cite{ebrahimpour2012vanishing} did.
-				Therefore, I decided to cluster the lines based on their angle.
+				Therefore, I decided to cluster the lines based on their $\rho$ and angle.
 				I figured that the lines from the same lane marking will always have a similar enough angle.
-				Lloyd's algorithm is suited for multidimensional datasets, but I decided to try it in a one-dimensional way and see if it works.
+				Lloyd's algorithm is suited for multidimensional datasets, and while normal lines in polar coordinates don't have concrete coordinates, I stil decided to try out this algorithm.
+				I set the amount of clusters to two, because I wanted to group the lines from the left lane and the right lane.
+				Then, I adapted the algorithm for my use case and implemented it according to the steps in \verwijzingb{figuur}{Lloyd's algorithm}.
+				
+				\begin{figuur}{Formula for the distance between two lines}
+					\begin{largequation}
+						d((\rho_1,\theta_1),(\rho_2,\theta_2)) = \sqrt{(\rho_2 - \rho_1)^2 + (\theta_2 - \theta_1)^2}
+					\end{largequation}\cite{danielsson1980euclidean}
+				\end{figuur}
+
+				\begin{figuur}{Lloyd's algorithm}
+					\begin{enumerate}
+
+						\item Pick the positions of $k$ lines to use as the positions of the starting medoids.
+						\item Assign the nearest medoid to every line. The distance is calculated using \verwijzingb{figuur}{Formula for the distance between two lines}.
+						\item Compute the new position of the medoid by averaging the positions of the new lines relating to that medoid.
+						\item Return to step 2 if the desired result (minimum number of iterations) is not reached.
+
+					\end{enumerate}
+
+					(adapted from \cite{sharma2020kmeans}\cite{martin2019implementing}\cite{dias2020parallel})
+				\end{figuur}
+
+				If enough test data is available, like was the case for the left lane in \verwijzingb{figuur}{Hough Transform results clustered using two-means}, the clustering works really well and the average of the lane gets found.
+				However, if not that many lines from the HT are available (from my testing, below 3 lines,) the clustering is suboptimal.
+				Therefore, we need to assure that the Hough Transform can recognize enough lines for the lane markings.
+
+				\begin{figuur}{Hough Transform results clustered using two-means}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.hough-t150.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.kmeans.out.png} \\
+
+						&& $ k = 2 $ \\
+						&& $ i = 4 $
+					\end{tabular}
+
+				\end{figuur}
+
+				Now that we have calculated the two means that correspond to the lane lines, we have to interpret this data in a useful way.
+				Because the goal of this project is to detect whether a car is properly centered in the lane, I propose that we detect this using the $\theta$-values of the two means.
+				If $\theta \approx 90$, we can conclude that the car is driving over the road lane and that it has partially exited it with two tires.
+				This angle measurement will take place in hardware.
 
 			\end{subparagraaf}
 
@@ -1072,10 +1122,30 @@
 					Because there are multiple approaches to implementing it on a FPGA, I think it will be possible for me to achieve this.
 					I chose the Hough Transform over other methods because it is perfect for detecting dashed lines, which makes it perfect for detecting lane markings.
 				\item	$k$-means clustering -- To group the results from the Hough Transform, I decided to use a clustering technique.
-					I chose to use $k$-means clustering over DBSCAN because the former only requires one parameter -- the cluster size -- which we know beforehand.
+					I chose to use $k$-means clustering over DBSCAN because the former only requires one parameter -- the amount of clusters -- which we know beforehand.
 					The parameters used in DBSCAN clustering depend on a given situation and need to be configured afterwards, making it harder to implement.
 
 			\end{enumerate}
+
+			I have tested the pipeline on the sample images that were chosen and I can say the following about the effectiveness of the pipeline:
+
+			\bigskip
+
+			The accuracy of detection highly depends on how obstructed the view is and what the weather is like.
+			If there are no big artifacts with straight lines in the view, the picture is taken in daylight and the sky is clear and unobstructed, the algorithm works nearly perfect.
+			However, in urban environments like cities, there will always be artifacts which will get picked up by the Hough transform, muddying the clustering and occluding the result.
+			Therefore, I have concluded that the accuracy of the pipeline can vary on the environment.
+
+			\bigskip
+
+			In my opinion, it will be relatively feasible to implement the pipeline in hardware, because others have done so as well.
+			Each of the stages in the pipeline have been widely used by researchers and have been implemented on FPGAs in many papers that I have analyzed.
+			On a scale of one to five, I think the difficulty of implementing it would be a four.
+			As I mentioned in \verwijzingb{subsubparagraaf}{Time and Space Complexity}, I will not be able to use the DSP slices because the FPGA development board manufacturer has no documentation on them.
+			Therefore, I think it will be a challenge to manage the resources on the FPGA.
+			In the studies that I've read, most researchers used Kintex or Virtex-series FPGAs, while I only have an Artix FPGA.
+			This difference in available resources means that I will have to make choices in the future on how exactly I will implement certain things.
+			Until I have actually tried implementing it, I can only look at the reference implementations and compare how much resources they use.
 
 		\end{paragraaf}
 
