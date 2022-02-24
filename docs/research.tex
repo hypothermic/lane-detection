@@ -361,19 +361,119 @@
 
 			\begin{subparagraaf}{Edge Detection}
 
-				\textbf{[todo:]}
+				The aim of all edge detection techniques is to enhance or mark edges and then detect them.
+				A high pass filter, which can be viewed as a first order differential, can be used to mark them \cite{hossack2006edge}.
+				The most common high pass filters are Laplacian and Sobel operators.
 
 				\begin{subsubparagraaf}{Sobel-Feldman Operator}
 
-					Sampling window
+					Most edge detection methods work on the assumption that the edge occurs where there is a discontinuity in the intensity function or a very steep intensity gradient in the image.
+					Using this assumption, if one takes the derivative of the intensity value across the image and find points where the derivative is maximum, then the edge could be located \cite{vincent2009descriptive}.
+					An example of a very steep intensity gradient in a one-dimensional image is shown in \verwijzingb{figuur}{Example of an edge gradient in a one-dimensional image}(a), where the bottom part of the figure is the image and the upper part is a graph of the intensity.
+					The slope of the gradient as seen in \verwijzingb{figuur}{Example of an edge gradient in a one-dimensional image}(b) is calculated using the Sobel-Feldman operator.
+					On an edge, the output of the operator forms a peak, which can be detected by using a predefined threshold.
+
+					\begin{figuur}{Example of an edge gradient in a one-dimensional image}
+
+						(a)\includegraphics[width=0.3\textwidth]{sinha2017sobel-img1.jpg}
+						(b)\includegraphics[width=0.3\textwidth]{sinha2017sobel-img2.jpg}
+						\cite{sinha2017sobel}
+
+					\end{figuur}
+
+					\bigskip
+
+					Named after its developers, Irwin Sobel and Gary Feldman, this gradient operator can estimate the edge intensity of a point in an image by the vector summation of the 4 possible simple central gradient estimates obtainable in a $3 \times 3$ neighborhood \cite{sobel1990isotropic}.
+					The predefined weights for neighbor pixels can be expressed in two matrices, one for the $x$ and one for the $y$ component, as can be seen in \verwijzingb{figuur}{Sobel kernel matrices}.
+
+					\begin{figuur}{Sobel kernel matrices}
+
+						\vspace{-2ex}
+
+						\begin{largequation}
+							K_x = 
+							\begin{bmatrix}
+								-1 &  0 &  1 \\
+								-2 &  0 &  2 \\
+								-1 &  0 &  1
+							\end{bmatrix},
+							\hspace{1ex}
+							K_y =
+							\begin{bmatrix}
+								-1 &  0 &  1 \\
+								-2 &  0 &  2 \\
+								-1 &  0 &  1
+							\end{bmatrix} 
+						\end{largequation}
+
+						\cite{sobel1990isotropic}
+
+					\end{figuur}
+
+					We can use these kernels to calculate the horizontal and vertical gradient approximations.
+					Finally, we are able to calculate the edge intensity for the corresponding pixel by combining the approximation with $G = \sqrt{G_x^2 + G_y^2}$.
+					For convoluting the kernels with the whole image we are able to use a method similar to the one used with the Gaussian kernel as seen in \verwijzingb{figuur}{Formula for two-dimensional image convolution}.
+					Like with any kernel-based image convolution, the edge pixels can't be used because they lack neighbor pixels to be weighted.
+					A pixel cutoff occurs, which means that the dimensions of the output image are smaller than those of the input image.
 
 					\textbf{[todo:]}
 
 				\end{subsubparagraaf}
 
+				\begin{subsubparagraaf}{Laplacian Edge Detection}
+
+					A downside of using a first-order derivative edge detection method such as the Sobel operator is that a thresholding technique must be used to detect peaks.
+					This is a problem because the threshold must be adjusted per use case.
+					Second-order derivative edge detection methods solve this by detecting relative changes.
+					Points which lie on an edge can be marked by detecting the zero-crossing of the second derivative function such as the Laplacian \cite{humaidi2018fpga}.
+					An example of this is visualized in \verwijzingb{figuur}{Example of the application of a second-order derivative edge detection operator}, where the output of the operator can be seen crossing the zero line of the graph at the point of the edge in the image below.
+
+					\begin{figuur}{Example of the application of a second-order derivative edge detection operator}
+
+						\includegraphics[width=0.3\textwidth]{sinha2017sobel-img3.jpg}
+						\cite{sinha2017sobel}
+
+					\end{figuur}
+
+					\bigskip
+
+					In an output of the Sobel filter, the intensity peaks are often not clearly defined as lines, but as 'blobs.'
+					When using Laplacian, the output of the zero-crossing detectors only holds true at a single pixel of the line, meaning that the output is a single pixel thick line \cite{alazzawi2015edge}.
+					This helps to cut down on the amount of edge pixels, and thus to reduce the amount of calculations needed to perform the Hough Transform.
+
+					\bigskip
+
+					\begin{figuur}{Formula for the Laplacian on an image}
+						\begin{equation*}
+							L(x,y) = \frac{\delta^2 I}{\delta x^2} + \frac{\delta^2 I}{\delta y^2}.
+						\end{equation*}
+
+						\cite{fisher2003hypermedia}
+					\end{figuur}
+
+					Applying Laplacian on a single channel image $I(x,y)$ as seen in \verwijzing{figuur}{Formula for the Laplacian on an image} results in $L(x,y)$.
+					In reality, just like with Gaussian and Sobel operators, image convolution is often used to apply the operator to an image.
+					An approximate convolution kernel for applying discrete Laplacian are shown in \verwijzing{figuur}{Approximate convolution kernel for applying the Laplacian operator}.
+
+					\begin{figuur}{Approximate convolution kernel for applying the Laplacian operator}
+						\begin{equation*}
+							\begin{bmatrix}
+								0 & -1 & 0 \\
+								-1 & 4 & -1 \\
+								0 & -1 & 0
+							\end{bmatrix}
+						\end{equation*}
+
+						\cite{tai2008fast}
+					\end{figuur}
+
+					Because the Laplacian can be applied to an image by using only kernel, it is faster to apply than the Sobel operator, but it is more sensitive to noise \cite{sinha2017sobel}.
+				\end{subsubparagraaf}
+
 				\begin{subsubparagraaf}{Canny Edge Detector}
 
-					This edge detection technique is not an operator in itself; it suggests a routine around an existing edge detection operator such as the Sobel-Feldman operator.
+					This edge detection technique is not an operator in itself; it suggests a routine around an existing edge detection operator such as the Sobel-Feldman operator \cite{canny1986computational}.
+
 					\textbf{[todo:]}
 
 				\end{subsubparagraaf}
@@ -491,9 +591,12 @@
 
 			\begin{subparagraaf}{Radon Transform}
 
+				Whereas the Hough Transform is an inherently discrete algorithm that is prone to artifacts, the Radon Transform.
+
 				\textbf{[todo:]}
 
 			\end{subparagraaf}
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{Line Classification Techniques}
