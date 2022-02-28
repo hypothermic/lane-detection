@@ -9,21 +9,10 @@
 #include "lane_laplace.h"
 #include "lane_threshold.h"
 
-/**
- * @see test/lane_gaussian_test.c#GAUSSIAN_SIZE
- */
-#define GAUSSIAN_SIZE		(5)
-
-/**
- * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
- */
-#define GAUSSIAN_VARIANCE	(2.1)
-
 int main(int argc, char **argv) {
 	FILE *input_file = NULL,
 	     *output_file = NULL;
 	lane_image_t *input = NULL,
-		     *blurred = NULL,
 		     *output = NULL;
 
 	if (argc < 3) {
@@ -47,13 +36,7 @@ int main(int argc, char **argv) {
 		fclose(input_file);
 	}
 
-	// 1. convert to grayscale
-	// 2. apply gaussian blur
-	// 3. apply laplacian filter
-
-	lane_grayscale_apply(input);
-	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
-	lane_laplace_apply(blurred, &output);
+	lane_laplace_apply(input, &output);
 
 	output_file = fopen(argv[2], "wb");
 
@@ -71,7 +54,6 @@ int main(int argc, char **argv) {
 	}
 
 	lane_image_free(input);
-	lane_image_free(blurred);
 	lane_image_free(output);
 
 	return 0;

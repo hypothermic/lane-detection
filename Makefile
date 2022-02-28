@@ -155,7 +155,7 @@ test-lane-verify: test-lane-exec
 	test/lane_image_ppm_test.sh
 
 # Manual test, needs env vars ARG_SAMPLE and ARG_TEST
-test-lane-man: compile-lane
+test-lane-man:
 	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
 ifdef VALGRIND
 	$(VALGRIND_EXEC) $(VALGRIND_OPTS) --log-file="build/$(ARG_TEST).valgrind.log" build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"

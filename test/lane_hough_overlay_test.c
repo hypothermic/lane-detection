@@ -12,21 +12,6 @@
 #include "lane_threshold.h"
 
 /**
- * @see test/lane_gaussian_test.c#GAUSSIAN_SIZE
- */
-#define GAUSSIAN_SIZE		(5)
-
-/**
- * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
- */
-#define GAUSSIAN_VARIANCE	(2)
-
-/**
- * @see test/lane_sobel_test.c#ARTIFACT_THRESHOLD
- */
-#define ARTIFACT_THRESHOLD	(210)
-
-/**
  * Accumulator value threshold for HT
  */
 #define HOUGH_THRESHOLD		(150)
@@ -45,8 +30,6 @@ int main(int argc, char **argv) {
 	FILE *input_file = NULL,
 	     *output_file = NULL;
 	lane_image_t *input = NULL,
-		     *blurred = NULL,
-		     *sobel = NULL,
 		     *overlay = NULL;
 	lane_hough_resolved_line_t *lines = NULL;
 	lane_hough_normal_t *normals = NULL;
@@ -73,21 +56,11 @@ int main(int argc, char **argv) {
 	if (input_file) {
 		fclose(input_file);
 	}
-
-	// 1. convert to grayscale
-	// 2. apply gaussian blur
-	// 3. apply sobel filter
-	// 4. only keep pixels which are fully white
-	// 5. apply hough transform
-
-	lane_grayscale_apply(input);
-	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
-	lane_sobel_apply(blurred, &sobel);
-	lane_threshold_apply(sobel, ARTIFACT_THRESHOLD, 255, 0);
-	lines_amount = lane_hough_apply(sobel, &space, &normals, HOUGH_ANGLE_MIN, HOUGH_ANGLE_MAX, HOUGH_THRESHOLD);
+	
+	lines_amount = lane_hough_apply(input, &space, &normals, HOUGH_ANGLE_MIN, HOUGH_ANGLE_MAX, HOUGH_THRESHOLD);
 
 	// plot lines onto copy of current image to create a nice overlay
-	overlay = lane_image_copy(sobel);
+	overlay = lane_image_copy(input);
 	lines = calloc(lines_amount, sizeof(lane_hough_resolved_line_t));
 	for (i = 0; i < lines_amount; ++i) {
 		lines[i] = lane_hough_resolve_line(overlay, space, normals[i]);
@@ -112,8 +85,6 @@ int main(int argc, char **argv) {
 	}
 
 	lane_image_free(input);
-	lane_image_free(blurred);
-	lane_image_free(sobel);
 	lane_image_free(overlay);
 	free(lines);
 	free(normals);

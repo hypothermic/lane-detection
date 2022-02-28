@@ -47,7 +47,6 @@ int main(int argc, char **argv) {
 		fclose(input_file);
 	}
 	
-	lane_grayscale_apply(image);
 	lane_gaussian_apply(image, &out, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
 
 	output_file = fopen(argv[2], "wb");

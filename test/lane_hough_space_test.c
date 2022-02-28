@@ -12,21 +12,6 @@
 #include "lane_threshold.h"
 
 /**
- * @see test/lane_gaussian_test.c#GAUSSIAN_SIZE
- */
-#define GAUSSIAN_SIZE		(5)
-
-/**
- * @see test/lane_gaussian_test.c#GAUSSIAN_VARIANCE
- */
-#define GAUSSIAN_VARIANCE	(2)
-
-/**
- * @see test/lane_sobel_test.c#ARTIFACT_THRESHOLD
- */
-#define ARTIFACT_THRESHOLD	(210)
-
-/**
  * Accumulator value threshold for HT
  */
 #define HOUGH_THRESHOLD		(150)
@@ -45,8 +30,6 @@ int main(int argc, char **argv) {
 	FILE *input_file = NULL,
 	     *output_file = NULL;
 	lane_image_t *input = NULL,
-		     *blurred = NULL,
-		     *sobel = NULL,
 		     *visualization = NULL;
 	lane_hough_normal_t *normals = NULL;
 	lane_hough_space_t *space = NULL;
@@ -72,17 +55,7 @@ int main(int argc, char **argv) {
 		fclose(input_file);
 	}
 
-	// 1. convert to grayscale
-	// 2. apply gaussian blur
-	// 3. apply sobel filter
-	// 4. only keep pixels which are fully white
-	// 5. apply hough transform
-
-	lane_grayscale_apply(input);
-	lane_gaussian_apply(input, &blurred, GAUSSIAN_SIZE, GAUSSIAN_VARIANCE);
-	lane_sobel_apply(blurred, &sobel);
-	lane_threshold_apply(sobel, ARTIFACT_THRESHOLD, 255, 0);
-	(void) lane_hough_apply(sobel, &space, &normals, HOUGH_ANGLE_MIN, HOUGH_ANGLE_MAX, HOUGH_THRESHOLD);
+	(void) lane_hough_apply(input, &space, &normals, HOUGH_ANGLE_MIN, HOUGH_ANGLE_MAX, HOUGH_THRESHOLD);
 
 	// output the accumulator to the image
 	visualization = lane_image_new(space->width, space->height);
@@ -104,8 +77,6 @@ int main(int argc, char **argv) {
 	}
 
 	lane_image_free(input);
-	lane_image_free(blurred);
-	lane_image_free(sobel);
 	lane_image_free(visualization);
 	free(normals);
 	free(space->acc);
