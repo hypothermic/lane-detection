@@ -20,7 +20,7 @@ LANE_TESTS	?= ./test/lane_image_ppm_test.c
 LANE_OUT	?= ./build/lane
 
 ifdef DEBUG
-LANE_OPTS	?= -Wall -Werror -Wno-error=unknown-pragmas -DLANE_LOG_ENABLE
+LANE_OPTS	?= -g3 -Wall -Werror -Wno-error=unknown-pragmas -DLANE_LOG_ENABLE
 else
 LANE_OPTS	?= -Wno-error=unknown-pragmas
 endif
@@ -157,7 +157,11 @@ test-lane-verify: test-lane-exec
 # Manual test, needs env vars ARG_SAMPLE and ARG_TEST
 test-lane-man: compile-lane
 	$(GCC_EXEC) $(LANE_OPTS) "test/lane_$(ARG_TEST)_test.c" $(filter-out ./src/lane_main.c, $(LANE_SRCS)) -I ./src/ -o build/man_test $(LANE_DEPS)
+ifdef VALGRIND
 	$(VALGRIND_EXEC) $(VALGRIND_OPTS) --log-file="build/$(ARG_TEST).valgrind.log" build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
+else
+	build/man_test "data/$(ARG_SAMPLE).ppm" "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
+endif
 	$(XDG_OPEN_EXEC) "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 
 test-lane: test-lane-verify
