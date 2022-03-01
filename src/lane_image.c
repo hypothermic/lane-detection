@@ -1,3 +1,13 @@
+/**
+ * @file lane_image.c
+ * @author Matthijs Bakker
+ * @brief Generic image utilities
+ *
+ * This code unit provides various utilities for working
+ * with images, including the creation of images and the
+ * modification of them.
+ */
+
 #include "lane_image.h"
 
 #include <math.h>
@@ -5,12 +15,14 @@
 
 #include "lane_log.h"
 
-/**
+/*
  * @inheritDoc
  */
 lane_image_t *lane_image_new(uint16_t width, uint16_t height) {
 	lane_image_t *result = malloc(sizeof(lane_image_t));
 
+	// The data memory is not cleared upon allocation because
+	// we want to fill it immediately afterwards in most cases
 	result->width = width;
 	result->height = height;
 	result->data = malloc(width * (height+1) * sizeof(lane_pixel_t));
@@ -18,7 +30,7 @@ lane_image_t *lane_image_new(uint16_t width, uint16_t height) {
 	return result;
 }
 
-/**
+/*
  * @inheritDoc
  */
 lane_image_t *lane_image_copy(const lane_image_t *const image) {
@@ -29,12 +41,14 @@ lane_image_t *lane_image_copy(const lane_image_t *const image) {
 	return result;
 }
 
-/**
+/*
  * @inheritDoc
  */
 void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color) {
 	int x, y;
 
+	// Imagine using memcpy....
+	// we're doing it the manly way!
 	for (y = 0; y < image->height; ++y) {
 		for (x = 0; x < image->width; ++x) {
 			image->data[(y * image->width) + x] = color;
@@ -42,7 +56,7 @@ void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color) {
 	}
 }
 
-/**
+/*
  * @inheritDoc
  */
 void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
@@ -90,7 +104,7 @@ void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, 
 	}
 }
 
-/**
+/*
  * @inheritDoc
  */
 void lane_image_free(lane_image_t *image) {

@@ -1,3 +1,13 @@
+/**
+ * @file lane_kmeans.c
+ * @author Matthijs Bakker
+ * @brief Various <i>k</i>-means operations for images
+ *
+ * This code unit provides various <i>k</i>-means operations,
+ * including the segmentation of image pixels by <i>k</i>-means
+ * and the grouping of Hough Transform results by <i>k</i>-means.
+ */
+
 #include "lane_kmeans.h"
 
 #include <math.h>
@@ -5,6 +15,9 @@
 
 #include "lane_log.h"
 
+/*
+ * @inheritDoc
+ */
 void lane_kmeans_segment(lane_image_t *image, uint8_t iterations, uint8_t clusters) {
 	lane_kmeans_mapped_pixel_t *pixels;
 	const int size = image->width * image->height;
@@ -71,6 +84,9 @@ void lane_kmeans_segment(lane_image_t *image, uint8_t iterations, uint8_t cluste
 	free(pixels);
 }
 
+/*
+ * @inheritDoc
+ */
 void lane_kmeans_apply(const lane_hough_normal_t *const lines, uint16_t lines_amount, lane_kmeans_medoid_t **result, uint8_t iterations, uint8_t clusters) {
 	lane_kmeans_mapped_value_t *points;
 	lane_kmeans_medoid_t *medoids;
@@ -129,6 +145,9 @@ void lane_kmeans_apply(const lane_hough_normal_t *const lines, uint16_t lines_am
 	(*result) = medoids;
 }
 
+/*
+ * @inheritDoc
+ */
 void lane_kmeans_medoid_plot(lane_image_t *image, const lane_hough_space_t *const space, const lane_kmeans_medoid_t medoid) {
 	// we can just use the trigonometry functions from the Hough code
 	lane_hough_resolved_line_t line;

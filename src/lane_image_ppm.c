@@ -1,3 +1,14 @@
+/**
+ * @file lane_image_ppm.c
+ * @author Matthijs Bakker
+ * @brief Load/save images in PPM format
+ *
+ * This code unit provides the loading and saving of
+ * images in the Portable Pixmap format.<br />
+ * <br />
+ * It only supports the P6 (binary colored images) standard.
+ */
+
 #include "lane_image_ppm.h"
 
 #include <inttypes.h>
@@ -5,12 +16,16 @@
 #include "lane_log.h"
 
 /**
+ * @internal
+ *
  * The total length of the magic string,
  * which should be "P6\n"
  */
 #define LINE_BUFFER_SIZE	1024
 
 /**
+ * @internal
+ *
  * Macro for reading a line into a buffer.
  */
 #define READ_LINE		\
@@ -19,14 +34,16 @@
 	}
 
 /**
- * Prevent loading big images into memory by setting a limit
+ * @internal
  *
+ * Prevent loading big images into memory by setting a limit.<br />
+ * <br />
  * Without setting a limit, because of the data types, the
  * maximum would be around 65535²; approx 4 GB
  */
 #define MAX_IMAGE_DIMENSIONS	4096
 
-/**
+/*
  * @inheritDoc
  */
 int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
@@ -103,9 +120,10 @@ int lane_image_ppm_from_file(FILE *file, lane_image_t **image) {
 	return 0;
 }
 
-/**
+/*
  * @inheritDoc
  */
+// TODO we probably should use a bigger write buffer for better performance
 int lane_image_ppm_to_file(FILE *file, lane_image_t *image) {
 	size_t acc = 0;
 	uint8_t write_buffer[3];

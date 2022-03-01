@@ -1,3 +1,13 @@
+/**
+ * @file lane_image.h
+ * @author Matthijs Bakker
+ * @brief Generic image utilities
+ *
+ * This code unit provides various utilities for working
+ * with images, including the creation of images and the
+ * modification of them.
+ */
+
 #ifndef LANE_IMAGE_H
 #define LANE_IMAGE_H
 
@@ -6,21 +16,23 @@
 #include <stdlib.h>
 
 /**
- * The value of a color channel at a specific location.
+ * The value of a color channel at a specific location
  */
 typedef uint8_t		lane_color_t;
 
 /**
- * @inheritDoc
+ * @copydoc pixel
  */
 typedef struct pixel	lane_pixel_t;
 
 /**
- * @inheritDoc
+ * @copydoc image
  */
 typedef struct image	lane_image_t;
 
 /**
+ * @brief A pixel within an image
+ *
  * A dot on the screen with a mixture of red, green, and blue colors.<br />
  * <br />
  * For grayscale images, r=g=b. But we still use all those channels.
@@ -30,6 +42,8 @@ struct pixel {
 };
 
 /**
+ * @brief An image in memory
+ *
  * A representation of an image.<br />
  * <br />
  * The data is horizontally stored in a 2d array.
@@ -52,11 +66,13 @@ lane_image_t *lane_image_new(uint16_t width, uint16_t height);
  * Allocates a new image, copying the data from another.
  *
  * @param image		Image to be copied
- * @return		A newly allocated image
+ * @return		A pointer to the newly allocated image
  */
 lane_image_t *lane_image_copy(const lane_image_t *const image);
 
 /**
+ * @brief Fill an image with a color
+ *
  * Fill an image with a solid color.<br />
  * <br />
  * This is useful for testing if an image has been cropped correctly.

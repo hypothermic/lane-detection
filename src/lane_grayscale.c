@@ -1,14 +1,34 @@
+/**
+ * @file lane_grayscale.c
+ * @author Matthijs Bakker
+ * @brief RGB to grayscale filter for images
+ *
+ * This code unit provides a filter for converting images
+ * from the RGB colorspace to grayscale using the BT.601-7 weights.
+ */
+
 #include "lane_grayscale.h"
 
 // MATLAB rgb2gray uses the weights from Rec.ITU-R BT.601-7:
 // 0.2989 * R + 0.5870 * G + 0.1140 * B
 // source: [https://nl.mathworks.com/help/matlab/ref/rgb2gray.html]
 
+/**
+ * @internal
+ */
 #define CHANNEL_R_WEIGHT	0.2989
-#define CHANNEL_G_WEIGHT	0.5870
-#define CHANNEL_B_WEIGHT	0.1140
 
 /**
+ * @internal
+ */
+#define CHANNEL_G_WEIGHT	0.5870
+
+/**
+ * @internal
+ */
+#define CHANNEL_B_WEIGHT	0.1140
+
+/*
  * @inheritDoc
  */
 void lane_grayscale_apply(lane_image_t *image) {

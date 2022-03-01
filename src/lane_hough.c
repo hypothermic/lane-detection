@@ -1,28 +1,114 @@
+/**
+ * @file lane_hough.c
+ * @author Matthijs Bakker
+ * @brief Utilities for working with the Hough Transform
+ *
+ * This code unit provides various utilities for working
+ * with the Hough Transform, including a function to generate
+ * the Hough Space for an image, and tools for extracting/
+ * plotting lines resulting from this space.
+ */
+
 #include "lane_hough.h"
 
 #include <math.h>
 
 #include "lane_log.h"
 
+/**
+ * @internal
+ *
+ * Converts degrees to radians.
+ */
 #define RADIANS(degrees)					(degrees * M_PI / 180L)
-#define NORMALIZE(x, y, cx, cy, th, h)				(round((((double) x - cx) * cos(RADIANS(th)) + (((double) y - cy) * sin(RADIANS(th)))) + h))
-#define POLARIZE(coord, relx, rely, line, space, o1, o2)	((double) (line.rho - ((int) space->height / 2)) - ((coord - (relx / 2)) * o1(RADIANS(line.theta)))) / o2(RADIANS(line.theta)) + (rely / 2)
-#define IS_LINE_HORIZONTAL(line)				(line.theta >= 45 && line.theta <= 135)
-
-#define WHITE_THRESHOLD						(128)
-#define IS_WHITE(pixel)						(pixel.r > WHITE_THRESHOLD)
-
-#define HEIGHT_FACTOR						(2L)
-#define KERNEL_SIZE						(4)
-#define INITIAL_ARRAY_SIZE					(50)
-
-static inline void quantize(const lane_image_t *const image, lane_hough_space_t *space, double h, uint8_t min, uint8_t max);
-
-static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_space_t *const space, uint16_t thres);
-
-static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t rho, uint16_t th);
 
 /**
+ * @internal
+ *
+ * Normalizes a normal line (rho, theta) to a Cartesian line
+ */
+#define NORMALIZE(x, y, cx, cy, th, h)				(round((((double) x - cx) * cos(RADIANS(th)) + (((double) y - cy) * sin(RADIANS(th)))) + h))
+
+/**
+ * @internal
+ *
+ * Converts a Cartesian line to a polar line
+ */
+#define POLARIZE(coord, relx, rely, line, space, o1, o2)	((double) (line.rho - ((int) space->height / 2)) - ((coord - (relx / 2)) * o1(RADIANS(line.theta)))) / o2(RADIANS(line.theta)) + (rely / 2)
+
+/**
+ * @internal
+ *
+ * Checks if a line is horizontal (between 45 and 135 degrees)
+ */
+#define IS_LINE_HORIZONTAL(line)				(line.theta >= 45 && line.theta <= 135)
+
+/**
+ * @internal
+ */
+#define WHITE_THRESHOLD						(128)
+
+/**
+ * @internal
+ */
+#define IS_WHITE(pixel)						(pixel.r > WHITE_THRESHOLD)
+
+/**
+ * @internal
+ */
+#define HEIGHT_FACTOR						(2L)
+
+/**
+ * @internal
+ */
+#define KERNEL_SIZE						(4)
+
+/**
+ * @internal
+ */
+#define INITIAL_ARRAY_SIZE					(50)
+
+/**
+ * @internal
+ *
+ * Fills an accumulator from the image using the Hough voting technique.
+ *
+ * @param image		The target image, which will not be modified
+ * @param space		The accumulator where votes will be written to
+ * @param h		The height of the accumulator
+ * @param min		The minimum value of theta to compute rho for
+ * @param max		The maximum value of theta to compute rho for
+ */
+static inline void quantize(const lane_image_t *const image, lane_hough_space_t *space, double h, uint8_t min, uint8_t max);
+
+/**
+ * @internal
+ *
+ * Extracts lines from the Hough Space/accumulator
+ *
+ * @param lines		Where the resulting lines will be stored
+ * @param space		The accumulator to extract from
+ * @param thres		The threshold to apply when extracting lines
+ *
+ * @return		The amount of lines that were classified
+ */
+static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_space_t *const space, uint16_t thres);
+
+/**
+ * @internal
+ *
+ * Checks if the magnitude of a cell in the accumulator is higher than
+ * that of the neighboring cells. (i.e. detects a peak in the accumulator)
+ *
+ * @param space		The accumulator where the cells are stored
+ * @param rho		The rho value of the cell
+ * @param th		The theta value of the cell
+ * 
+ * @return		The magnitude of the target cell
+ */
+static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t rho, uint16_t th);
+
+/*
  * @inheritDoc
  */
 size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **rspace, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres) {
@@ -49,23 +135,13 @@ size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **rspa
 	quantize(src, space, height, min, max);
 	lines_amount = classify(&lines, space, thres);
 
-//	resolved = calloc(lines_amount, sizeof(lane_hough_resolved_line_t));
-//	for (i = 0; i < lines_amount; ++i) {
-//		resolved[i] = resolve_line(overlay, &space, lines[i]);
-//		plot_line(overlay, &(resolved[i]));
-//	}
-//
-//	plot_graph(graph, &space);
-//
-//	free(space.acc);
-
 	(*rspace) = space;
 	(*rnormals) = lines;
 
 	return lines_amount;
 }
 
-/**
+/*
  * @inheritDoc
  */
 lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line) {
@@ -95,14 +171,14 @@ lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const la
 	return result;
 }
 
-/**
+/*
  * @inheritDoc
  */
 void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line) {
 	lane_image_draw_line(image, (lane_pixel_t) {255, 0, 0}, line->x1, line->y1, line->x2, line->y2);
 }
 
-/**
+/*
  * @inheritDoc
  */
 void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const space) {
@@ -136,6 +212,9 @@ void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const 
 	}
 }
 
+/*
+ * @inheritDoc
+ */
 static inline void quantize(const lane_image_t *const image, lane_hough_space_t *space, double h, uint8_t min, uint8_t max) {
 	uint16_t x, y, th;
 	double cx, cy;
@@ -156,6 +235,9 @@ static inline void quantize(const lane_image_t *const image, lane_hough_space_t 
 	}
 }
 
+/*
+ * @inheritDoc
+ */
 static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t rho, uint16_t th) {
 	uint32_t magnitude;
 	uint16_t x, y;
@@ -178,11 +260,13 @@ static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t
 found:	return magnitude;
 }
 
+/*
+ * @inheritDoc
+ */
 static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_space_t *const space, uint16_t thres) {
 	lane_hough_normal_t *results;
 	size_t amount, alloc;
 	uint16_t rho, th;
-	
 
 	// I use calloc here because the struct members will be "initialized"
 	// and Valgrind won't complain anymore...

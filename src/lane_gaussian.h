@@ -1,3 +1,11 @@
+/**
+ * @file lane_gaussian.h
+ * @author Matthijs Bakker
+ * @brief Gaussian blur filter for images
+ *
+ * This code unit provides a filter for applying Gaussian blur to images.
+ */
+
 #ifndef LANE_GAUSSIAN_H
 #define LANE_GAUSSIAN_H
 

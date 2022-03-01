@@ -1,24 +1,37 @@
+/**
+ * @file lane_hough.h
+ * @author Matthijs Bakker
+ * @brief Utilities for working with the Hough Transform
+ *
+ * This code unit provides various utilities for working
+ * with the Hough Transform, including a function to generate
+ * the Hough Space for an image, and tools for extracting/
+ * plotting lines resulting from this space.
+ */
+
 #ifndef LANE_HOUGH_H
 #define LANE_HOUGH_H
 
 #include "lane_image.h"
 
 /**
- * @inheritDoc
+ * @copydoc normal
  */
 typedef struct normal		lane_hough_normal_t;
 
 /**
- * @inheritDoc
+ * @copydoc space
  */
 typedef struct space		lane_hough_space_t;
 
 /**
- * @inheritDoc
+ * @copydoc resolved_line
  */
 typedef struct resolved_line	lane_hough_resolved_line_t;
 
 /**
+ * @brief A line represented by rho, theta values
+ *
  * A normal line which is represented by:<br />
  * <br />
  * rho = x * cos(th) + y * sin(th)<br />
@@ -31,20 +44,30 @@ struct normal {
 };
 
 /**
- * The Hough accumulator space.
+ * @brief Accumulator for Hough transform
+ *
+ * The Hough accumulator space where votes are casted.<br />
+ * <br />
+ * The size is dependent on the input image size.
  */
 struct space {
 	uint32_t *acc, width, height, size;
 };
 
 /**
- * A resolved line in Cartesian space.
+ * @brief A line represented in Cartesian space
+ *
+ * A resolved line in Cartesian space.<br />
+ * <br />
+ * This includes the start and end coordinates.
  */
 struct resolved_line {
 	uint16_t x1, y1, x2, y2;
 };
 
 /**
+ * @brief Use the Hough Transform to isolate lines
+ *
  * Isolate lines within an image by using Classical Hough Transform.<br />
  * <br />
  * This function returns the accumulator and the resulting lines.
@@ -61,8 +84,12 @@ struct resolved_line {
 size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **space, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres);
 
 /**
+ * @brief Resolve a line from polar coordinates to Cartesian coordinates
+ *
  * Resolve a line from it's r,t value within Hough parameter space
- * to its coordinates in Cartesian space
+ * to its coordinates in Cartesian space.<br />
+ * <br />
+ * Note that the start and end values will also be tried to match.
  * 
  * @param image		The image with the sizes of the Cartesian space
  * @param space		The Hough space

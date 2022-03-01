@@ -1,8 +1,16 @@
+/**
+ * @file lane_gaussian.c
+ * @author Matthijs Bakker
+ * @brief Gaussian blur filter for images
+ *
+ * This code unit provides a filter for applying Gaussian blur to images.
+ */
+
 #include "lane_gaussian.h"
 
 #include <math.h>
 
-/**
+/*
  * @inheritDoc
  */
 void lane_gaussian_apply(const lane_image_t *const src, lane_image_t **dest, uint8_t size, double variance) {
