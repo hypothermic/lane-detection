@@ -8,8 +8,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Install doxygen dependencies
         run: |
-          apt update
-          apt install doxygen graphviz fonts-freefont-ttf
+          sudo apt-get update
+          sudo apt-get install doxygen graphviz fonts-freefont-ttf
       - name: Setup git authentication for dotfiles repo
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
