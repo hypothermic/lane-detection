@@ -6,6 +6,10 @@ jobs:
     steps:
       - name: Clone git contents to container
         uses: actions/checkout@v2
+      - name: Install doxygen dependencies
+        run: |
+          apt update
+          apt install doxygen graphviz fonts-freefont-ttf
       - name: Setup git authentication for dotfiles repo
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -33,7 +37,7 @@ jobs:
           latexmk_use_xelatex: true
         env:
           TEXINPUTS: ".:../dotfiles/latex/texmf//:"
-      - name: Upload documents as artifacts
+      - name: Upload documents as artifact
         uses: actions/upload-artifact@v2
         with:
           name: PDFs
@@ -41,3 +45,13 @@ jobs:
             docs/project.pdf
             docs/research.pdf
             docs/timetable.pdf
+      - name: Compile code doc
+        run: make compile-docs-code
+      - name: Upload code documentation as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: doxygen-out
+          path: |
+            build/html/
+            build/latex/refman.pdf
+

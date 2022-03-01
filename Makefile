@@ -25,6 +25,7 @@ else
 LANE_OPTS	?= -Wno-error=unknown-pragmas
 endif
 
+DOXYGEN_CONF	?= ./Doxyfile
 VALGRIND_OPTS	?= --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1
 
 DATA_EXEC	?= ./data/extract.sh
@@ -55,10 +56,12 @@ LATEXMK_EXEC	?= /usr/bin/latexmk
 GCC_EXEC	?= /usr/bin/gcc
 VALGRIND_EXEC	?= /usr/bin/valgrind
 GHDL_EXEC	?= /usr/bin/ghdl
+DOXYGEN_EXEC	?= /usr/bin/doxygen
 GTKWAVE_EXEC	?= /usr/bin/gtkwave
 XDG_OPEN_EXEC	?= /usr/bin/xdg-open
 RM_EXEC		?= /usr/bin/rm
 MKDIR_EXEC	?= /usr/bin/mkdir
+MAKE_EXEC	?= /usr/bin/make
 
 #
 # Compilation-related targets
@@ -73,10 +76,14 @@ compile-docs-timetable:
 compile-docs-research:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/research.tex
 
+compile-docs-code:
+	$(DOXYGEN_EXEC) $(DOXYGEN_CONF)
+	cd ./build/latex && $(MAKE_EXEC) all
+
 make-out-dir:
 	$(MKDIR_EXEC) -p $(LATEXMK_OUT)
 
-compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research
+compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research compile-docs-code
 
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
