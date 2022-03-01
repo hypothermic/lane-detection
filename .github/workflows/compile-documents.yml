@@ -9,7 +9,7 @@ jobs:
       - name: Install doxygen dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install doxygen graphviz fonts-freefont-ttf
+          sudo apt-get install doxygen graphviz fonts-freefont-ttf texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - name: Setup git authentication for dotfiles repo
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
