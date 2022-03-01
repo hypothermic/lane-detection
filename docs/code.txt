@@ -1,0 +1,20 @@
+# In dit bestand licht ik toe welke code ik zelf geschreven heb
+# zoals aangegeven in de Richtlijn Code-Inleveren (3 maart 2022)
+
+[toolsuite]
+# extractie scripts in data/ zelf geschreven
+data/extract.sh
+data/targets
+# alle source en header files in src/ zelf geschreven
+src/*.{c,h}
+# alle source en header files en scripts in test/ zelf geschreven
+test/*.{c,h,sh}
+# organizatiebestanden zelf geschreven
+.editorconfig
+.gitattributes
+.gitignore
+.latexmkrc
+.github/workflows/*.yml
+Makefile
+README.md
+test.sh

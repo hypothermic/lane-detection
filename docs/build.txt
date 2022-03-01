@@ -1,0 +1,41 @@
+De toolsuite wordt voornamelijk handmatig gebruikt, maar kan ook
+automatisch getest worden d.m.v. unit tests. Alle tests, zowel de
+handmatige als de automatische, kunnen met de meegeleverde Makefile
+worden uitgevoerd. Deze Makefile biedt targets voor het compileren,
+uitvoeren, testen, en debuggen van de software.
+
+De toolsuite is voortdurend ontwikkeld en getest op Arch Linux omdat
+deze distro de laatste versie van alle packages biedt. Om zeker te
+zijn van compatibility is hij ook automatisch getest op de laatste
+Ubuntu-server versie (op dit moment 21.04) in een Docker environment.
+Deze automatische tests worden door een Github Actions Workflow na
+het pushen van elke commit geïnstantieerd.
+
+Installeer voor het builden van de documentatie de volgende tools:
+- doxygen (incl. graphviz en plantuml)
+- TeX Live 2018 en latexmk
+- TeX-bibliotheek setspace (van https://www.ctan.org/pkg/setspace)
+- mijn dotfiles (van https://github.com/hypothermic/dotfiles)
+Installeer voor het builden van de software de volgende tools:
+- gcc 10.2 of hoger
+- coreutils (make, zsh, etc.)
+- ghdl en gtkwave
+- valgrind en gdb voor het debuggen
+Alle tools zijn verkrijgbaar van Arch Linux packages of van de AUR.
+
+Omdat de BDD100K dataset onder een stricte licentie wordt uitgegeven
+kan ik deze niet meeleveren met het project. U kunt de dataset zelf
+verkrijgen en de afbeeldingen eruit halen d.m.v. het extract-script
+dat ik heb geschreven. Dit script bevindt zich in de data-map.
+Als argument wordt de locatie van de 10K images dataset meegegeven.
+
+Voorbeeld voor het gebruik van het extract-script vanuit de root map:
+$ data/extract.sh ~/Downloads/bdd100k_images_10k/bdd100k/images/10k
+
+Voorbeeld handmatig gebruik (op desktop, image viewer opent automatisch):
+$ make DEBUG=true test-lane-man ARG_TEST=kmseg ARG_SAMPLE=0a0a0b1a-7c39d841
+$ SAMPLE=0a0a0b1a-7c39d841 ./test.sh grayscale gaussian sobel hough_kmeans
+
+Voorbeeld automatisch gebruik (kan op server/headless, zie exit code):
+$ make test
+
