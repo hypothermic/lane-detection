@@ -9,6 +9,8 @@
 # $ DEBUG=true SAMPLE=0a0a0b1a-7c39d841 ./test.sh grayscale gaussian sobel
 #
 
+set -o nounset
+
 #
 # Run the first test
 #
@@ -20,7 +22,9 @@ make test-lane-man ARG_TEST="$1" ARG_SAMPLE="${SAMPLE}"
 #
 for ((i = 2; i <= $#; ++i))
 do
-	make test-lane-man ARG_TEST="$@[i]" ARG_SAMPLE="${SAMPLE}.$@[i-1].out"
+	FILENAME+=".$@[i-1].out"
+	make test-lane-man ARG_TEST="$@[i]" ARG_SAMPLE="${SAMPLE}${FILENAME}"
+	
 done
 
 echo "Finished"
