@@ -71,22 +71,26 @@ $(function() {
 <div class="title">lane_image_ppm.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef LANE_IMAGE_PPM_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define LANE_IMAGE_PPM_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;lane_image.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">int</span> lane_image_ppm_from_file(FILE *file, <a class="code" href="structimage.html">lane_image_t</a> **<a class="code" href="structimage.html">image</a>);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">int</span> lane_image_ppm_to_file(FILE *file, <a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_IMAGE_PPM_H */</span><span class="preprocessor"></span></div>
+<a href="lane__image__ppm_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifndef LANE_IMAGE_PPM_H</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define LANE_IMAGE_PPM_H</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lane__image_8h.html">lane_image.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">int</span> <a class="code" href="lane__image__ppm_8h.html#acab381e810f58b5ae8f80546f99a9b11">lane_image_ppm_from_file</a>(FILE *file, <a class="code" href="structimage.html">lane_image_t</a> **<a class="code" href="structimage.html">image</a>);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">int</span> <a class="code" href="lane__image__ppm_8h.html#af6d336e0c6b1ce91dcd2e4f2ca67af80">lane_image_ppm_to_file</a>(FILE *file, <a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_IMAGE_PPM_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdef"><b>Definition:</b> lane_image.h:37</div></div>
+<div class="ttc" id="alane__image__ppm_8h_html_acab381e810f58b5ae8f80546f99a9b11"><div class="ttname"><a href="lane__image__ppm_8h.html#acab381e810f58b5ae8f80546f99a9b11">lane_image_ppm_from_file</a></div><div class="ttdeci">int lane_image_ppm_from_file(FILE *file, lane_image_t **image)</div><div class="ttdoc">Load an image from a PPM file.</div><div class="ttdef"><b>Definition:</b> lane_image_ppm.c:49</div></div>
+<div class="ttc" id="alane__image__ppm_8h_html_af6d336e0c6b1ce91dcd2e4f2ca67af80"><div class="ttname"><a href="lane__image__ppm_8h.html#af6d336e0c6b1ce91dcd2e4f2ca67af80">lane_image_ppm_to_file</a></div><div class="ttdeci">int lane_image_ppm_to_file(FILE *file, lane_image_t *image)</div><div class="ttdoc">Write an image to a PPM file.</div><div class="ttdef"><b>Definition:</b> lane_image_ppm.c:127</div></div>
+<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdoc">An image in memory.</div><div class="ttdef"><b>Definition:</b> lane_image.h:51</div></div>
+<div class="ttc" id="alane__image_8h_html"><div class="ttname"><a href="lane__image_8h.html">lane_image.h</a></div><div class="ttdoc">Generic image utilities.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 1 2022 13:20:52 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Mar 1 2022 14:44:50 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

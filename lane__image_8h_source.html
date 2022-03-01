@@ -71,46 +71,53 @@ $(function() {
 <div class="title">lane_image.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef LANE_IMAGE_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define LANE_IMAGE_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">typedef</span> uint8_t     lane_color_t;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structpixel.html">pixel</a>    <a class="code" href="structpixel.html">lane_pixel_t</a>;</div>
+<a href="lane__image_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifndef LANE_IMAGE_H</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define LANE_IMAGE_H</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structimage.html">image</a>    <a class="code" href="structimage.html">lane_image_t</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="lane__image_8h.html#a143a6f2de7caee40da619578e9c287b6">   21</a></span>&#160;<span class="keyword">typedef</span> uint8_t     <a class="code" href="lane__image_8h.html#a143a6f2de7caee40da619578e9c287b6">lane_color_t</a>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structpixel.html">   28</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structpixel.html">pixel</a> {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    lane_color_t r, g, b;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structimage.html">   37</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structimage.html">image</a> {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    uint16_t width, height;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="structpixel.html">lane_pixel_t</a> *data;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<a class="code" href="structimage.html">lane_image_t</a> *lane_image_new(uint16_t width, uint16_t height);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<a class="code" href="structimage.html">lane_image_t</a> *lane_image_copy(<span class="keyword">const</span> <a class="code" href="structimage.html">lane_image_t</a> *<span class="keyword">const</span> <a class="code" href="structimage.html">image</a>);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keywordtype">void</span> lane_image_fill_solid(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <a class="code" href="structpixel.html">lane_pixel_t</a> color);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordtype">void</span> lane_image_draw_line(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <a class="code" href="structpixel.html">lane_pixel_t</a> color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keywordtype">void</span> lane_image_free(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_IMAGE_H */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="lane__image_8h.html#ae12e3b192dcbdcf838915c4397cc4e1a">   26</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structpixel.html">pixel</a>    <a class="code" href="structpixel.html">lane_pixel_t</a>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">   31</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structimage.html">image</a>    <a class="code" href="structimage.html">lane_image_t</a>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structpixel.html">   40</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structpixel.html">pixel</a> {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="lane__image_8h.html#a143a6f2de7caee40da619578e9c287b6">lane_color_t</a> r, g, b;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structimage.html">   51</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structimage.html">image</a> {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    uint16_t width, height;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <a class="code" href="structpixel.html">lane_pixel_t</a> *data;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="lane__image_8h.html#a228708e3b7d895f83f52c4416a3a4ee0">lane_image_new</a>(uint16_t width, uint16_t height);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="lane__image_8h.html#a45823097673565b94c8b7a05e9c55041">lane_image_copy</a>(<span class="keyword">const</span> <a class="code" href="structimage.html">lane_image_t</a> *<span class="keyword">const</span> <a class="code" href="structimage.html">image</a>);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__image_8h.html#adbcac27ebf9cf4c282f0131523937314">lane_image_fill_solid</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <a class="code" href="structpixel.html">lane_pixel_t</a> color);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__image_8h.html#ace9a4469ad72a2c9a41dd1499bb1d8cc">lane_image_draw_line</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <a class="code" href="structpixel.html">lane_pixel_t</a> color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__image_8h.html#a58c2600ceefb0e299bc02c4bc5333c08">lane_image_free</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_IMAGE_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdef"><b>Definition:</b> lane_image.h:37</div></div>
-<div class="ttc" id="astructpixel_html"><div class="ttname"><a href="structpixel.html">pixel</a></div><div class="ttdef"><b>Definition:</b> lane_image.h:28</div></div>
+<div class="ttc" id="alane__image_8h_html_a143a6f2de7caee40da619578e9c287b6"><div class="ttname"><a href="lane__image_8h.html#a143a6f2de7caee40da619578e9c287b6">lane_color_t</a></div><div class="ttdeci">uint8_t lane_color_t</div><div class="ttdoc">The value of a color channel at a specific location.</div><div class="ttdef"><b>Definition:</b> lane_image.h:21</div></div>
+<div class="ttc" id="alane__image_8h_html_ace9a4469ad72a2c9a41dd1499bb1d8cc"><div class="ttname"><a href="lane__image_8h.html#ace9a4469ad72a2c9a41dd1499bb1d8cc">lane_image_draw_line</a></div><div class="ttdeci">void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)</div><div class="ttdoc">Draw a simple line on an image using Bresenham.</div><div class="ttdef"><b>Definition:</b> lane_image.c:62</div></div>
+<div class="ttc" id="alane__image_8h_html_a228708e3b7d895f83f52c4416a3a4ee0"><div class="ttname"><a href="lane__image_8h.html#a228708e3b7d895f83f52c4416a3a4ee0">lane_image_new</a></div><div class="ttdeci">lane_image_t * lane_image_new(uint16_t width, uint16_t height)</div><div class="ttdoc">Allocates a blank new image.</div><div class="ttdef"><b>Definition:</b> lane_image.c:21</div></div>
+<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdoc">An image in memory.</div><div class="ttdef"><b>Definition:</b> lane_image.h:51</div></div>
+<div class="ttc" id="alane__image_8h_html_a45823097673565b94c8b7a05e9c55041"><div class="ttname"><a href="lane__image_8h.html#a45823097673565b94c8b7a05e9c55041">lane_image_copy</a></div><div class="ttdeci">lane_image_t * lane_image_copy(const lane_image_t *const image)</div><div class="ttdoc">Allocates a new image, copying the data from another.</div><div class="ttdef"><b>Definition:</b> lane_image.c:36</div></div>
+<div class="ttc" id="alane__image_8h_html_adbcac27ebf9cf4c282f0131523937314"><div class="ttname"><a href="lane__image_8h.html#adbcac27ebf9cf4c282f0131523937314">lane_image_fill_solid</a></div><div class="ttdeci">void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color)</div><div class="ttdoc">Fill an image with a color.</div><div class="ttdef"><b>Definition:</b> lane_image.c:47</div></div>
+<div class="ttc" id="astructpixel_html"><div class="ttname"><a href="structpixel.html">pixel</a></div><div class="ttdoc">A pixel within an image.</div><div class="ttdef"><b>Definition:</b> lane_image.h:40</div></div>
+<div class="ttc" id="alane__image_8h_html_a58c2600ceefb0e299bc02c4bc5333c08"><div class="ttname"><a href="lane__image_8h.html#a58c2600ceefb0e299bc02c4bc5333c08">lane_image_free</a></div><div class="ttdeci">void lane_image_free(lane_image_t *image)</div><div class="ttdoc">Deallocates an image and its associated data.</div><div class="ttdef"><b>Definition:</b> lane_image.c:110</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 1 2022 13:20:52 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Mar 1 2022 14:44:50 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

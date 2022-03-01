@@ -71,59 +71,65 @@ $(function() {
 <div class="title">lane_kmeans.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef LANE_KMEANS_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define LANE_KMEANS_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;lane_hough.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmapped__value.html">mapped_value</a> <a class="code" href="structmapped__value.html">lane_kmeans_mapped_value_t</a>;</div>
+<a href="lane__kmeans_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#ifndef LANE_KMEANS_H</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#define LANE_KMEANS_H</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmapped__pixel.html">mapped_pixel</a> <a class="code" href="structmapped__pixel.html">lane_kmeans_mapped_pixel_t</a>;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmedoid.html">medoid</a>       <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>centroid     lane_kmeans_centroid_t;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structmapped__value.html">   26</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmapped__value.html">mapped_value</a> {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">const</span> <a class="code" href="structnormal.html">lane_hough_normal_t</a> *line;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    uint8_t cluster;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    uint16_t nearest;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structmapped__pixel.html">   35</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmapped__pixel.html">mapped_pixel</a> {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    uint8_t luminance,</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        cluster;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    uint16_t nearest;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;};</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structmedoid.html">   44</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmedoid.html">medoid</a> {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    uint16_t theta, rho;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">struct </span>centroid {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    uint8_t luminance;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">void</span> lane_kmeans_apply(<span class="keyword">const</span> <a class="code" href="structnormal.html">lane_hough_normal_t</a> *<span class="keyword">const</span> lines, uint16_t lines_amount, <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a> **result, uint8_t iterations, uint8_t clusters);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> lane_kmeans_medoid_plot(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <span class="keyword">const</span> <a class="code" href="structspace.html">lane_hough_space_t</a> *<span class="keyword">const</span> <a class="code" href="structspace.html">space</a>, <span class="keyword">const</span> <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a> <a class="code" href="structmedoid.html">medoid</a>);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> lane_kmeans_segment(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, uint8_t iterations, uint8_t clusters);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_KMEANS_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lane__hough_8h.html">lane_hough.h</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="lane__kmeans_8h.html#abd09fbbfc2728525de97f352d11235f1">   22</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmapped__value.html">mapped_value</a> <a class="code" href="structmapped__value.html">lane_kmeans_mapped_value_t</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="lane__kmeans_8h.html#a75021946938730417bf1255744d6539c">   27</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmapped__pixel.html">mapped_pixel</a> <a class="code" href="structmapped__pixel.html">lane_kmeans_mapped_pixel_t</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="lane__kmeans_8h.html#ad10c3e2bee248fa831b2aa9298ccec10">   32</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structmedoid.html">medoid</a>       <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="lane__kmeans_8h.html#addf94379d8cff84b85101fc8d20fdb26">   37</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structcentroid.html">centroid</a>     <a class="code" href="structcentroid.html">lane_kmeans_centroid_t</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structmapped__value.html">   44</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmapped__value.html">mapped_value</a> {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">const</span> <a class="code" href="structnormal.html">lane_hough_normal_t</a> *line;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    uint8_t cluster;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    uint16_t nearest;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structmapped__pixel.html">   55</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmapped__pixel.html">mapped_pixel</a> {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint8_t luminance,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        cluster;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    uint16_t nearest;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="structmedoid.html">   66</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structmedoid.html">medoid</a> {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    uint16_t theta, rho;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structcentroid.html">   75</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structcentroid.html">centroid</a> {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    uint8_t luminance;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__kmeans_8h.html#a018806d3f54d35f4b7f358d3cfddb448">lane_kmeans_apply</a>(<span class="keyword">const</span> <a class="code" href="structnormal.html">lane_hough_normal_t</a> *<span class="keyword">const</span> lines, uint16_t lines_amount, <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a> **result, uint8_t iterations, uint8_t clusters);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__kmeans_8h.html#af2ccbec3c66704ea0fac62d02f59e2d7">lane_kmeans_medoid_plot</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, <span class="keyword">const</span> <a class="code" href="structspace.html">lane_hough_space_t</a> *<span class="keyword">const</span> <a class="code" href="structspace.html">space</a>, <span class="keyword">const</span> <a class="code" href="structmedoid.html">lane_kmeans_medoid_t</a> <a class="code" href="structmedoid.html">medoid</a>);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__kmeans_8h.html#a26d2bf50570ba5e1db50e27ee35e43cf">lane_kmeans_segment</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, uint8_t iterations, uint8_t clusters);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_KMEANS_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructspace_html"><div class="ttname"><a href="structspace.html">space</a></div><div class="ttdef"><b>Definition:</b> lane_hough.h:36</div></div>
-<div class="ttc" id="astructmapped__value_html"><div class="ttname"><a href="structmapped__value.html">mapped_value</a></div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:26</div></div>
-<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdef"><b>Definition:</b> lane_image.h:37</div></div>
-<div class="ttc" id="astructmedoid_html"><div class="ttname"><a href="structmedoid.html">medoid</a></div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:44</div></div>
-<div class="ttc" id="astructnormal_html"><div class="ttname"><a href="structnormal.html">normal</a></div><div class="ttdef"><b>Definition:</b> lane_hough.h:29</div></div>
-<div class="ttc" id="astructmapped__pixel_html"><div class="ttname"><a href="structmapped__pixel.html">mapped_pixel</a></div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:35</div></div>
+<div class="ttc" id="alane__kmeans_8h_html_af2ccbec3c66704ea0fac62d02f59e2d7"><div class="ttname"><a href="lane__kmeans_8h.html#af2ccbec3c66704ea0fac62d02f59e2d7">lane_kmeans_medoid_plot</a></div><div class="ttdeci">void lane_kmeans_medoid_plot(lane_image_t *image, const lane_hough_space_t *const space, const lane_kmeans_medoid_t medoid)</div><div class="ttdoc">Plot the average result of a line cluster on an image.</div><div class="ttdef"><b>Definition:</b> lane_kmeans.c:151</div></div>
+<div class="ttc" id="alane__hough_8h_html"><div class="ttname"><a href="lane__hough_8h.html">lane_hough.h</a></div><div class="ttdoc">Utilities for working with the Hough Transform.</div></div>
+<div class="ttc" id="astructcentroid_html"><div class="ttname"><a href="structcentroid.html">centroid</a></div><div class="ttdoc">A centroid (1-dimensional moving average)</div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:75</div></div>
+<div class="ttc" id="astructspace_html"><div class="ttname"><a href="structspace.html">space</a></div><div class="ttdoc">Accumulator for Hough transform.</div><div class="ttdef"><b>Definition:</b> lane_hough.h:53</div></div>
+<div class="ttc" id="astructmapped__value_html"><div class="ttname"><a href="structmapped__value.html">mapped_value</a></div><div class="ttdoc">Parameters for a grouped normal line.</div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:44</div></div>
+<div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdoc">An image in memory.</div><div class="ttdef"><b>Definition:</b> lane_image.h:51</div></div>
+<div class="ttc" id="astructmedoid_html"><div class="ttname"><a href="structmedoid.html">medoid</a></div><div class="ttdoc">A medoid (2-dimensional moving average)</div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:66</div></div>
+<div class="ttc" id="astructnormal_html"><div class="ttname"><a href="structnormal.html">normal</a></div><div class="ttdoc">A line represented by rho, theta values.</div><div class="ttdef"><b>Definition:</b> lane_hough.h:42</div></div>
+<div class="ttc" id="alane__kmeans_8h_html_a018806d3f54d35f4b7f358d3cfddb448"><div class="ttname"><a href="lane__kmeans_8h.html#a018806d3f54d35f4b7f358d3cfddb448">lane_kmeans_apply</a></div><div class="ttdeci">void lane_kmeans_apply(const lane_hough_normal_t *const lines, uint16_t lines_amount, lane_kmeans_medoid_t **result, uint8_t iterations, uint8_t clusters)</div><div class="ttdoc">Group values together into k buckets using Lloyd's algorithm.</div><div class="ttdef"><b>Definition:</b> lane_kmeans.c:90</div></div>
+<div class="ttc" id="alane__kmeans_8h_html_a26d2bf50570ba5e1db50e27ee35e43cf"><div class="ttname"><a href="lane__kmeans_8h.html#a26d2bf50570ba5e1db50e27ee35e43cf">lane_kmeans_segment</a></div><div class="ttdeci">void lane_kmeans_segment(lane_image_t *image, uint8_t iterations, uint8_t clusters)</div><div class="ttdoc">Segment an image into k amount of clusters.</div><div class="ttdef"><b>Definition:</b> lane_kmeans.c:21</div></div>
+<div class="ttc" id="astructmapped__pixel_html"><div class="ttname"><a href="structmapped__pixel.html">mapped_pixel</a></div><div class="ttdoc">Parameters for a grouped pixel.</div><div class="ttdef"><b>Definition:</b> lane_kmeans.h:55</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Mar 1 2022 13:20:52 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Mar 1 2022 14:44:50 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['image_0',['image',['../structimage.html',1,'']]]
+  ['centroid_0',['centroid',['../structcentroid.html',1,'']]]
 ];
