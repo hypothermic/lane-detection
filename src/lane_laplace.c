@@ -1,12 +1,35 @@
+/**
+ * @file lane_laplace.c
+ * @author Matthijs Bakker
+ * @brief Laplacian filter for images
+ *
+ * This code unit provides a Laplacian filter which convolutes
+ * a predefined 3 by 3 Laplacian kernel with an image. This
+ * has the effect of highlighting gradients/edges in the image.
+ */
+
 #include "lane_laplace.h"
 
 #include <math.h>
 
+/**
+ * @internal
+ *
+ * The diameter of the kernel
+ */
 #define KERNEL_DIAMETER	3 //
+
+/**
+ * @internal
+ *
+ * The radius of the kernel
+ */
 #define KERNEL_RADIUS	1 // result of (3-1)/2
 
 /**
- * 
+ * @internal
+ *
+ * The Laplacian kernel which gets convoluted with the image
  */
 const int kernel[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{ 0, -1,  0},
@@ -14,7 +37,7 @@ const int kernel[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{ 0, -1,  0}
 };
 
-/**
+/*
  * @inheritDoc
  */
 void lane_laplace_apply(const lane_image_t *const src, lane_image_t **dest) {

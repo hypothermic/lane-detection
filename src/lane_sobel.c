@@ -1,11 +1,34 @@
+/**
+ * @file lane_sobel.c
+ * @author Matthijs Bakker
+ * @brief Sobel filter for images
+ *
+ * This code unit provides a Sobel filter which convolutes
+ * two predefined 3x3 kernels with an image and calculates
+ * the gradient magnitude for each pixel.
+ */
+
 #include "lane_sobel.h"
 
 #include <math.h>
 
+/**
+ * @internal
+ *
+ * The diameter of a kernel
+ */
 #define KERNEL_DIAMETER	3 // predefined Sobel kernel diameter
+
+/**
+ * @internal
+ *
+ * The radius of a kernel
+ */
 #define KERNEL_RADIUS	1 // result of (3-1)/2
 
 /**
+ * @internal
+ *
  * Horizontal kernel of the Sobel operator
  */
 const int kx[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
@@ -14,13 +37,18 @@ const int kx[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{-1,  0,  1}
 };
 
+/**
+ * @internal
+ *
+ * Vertical kernel of the Sobel operator
+ */
 const int ky[KERNEL_DIAMETER][KERNEL_DIAMETER] = {
 	{ 1,  2,  1},
 	{ 0,  0,  0},
 	{-1, -2, -1},
 };
 
-/**
+/*
  * @inheritDoc
  */
 void lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest) {

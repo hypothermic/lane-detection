@@ -1,10 +1,16 @@
+/**
+ * @file lane_test_common.h
+ * @author Matthijs Bakker
+ * @brief Commonly used routines for tests
+ *
+ * This header file provides macros for routines that are
+ * commonly used for testing. They are defined in this
+ * shared header file to save space and clean up code in
+ * the individual test files.
+ */
+
 #ifndef LANE_TEST_COMMON_H
 #define LANE_TEST_COMMON_H
-
-/**
- * Frequently used routines are defined here to save space
- * and clean up code in the individual test files.
- */
 
 #define TEST_CHECK_ARGS(argc, argv) \
 	if (argc < 3) { \

@@ -1,10 +1,25 @@
+/**
+ * @file lane_sobel.h
+ * @author Matthijs Bakker
+ * @brief Sobel filter for images
+ *
+ * This code unit provides a Sobel filter which convolutes
+ * two predefined 3x3 kernels with an image and calculates
+ * the gradient magnitude for each pixel.
+ */
+
 #ifndef LANE_SOBEL_H
 #define LANE_SOBEL_H
 
 #include "lane_image.h"
 
 /**
+ * @brief Highlight edges within an image using the Sobel operator
+ *
  * Apply an iteration of the Sobel-Feldman operator to an image.<br />
+ * <br />
+ * The output image only consists of the gradient magnitudes, not
+ * the gradient directions. <br />
  * <br />
  * <b>Note:</b> The output image will be cropped by <i>(3-1)*2</i> px
  * because there is no data to apply the kernel on in the borders of

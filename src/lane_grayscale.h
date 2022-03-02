@@ -20,7 +20,6 @@
  *
  * @param image	The input image, which contents will be
  * 		modified by this function
- * @return	Zero if the operation succeeds, otherwise an error code
  */
 void lane_grayscale_apply(lane_image_t *image);
 
