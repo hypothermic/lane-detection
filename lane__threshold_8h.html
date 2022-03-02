@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lane Detection Toolsuite: src/lane_gaussian.h File Reference</title>
+<title>Lane Detection Toolsuite: src/lane_threshold.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,57 +68,69 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">lane_gaussian.h File Reference</div>  </div>
+<div class="title">lane_threshold.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Gaussian blur filter for images.  
+<p>Image thresholding for grayscale images.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="lane__image_8h_source.html">lane_image.h</a>&quot;</code><br />
 </div>
-<p><a href="lane__gaussian_8h_source.html">Go to the source code of this file.</a></p>
+<p><a href="lane__threshold_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ace445825d476be83ed3bbe18c8cdd38c"><td class="memItemLeft" align="right" valign="top"><a id="ace445825d476be83ed3bbe18c8cdd38c"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8h.html#ace445825d476be83ed3bbe18c8cdd38c">LANE_THRESHOLD_UNUSED_LOWER</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ace445825d476be83ed3bbe18c8cdd38c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default lower threshold. <br /></td></tr>
+<tr class="separator:ace445825d476be83ed3bbe18c8cdd38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98260cf71b8dace1deda32a64f972b76"><td class="memItemLeft" align="right" valign="top"><a id="a98260cf71b8dace1deda32a64f972b76"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8h.html#a98260cf71b8dace1deda32a64f972b76">LANE_THRESHOLD_UNUSED_UPPER</a>&#160;&#160;&#160;255</td></tr>
+<tr class="memdesc:a98260cf71b8dace1deda32a64f972b76"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default upper threshold. <br /></td></tr>
+<tr class="separator:a98260cf71b8dace1deda32a64f972b76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0e0ec49864812933d5a014ce87f306d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__gaussian_8h.html#a0e0ec49864812933d5a014ce87f306d4">lane_gaussian_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **dest, uint8_t size, double variance)</td></tr>
-<tr class="memdesc:a0e0ec49864812933d5a014ce87f306d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blur an image by applying the Gaussian function on it.  <a href="lane__gaussian_8h.html#a0e0ec49864812933d5a014ce87f306d4">More...</a><br /></td></tr>
-<tr class="separator:a0e0ec49864812933d5a014ce87f306d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8h.html#a8eaf72ddadd97a1651cd1639a608c4bb">lane_threshold_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t new)</td></tr>
+<tr class="memdesc:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace pixels with a value outside of a specific bound.  <a href="lane__threshold_8h.html#a8eaf72ddadd97a1651cd1639a608c4bb">More...</a><br /></td></tr>
+<tr class="separator:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Gaussian blur filter for images. </p>
-<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a filter for applying Gaussian blur to images. </dd></dl>
+<div class="textblock"><p>Image thresholding for grayscale images. </p>
+<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a function to threshold monotone images using upper and lower boundaries. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a0e0ec49864812933d5a014ce87f306d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e0ec49864812933d5a014ce87f306d4">&#9670;&nbsp;</a></span>lane_gaussian_apply()</h2>
+<a id="a8eaf72ddadd97a1651cd1639a608c4bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eaf72ddadd97a1651cd1639a608c4bb">&#9670;&nbsp;</a></span>lane_threshold_apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void lane_gaussian_apply </td>
+          <td class="memname">void lane_threshold_apply </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const&#160;</td>
-          <td class="paramname"><em>src</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **&#160;</td>
-          <td class="paramname"><em>dest</em>, </td>
+          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
+          <td class="paramname"><em>lower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>variance</em>&#160;</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>upper</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>new</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -128,16 +140,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Blur an image by applying the Gaussian function on it. </p>
-<p><br  />
- <br  />
- <b>Note:</b> The output image will be cropped by <em>(size-1)*2</em> px because there is no data to apply the kernel on in the borders of the image!</p>
+<p>Replace pixels with a value outside of a specific bound. </p>
+<p>Replace the pixels that don't fall within a certain boundary, specified by the <em>upper</em> and <em>lower</em> arguments with a specific value indicated with the <em>new</em> argument.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">src</td><td>The input image, which data will be read </td></tr>
-    <tr><td class="paramname">dest</td><td>The output image, which will be (over)written to </td></tr>
-    <tr><td class="paramname">size</td><td>The size of the kernel </td></tr>
-    <tr><td class="paramname">variance</td><td>The sigma value of the Gaussian function </td></tr>
+    <tr><td class="paramname">image</td><td>The image that will be modified by this function </td></tr>
+    <tr><td class="paramname">lower</td><td>The inclusive lower bound of the threshold (0 for unused) </td></tr>
+    <tr><td class="paramname">upper</td><td>The inclusive upper bound of the threshold (255 for unused) </td></tr>
+    <tr><td class="paramname">new</td><td>The replacement value when outside of threshold </td></tr>
   </table>
   </dd>
 </dl>

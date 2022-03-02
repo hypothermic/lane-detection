@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lane Detection Toolsuite: src/lane_grayscale.c File Reference</title>
+<title>Lane Detection Toolsuite: src/lane_sobel.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,47 +70,62 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">lane_grayscale.c File Reference</div>  </div>
+<div class="title">lane_sobel.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>RGB to grayscale filter for images.  
+<p>Sobel filter for images.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="lane__grayscale_8h_source.html">lane_grayscale.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="lane__sobel_8h_source.html">lane_sobel.h</a>&quot;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad3d862e63ddc90598c7735ea6243ddf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__grayscale_8c.html#ad3d862e63ddc90598c7735ea6243ddf3">lane_grayscale_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>)</td></tr>
-<tr class="memdesc:ad3d862e63ddc90598c7735ea6243ddf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a color image to grayscale.  <a href="lane__grayscale_8c.html#ad3d862e63ddc90598c7735ea6243ddf3">More...</a><br /></td></tr>
-<tr class="separator:ad3d862e63ddc90598c7735ea6243ddf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#ad22b6e7909b07b0feeb5fd978b8f82de">lane_sobel_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **dest)</td></tr>
+<tr class="memdesc:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Highlight edges within an image using the Sobel operator.  <a href="lane__sobel_8c.html#ad22b6e7909b07b0feeb5fd978b8f82de">More...</a><br /></td></tr>
+<tr class="separator:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>RGB to grayscale filter for images. </p>
-<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a filter for converting images from the RGB colorspace to grayscale using the BT.601-7 weights. </dd></dl>
+<div class="textblock"><p>Sobel filter for images. </p>
+<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a Sobel filter which convolutes two predefined 3x3 kernels with an image and calculates the gradient magnitude for each pixel. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ad3d862e63ddc90598c7735ea6243ddf3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3d862e63ddc90598c7735ea6243ddf3">&#9670;&nbsp;</a></span>lane_grayscale_apply()</h2>
+<a id="ad22b6e7909b07b0feeb5fd978b8f82de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad22b6e7909b07b0feeb5fd978b8f82de">&#9670;&nbsp;</a></span>lane_sobel_apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void lane_grayscale_apply </td>
+          <td class="memname">void lane_sobel_apply </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *&#160;</td>
-          <td class="paramname"><em>image</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Convert a color image to grayscale. </p>
-<p><br  />
+<p>Highlight edges within an image using the Sobel operator. </p>
+<p>Apply an iteration of the Sobel-Feldman operator to an image.<br  />
  <br  />
- The values of the color channels R,G,B are guaranteed to be equal for each pixel in the resulting image.</p>
+ The output image only consists of the gradient magnitudes, not the gradient directions. <br  />
+ <br  />
+ <b>Note:</b> The output image will be cropped by <em>(3-1)*2</em> px because there is no data to apply the kernel on in the borders of the image!<br  />
+ <b>Note:</b> It is assumed that the input image is already in grayscale, so the color values for R,G,B match for every pixel.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">image</td><td>The input image, which contents will be modified by this function </td></tr>
+    <tr><td class="paramname">src</td><td>The input image, which data will be read </td></tr>
+    <tr><td class="paramname">dest</td><td>The output image, which will be (over)written to </td></tr>
   </table>
   </dd>
 </dl>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lane Detection Toolsuite: src/lane_grayscale.c File Reference</title>
+<title>Lane Detection Toolsuite: src/lane_threshold.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,47 +70,70 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">lane_grayscale.c File Reference</div>  </div>
+<div class="title">lane_threshold.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>RGB to grayscale filter for images.  
+<p>Image thresholding for grayscale images.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="lane__grayscale_8h_source.html">lane_grayscale.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad3d862e63ddc90598c7735ea6243ddf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__grayscale_8c.html#ad3d862e63ddc90598c7735ea6243ddf3">lane_grayscale_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>)</td></tr>
-<tr class="memdesc:ad3d862e63ddc90598c7735ea6243ddf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a color image to grayscale.  <a href="lane__grayscale_8c.html#ad3d862e63ddc90598c7735ea6243ddf3">More...</a><br /></td></tr>
-<tr class="separator:ad3d862e63ddc90598c7735ea6243ddf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8c.html#a8eaf72ddadd97a1651cd1639a608c4bb">lane_threshold_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t new)</td></tr>
+<tr class="memdesc:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace pixels with a value outside of a specific bound.  <a href="lane__threshold_8c.html#a8eaf72ddadd97a1651cd1639a608c4bb">More...</a><br /></td></tr>
+<tr class="separator:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>RGB to grayscale filter for images. </p>
-<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a filter for converting images from the RGB colorspace to grayscale using the BT.601-7 weights. </dd></dl>
+<div class="textblock"><p>Image thresholding for grayscale images. </p>
+<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a function to threshold monotone images using upper and lower boundaries. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ad3d862e63ddc90598c7735ea6243ddf3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3d862e63ddc90598c7735ea6243ddf3">&#9670;&nbsp;</a></span>lane_grayscale_apply()</h2>
+<a id="a8eaf72ddadd97a1651cd1639a608c4bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eaf72ddadd97a1651cd1639a608c4bb">&#9670;&nbsp;</a></span>lane_threshold_apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void lane_grayscale_apply </td>
+          <td class="memname">void lane_threshold_apply </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *&#160;</td>
-          <td class="paramname"><em>image</em></td><td>)</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>lower</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>upper</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>new</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Convert a color image to grayscale. </p>
-<p><br  />
- <br  />
- The values of the color channels R,G,B are guaranteed to be equal for each pixel in the resulting image.</p>
+<p>Replace pixels with a value outside of a specific bound. </p>
+<p>Replace the pixels that don't fall within a certain boundary, specified by the <em>upper</em> and <em>lower</em> arguments with a specific value indicated with the <em>new</em> argument.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">image</td><td>The input image, which contents will be modified by this function </td></tr>
+    <tr><td class="paramname">image</td><td>The image that will be modified by this function </td></tr>
+    <tr><td class="paramname">lower</td><td>The inclusive lower bound of the threshold (0 for unused) </td></tr>
+    <tr><td class="paramname">upper</td><td>The inclusive upper bound of the threshold (255 for unused) </td></tr>
+    <tr><td class="paramname">new</td><td>The replacement value when outside of threshold </td></tr>
   </table>
   </dd>
 </dl>

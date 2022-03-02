@@ -32,4 +32,5 @@ var menudata={children:[
 {text:"l",url:"globals.html#index_l"}]},
 {text:"Functions",url:"globals_func.html",children:[
 {text:"l",url:"globals_func.html#index_l"}]},
-{text:"Typedefs",url:"globals_type.html"}]}]}]}
+{text:"Typedefs",url:"globals_type.html"},
+{text:"Macros",url:"globals_defs.html"}]}]}]}

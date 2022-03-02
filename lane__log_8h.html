@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Lane Detection Toolsuite: Member List</title>
+<title>Lane Detection Toolsuite: src/lane_log.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,14 +61,68 @@ $(function() {
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">resolved_line Member List</div>  </div>
+<div class="title">lane_log.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="structresolved__line.html">resolved_line</a>, including all inherited members.</p>
+<p>Logging and profiling utilities.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;time.h&gt;</code><br />
+</div>
+<p><a href="lane__log_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a41e0627d85ee72cac20cedf521a04218"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__log_8h.html#a41e0627d85ee72cac20cedf521a04218">LANE_LOG_INFO</a>(format, ...)&#160;&#160;&#160;({(void)0;})</td></tr>
+<tr class="memdesc:a41e0627d85ee72cac20cedf521a04218"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle logging on/off.  <a href="lane__log_8h.html#a41e0627d85ee72cac20cedf521a04218">More...</a><br /></td></tr>
+<tr class="separator:a41e0627d85ee72cac20cedf521a04218"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Logging and profiling utilities. </p>
+<dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This header file provides various logging macros which log to the standard output and the standard error output.<br  />
+ <br  />
+ It also provides profiling macros which insert profiling code at the beginning and end of a user-defined section. </dd></dl>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a41e0627d85ee72cac20cedf521a04218"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41e0627d85ee72cac20cedf521a04218">&#9670;&nbsp;</a></span>LANE_LOG_INFO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LANE_LOG_INFO</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">format, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;({(void)0;})</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Toggle logging on/off. </p>
+<p>A switch to toggle the inclusion of log statements in the program code. Can be controlled via the option in the Makefile. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

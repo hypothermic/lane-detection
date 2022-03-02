@@ -37,5 +37,19 @@ var searchData=
   ['lane_5fkmeans_5fmedoid_5fplot_36',['lane_kmeans_medoid_plot',['../lane__kmeans_8c.html#af2ccbec3c66704ea0fac62d02f59e2d7',1,'lane_kmeans_medoid_plot(lane_image_t *image, const lane_hough_space_t *const space, const lane_kmeans_medoid_t medoid):&#160;lane_kmeans.c'],['../lane__kmeans_8h.html#af2ccbec3c66704ea0fac62d02f59e2d7',1,'lane_kmeans_medoid_plot(lane_image_t *image, const lane_hough_space_t *const space, const lane_kmeans_medoid_t medoid):&#160;lane_kmeans.c']]],
   ['lane_5fkmeans_5fmedoid_5ft_37',['lane_kmeans_medoid_t',['../lane__kmeans_8h.html#ad10c3e2bee248fa831b2aa9298ccec10',1,'lane_kmeans.h']]],
   ['lane_5fkmeans_5fsegment_38',['lane_kmeans_segment',['../lane__kmeans_8c.html#a26d2bf50570ba5e1db50e27ee35e43cf',1,'lane_kmeans_segment(lane_image_t *image, uint8_t iterations, uint8_t clusters):&#160;lane_kmeans.c'],['../lane__kmeans_8h.html#a26d2bf50570ba5e1db50e27ee35e43cf',1,'lane_kmeans_segment(lane_image_t *image, uint8_t iterations, uint8_t clusters):&#160;lane_kmeans.c']]],
-  ['lane_5fpixel_5ft_39',['lane_pixel_t',['../lane__image_8h.html#ae12e3b192dcbdcf838915c4397cc4e1a',1,'lane_image.h']]]
+  ['lane_5flaplace_2ec_39',['lane_laplace.c',['../lane__laplace_8c.html',1,'']]],
+  ['lane_5flaplace_2eh_40',['lane_laplace.h',['../lane__laplace_8h.html',1,'']]],
+  ['lane_5flaplace_5fapply_41',['lane_laplace_apply',['../lane__laplace_8c.html#a26641d9cd9276add900dc44c39f7c132',1,'lane_laplace_apply(const lane_image_t *const src, lane_image_t **dest):&#160;lane_laplace.c'],['../lane__laplace_8h.html#a26641d9cd9276add900dc44c39f7c132',1,'lane_laplace_apply(const lane_image_t *const src, lane_image_t **dest):&#160;lane_laplace.c']]],
+  ['lane_5flog_2eh_42',['lane_log.h',['../lane__log_8h.html',1,'']]],
+  ['lane_5flog_5finfo_43',['LANE_LOG_INFO',['../lane__log_8h.html#a41e0627d85ee72cac20cedf521a04218',1,'lane_log.h']]],
+  ['lane_5fpixel_5ft_44',['lane_pixel_t',['../lane__image_8h.html#ae12e3b192dcbdcf838915c4397cc4e1a',1,'lane_image.h']]],
+  ['lane_5fsobel_2ec_45',['lane_sobel.c',['../lane__sobel_8c.html',1,'']]],
+  ['lane_5fsobel_2eh_46',['lane_sobel.h',['../lane__sobel_8h.html',1,'']]],
+  ['lane_5fsobel_5fapply_47',['lane_sobel_apply',['../lane__sobel_8c.html#ad22b6e7909b07b0feeb5fd978b8f82de',1,'lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest):&#160;lane_sobel.c'],['../lane__sobel_8h.html#ad22b6e7909b07b0feeb5fd978b8f82de',1,'lane_sobel_apply(const lane_image_t *const src, lane_image_t **dest):&#160;lane_sobel.c']]],
+  ['lane_5ftest_5fcommon_2eh_48',['lane_test_common.h',['../lane__test__common_8h.html',1,'']]],
+  ['lane_5fthreshold_2ec_49',['lane_threshold.c',['../lane__threshold_8c.html',1,'']]],
+  ['lane_5fthreshold_2eh_50',['lane_threshold.h',['../lane__threshold_8h.html',1,'']]],
+  ['lane_5fthreshold_5fapply_51',['lane_threshold_apply',['../lane__threshold_8c.html#a8eaf72ddadd97a1651cd1639a608c4bb',1,'lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new):&#160;lane_threshold.c'],['../lane__threshold_8h.html#a8eaf72ddadd97a1651cd1639a608c4bb',1,'lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new):&#160;lane_threshold.c']]],
+  ['lane_5fthreshold_5funused_5flower_52',['LANE_THRESHOLD_UNUSED_LOWER',['../lane__threshold_8h.html#ace445825d476be83ed3bbe18c8cdd38c',1,'lane_threshold.h']]],
+  ['lane_5fthreshold_5funused_5fupper_53',['LANE_THRESHOLD_UNUSED_UPPER',['../lane__threshold_8h.html#a98260cf71b8dace1deda32a64f972b76',1,'lane_threshold.h']]]
 ];
