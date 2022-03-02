@@ -76,20 +76,21 @@ $(function() {
 
 <p>Image thresholding for grayscale images.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="lane__grayscale_8h_source.html">lane_grayscale.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="lane__threshold_8h_source.html">lane_threshold.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="lane__grayscale_8h_source.html">lane_grayscale.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8c.html#a8eaf72ddadd97a1651cd1639a608c4bb">lane_threshold_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t new)</td></tr>
-<tr class="memdesc:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace pixels with a value outside of a specific bound.  <a href="lane__threshold_8c.html#a8eaf72ddadd97a1651cd1639a608c4bb">More...</a><br /></td></tr>
-<tr class="separator:a8eaf72ddadd97a1651cd1639a608c4bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac01d808632da3d24af6c4c9d861db1fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__threshold_8c.html#ac01d808632da3d24af6c4c9d861db1fa">lane_threshold_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t new, bool inside)</td></tr>
+<tr class="memdesc:ac01d808632da3d24af6c4c9d861db1fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace pixels with a value outside of a specific bound.  <a href="lane__threshold_8c.html#ac01d808632da3d24af6c4c9d861db1fa">More...</a><br /></td></tr>
+<tr class="separator:ac01d808632da3d24af6c4c9d861db1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Image thresholding for grayscale images. </p>
 <dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a function to threshold monotone images using upper and lower boundaries. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a8eaf72ddadd97a1651cd1639a608c4bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eaf72ddadd97a1651cd1639a608c4bb">&#9670;&nbsp;</a></span>lane_threshold_apply()</h2>
+<a id="ac01d808632da3d24af6c4c9d861db1fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac01d808632da3d24af6c4c9d861db1fa">&#9670;&nbsp;</a></span>lane_threshold_apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -116,7 +117,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>new</em>&#160;</td>
+          <td class="paramname"><em>new</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>inside</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -131,9 +138,10 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">image</td><td>The image that will be modified by this function </td></tr>
-    <tr><td class="paramname">lower</td><td>The inclusive lower bound of the threshold (0 for unused) </td></tr>
-    <tr><td class="paramname">upper</td><td>The inclusive upper bound of the threshold (255 for unused) </td></tr>
+    <tr><td class="paramname">lower</td><td>The inclusive lower bound of the threshold (0 or LANE_THRESHOLD_UNUSED_LOWER for unused) </td></tr>
+    <tr><td class="paramname">upper</td><td>The inclusive upper bound of the threshold (255 or LANE_THRESHOLD_UNUSED_UPPER for unused) </td></tr>
     <tr><td class="paramname">new</td><td>The replacement value when outside of threshold </td></tr>
+    <tr><td class="paramname">inside</td><td>Replace inside or outside the range </td></tr>
   </table>
   </dd>
 </dl>
@@ -143,7 +151,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 12:50:25 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 2 2022 14:02:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

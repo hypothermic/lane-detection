@@ -120,6 +120,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ace9a4469ad72a2c9a41dd1499bb1d8cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__image_8h.html#ace9a4469ad72a2c9a41dd1499bb1d8cc">lane_image_draw_line</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, <a class="el" href="lane__image_8h.html#ae12e3b192dcbdcf838915c4397cc4e1a">lane_pixel_t</a> color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)</td></tr>
 <tr class="memdesc:ace9a4469ad72a2c9a41dd1499bb1d8cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw a simple line on an image using Bresenham.  <a href="lane__image_8h.html#ace9a4469ad72a2c9a41dd1499bb1d8cc">More...</a><br /></td></tr>
 <tr class="separator:ace9a4469ad72a2c9a41dd1499bb1d8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f2e22d3469f1ade898fef97050ef220"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__image_8h.html#a8f2e22d3469f1ade898fef97050ef220">lane_image_add</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const additions)</td></tr>
+<tr class="memdesc:a8f2e22d3469f1ade898fef97050ef220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merge two images by adding the pixel values together.  <a href="lane__image_8h.html#a8f2e22d3469f1ade898fef97050ef220">More...</a><br /></td></tr>
+<tr class="separator:a8f2e22d3469f1ade898fef97050ef220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58c2600ceefb0e299bc02c4bc5333c08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__image_8h.html#a58c2600ceefb0e299bc02c4bc5333c08">lane_image_free</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>)</td></tr>
 <tr class="memdesc:a58c2600ceefb0e299bc02c4bc5333c08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deallocates an image and its associated data.  <a href="lane__image_8h.html#a58c2600ceefb0e299bc02c4bc5333c08">More...</a><br /></td></tr>
 <tr class="separator:a58c2600ceefb0e299bc02c4bc5333c08"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,6 +170,43 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a8f2e22d3469f1ade898fef97050ef220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f2e22d3469f1ade898fef97050ef220">&#9670;&nbsp;</a></span>lane_image_add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void lane_image_add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const&#160;</td>
+          <td class="paramname"><em>additions</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Merge two images by adding the pixel values together. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">image</td><td>The source image that will be added upon </td></tr>
+    <tr><td class="paramname">additions</td><td>The other image that whose values will be used </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a45823097673565b94c8b7a05e9c55041"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a45823097673565b94c8b7a05e9c55041">&#9670;&nbsp;</a></span>lane_image_copy()</h2>
 
@@ -366,7 +406,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 12:50:25 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 2 2022 14:02:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

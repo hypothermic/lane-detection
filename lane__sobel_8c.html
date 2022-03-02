@@ -88,11 +88,61 @@ Functions</h2></td></tr>
 <tr class="memitem:a19fe7a891923d397bc046494bc423945"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#a19fe7a891923d397bc046494bc423945">lane_nonmax_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, const double *const directions, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **dest)</td></tr>
 <tr class="memdesc:a19fe7a891923d397bc046494bc423945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply non-maximum suppression.  <a href="lane__sobel_8c.html#a19fe7a891923d397bc046494bc423945">More...</a><br /></td></tr>
 <tr class="separator:a19fe7a891923d397bc046494bc423945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade8e9930dfee08a52d092b7a5c32983b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#ade8e9930dfee08a52d092b7a5c32983b">lane_hysteresis_apply</a> (<a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *<a class="el" href="structimage.html">image</a>, uint8_t weak, uint8_t strong)</td></tr>
+<tr class="memdesc:ade8e9930dfee08a52d092b7a5c32983b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply edge tracking by hysteresis.  <a href="lane__sobel_8c.html#ade8e9930dfee08a52d092b7a5c32983b">More...</a><br /></td></tr>
+<tr class="separator:ade8e9930dfee08a52d092b7a5c32983b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Sobel filter for images. </p>
 <dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a Sobel filter which convolutes two predefined 3x3 kernels with an image and calculates the gradient magnitude for each pixel. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="ade8e9930dfee08a52d092b7a5c32983b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade8e9930dfee08a52d092b7a5c32983b">&#9670;&nbsp;</a></span>lane_hysteresis_apply()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void lane_hysteresis_apply </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>weak</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>strong</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Apply edge tracking by hysteresis. </p>
+<p>Track if weak edges are connected to strong edges.<br  />
+ <br  />
+ If they are not connected, they will be discarded.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">image</td><td>The input image with weak and strong edges </td></tr>
+    <tr><td class="paramname">weak</td><td>The value of weak edges </td></tr>
+    <tr><td class="paramname">strong</td><td>The value of strong edges </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a19fe7a891923d397bc046494bc423945"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a19fe7a891923d397bc046494bc423945">&#9670;&nbsp;</a></span>lane_nonmax_apply()</h2>
 
@@ -195,7 +245,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 12:50:25 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 2 2022 14:02:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

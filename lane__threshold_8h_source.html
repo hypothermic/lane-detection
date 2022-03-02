@@ -75,22 +75,24 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef LANE_THRESHOLD_H</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define LANE_THRESHOLD_H</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lane__image_8h.html">lane_image.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="lane__threshold_8h.html#ace445825d476be83ed3bbe18c8cdd38c">   18</a></span>&#160;<span class="preprocessor">#define LANE_THRESHOLD_UNUSED_LOWER 0</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="lane__threshold_8h.html#a98260cf71b8dace1deda32a64f972b76">   23</a></span>&#160;<span class="preprocessor">#define LANE_THRESHOLD_UNUSED_UPPER 255</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__threshold_8h.html#a8eaf72ddadd97a1651cd1639a608c4bb">lane_threshold_apply</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t <span class="keyword">new</span>);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_THRESHOLD_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lane__image_8h.html">lane_image.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="lane__threshold_8h.html#ace445825d476be83ed3bbe18c8cdd38c">   20</a></span>&#160;<span class="preprocessor">#define LANE_THRESHOLD_UNUSED_LOWER 0</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="lane__threshold_8h.html#a98260cf71b8dace1deda32a64f972b76">   25</a></span>&#160;<span class="preprocessor">#define LANE_THRESHOLD_UNUSED_UPPER 255</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keywordtype">void</span> <a class="code" href="lane__threshold_8h.html#ac01d808632da3d24af6c4c9d861db1fa">lane_threshold_apply</a>(<a class="code" href="structimage.html">lane_image_t</a> *<a class="code" href="structimage.html">image</a>, uint8_t lower, uint8_t upper, uint8_t <span class="keyword">new</span>, <span class="keywordtype">bool</span> inside);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_THRESHOLD_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="alane__threshold_8h_html_a8eaf72ddadd97a1651cd1639a608c4bb"><div class="ttname"><a href="lane__threshold_8h.html#a8eaf72ddadd97a1651cd1639a608c4bb">lane_threshold_apply</a></div><div class="ttdeci">void lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new)</div><div class="ttdoc">Replace pixels with a value outside of a specific bound.</div><div class="ttdef"><b>Definition:</b> lane_threshold.c:15</div></div>
+<div class="ttc" id="alane__threshold_8h_html_ac01d808632da3d24af6c4c9d861db1fa"><div class="ttname"><a href="lane__threshold_8h.html#ac01d808632da3d24af6c4c9d861db1fa">lane_threshold_apply</a></div><div class="ttdeci">void lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new, bool inside)</div><div class="ttdoc">Replace pixels with a value outside of a specific bound.</div><div class="ttdef"><b>Definition:</b> lane_threshold.c:17</div></div>
 <div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdoc">An image in memory.</div><div class="ttdef"><b>Definition:</b> lane_image.h:51</div></div>
 <div class="ttc" id="alane__image_8h_html"><div class="ttname"><a href="lane__image_8h.html">lane_image.h</a></div><div class="ttdoc">Generic image utilities.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 12:50:25 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 2 2022 14:02:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
