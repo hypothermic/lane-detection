@@ -292,6 +292,7 @@
 
 					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough Transform, but that the lane marking lines will be kept intact.
 					\mbox{Fan et al. \cite{fan2016faster} recommended} a kernel size of $ K_x = K_y = 3 $ and a strength of $ \sigma = 1.5 $ for this purpose.
+					The size of the kernel will affect how computationally expensive the convolution is, but the $\sigma$ does not affect the required amount of calculations.
 					A visual representation of this kernel with approximate values is shown in \verwijzingb{figuur}{Example of a Gaussian kernel}.
 					
 					\begin{figuur}{Example of a Gaussian kernel}

@@ -14,23 +14,26 @@
 /**
  * The level of thresholding applied after the Sobel filter
  */
-#define ARTIFACT_THRESHOLD	(200) // ~80%... (256/100)*80=205
+#define ARTIFACT_THRESHOLD	(80)
 
 int main(int argc, char **argv) {
 	lane_image_t *input = NULL,
-		     *output = NULL;
+		     *sobel = NULL,
+		     *edges = NULL;
 	double *directions = NULL;
+
 	TEST_CHECK_ARGS(argc, argv);
 
 	TEST_LOAD_IMAGE(argv[1], input);
 
-	LANE_PROFILE(sobel, lane_sobel_apply(input, &output, &directions));
-	LANE_PROFILE(threshold, lane_threshold_apply(output, ARTIFACT_THRESHOLD, 255, 0));
+	LANE_PROFILE(sobel, lane_sobel_apply(input, &sobel, &directions));
+	LANE_PROFILE(nonmax, lane_nonmax_apply(sobel, directions, &edges))
 
-	TEST_SAVE_IMAGE(argv[2], output);
+	TEST_SAVE_IMAGE(argv[2], edges);
 
 	lane_image_free(input);
-	lane_image_free(output);
+	lane_image_free(sobel);
+	lane_image_free(edges);
 	free(directions);
 
 	return 0;
