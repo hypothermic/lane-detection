@@ -78,19 +78,72 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="lane__sobel_8h_source.html">lane_sobel.h</a>&quot;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="lane__log_8h_source.html">lane_log.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#ad22b6e7909b07b0feeb5fd978b8f82de">lane_sobel_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **dest)</td></tr>
-<tr class="memdesc:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Highlight edges within an image using the Sobel operator.  <a href="lane__sobel_8c.html#ad22b6e7909b07b0feeb5fd978b8f82de">More...</a><br /></td></tr>
-<tr class="separator:ad22b6e7909b07b0feeb5fd978b8f82de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae256280750b10d56764fa8d8fff8743c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#ae256280750b10d56764fa8d8fff8743c">lane_sobel_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **magnitudes, double **directions)</td></tr>
+<tr class="memdesc:ae256280750b10d56764fa8d8fff8743c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Highlight edges within an image using the Sobel operator.  <a href="lane__sobel_8c.html#ae256280750b10d56764fa8d8fff8743c">More...</a><br /></td></tr>
+<tr class="separator:ae256280750b10d56764fa8d8fff8743c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19fe7a891923d397bc046494bc423945"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lane__sobel_8c.html#a19fe7a891923d397bc046494bc423945">lane_nonmax_apply</a> (const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const src, const double *const directions, <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **dest)</td></tr>
+<tr class="memdesc:a19fe7a891923d397bc046494bc423945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply non-maximum suppression.  <a href="lane__sobel_8c.html#a19fe7a891923d397bc046494bc423945">More...</a><br /></td></tr>
+<tr class="separator:a19fe7a891923d397bc046494bc423945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Sobel filter for images. </p>
 <dl class="section author"><dt>Author</dt><dd>Matthijs Bakker This code unit provides a Sobel filter which convolutes two predefined 3x3 kernels with an image and calculates the gradient magnitude for each pixel. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ad22b6e7909b07b0feeb5fd978b8f82de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad22b6e7909b07b0feeb5fd978b8f82de">&#9670;&nbsp;</a></span>lane_sobel_apply()</h2>
+<a id="a19fe7a891923d397bc046494bc423945"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19fe7a891923d397bc046494bc423945">&#9670;&nbsp;</a></span>lane_nonmax_apply()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void lane_nonmax_apply </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> *const&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double *const&#160;</td>
+          <td class="paramname"><em>directions</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Apply non-maximum suppression. </p>
+<p>Discard unwanted pixels which may not constitude edges.<br  />
+ <br  />
+ This function only keeps the local maxima pixel in each cluster of related edge pixels.<br  />
+ <b>Note:</b> The output image will be cropped by <em>(3-1)*2</em> px because there is no data to apply the kernel on in the borders of the image!<br  />
+ <b>Note:</b> It is assumed that the input image is already in grayscale, so the color values for R,G,B match for every pixel.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src</td><td>The input image with edge values </td></tr>
+    <tr><td class="paramname">directions</td><td>The gradient directions for each pixel encoded in a row-major array </td></tr>
+    <tr><td class="paramname">dest</td><td>Where the output image should be placed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae256280750b10d56764fa8d8fff8743c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae256280750b10d56764fa8d8fff8743c">&#9670;&nbsp;</a></span>lane_sobel_apply()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -105,7 +158,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="lane__image_8h.html#ae8734dcfe0268ea58eb7672a415c3225">lane_image_t</a> **&#160;</td>
-          <td class="paramname"><em>dest</em>&#160;</td>
+          <td class="paramname"><em>magnitudes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double **&#160;</td>
+          <td class="paramname"><em>directions</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -125,7 +184,8 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">src</td><td>The input image, which data will be read </td></tr>
-    <tr><td class="paramname">dest</td><td>The output image, which will be (over)written to </td></tr>
+    <tr><td class="paramname">magnitudes</td><td>The output image, which will be (over)written to </td></tr>
+    <tr><td class="paramname">directions</td><td>The gradient directions for each pixel </td></tr>
   </table>
   </dd>
 </dl>
@@ -135,7 +195,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 08:18:06 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 2 2022 12:50:25 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
