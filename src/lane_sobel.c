@@ -188,3 +188,43 @@ void lane_nonmax_apply(const lane_image_t *const src, const double *const direct
 	(*dest) = out;
 }
 
+/*
+ * @inheritDoc
+ */
+// Note that we do not discard edge pixels because strong edge pixels
+// are totally valid in this case.
+void lane_hysteresis_apply(lane_image_t *image, uint8_t weak, uint8_t strong) {
+	int x, y, i, j, k, ki;
+
+	for (y = KERNEL_RADIUS; y < image->height - KERNEL_RADIUS; ++y) {
+		for (x = KERNEL_RADIUS; x < image->width - KERNEL_RADIUS; ++x) {
+			i = (y * image->width) + x;
+
+			if (image->data[i].r == weak) {
+				// Check for strong pixels in a 3 by 3 region
+				for (j = 0; j < KERNEL_DIAMETER; ++j) {
+					for (k = 0; k < KERNEL_DIAMETER; ++k) {
+						// Relative index to the kernel element
+						ki = (y - KERNEL_RADIUS + j) * image->width + x - KERNEL_RADIUS + k;
+
+						// Skip the middle element
+						if (ki == i) continue;
+
+						// Detected a strong pixel, so the current edge is valid
+						if (image->data[ki].r == strong) {
+							image->data[i].r = image->data[i].g = image->data[i].b = strong;
+							goto next;
+						}
+					}
+				}
+
+				// Current edge is invalid
+				image->data[i].r = image->data[i].g = image->data[i].b = 0;
+
+next:				({(void)0;});
+
+			}
+		}
+	}
+}
+

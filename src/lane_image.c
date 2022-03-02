@@ -107,6 +107,29 @@ void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, 
 /*
  * @inheritDoc
  */
+// FIXME at the moment this only works for grayscale images
+void lane_image_add(lane_image_t *image, const lane_image_t *const additions) {
+	size_t x, y, i;
+	uint16_t v;
+
+	for (y = 0; y < image->height; ++y) {
+		for (x = 0; x < image->width; ++x) {
+			// Index of the current pixel in the 2d array
+			i = (y * image->width) + x;
+
+			// If the sum of the input and output pixel > bpp, cap it.
+			v = image->data[i].r + additions->data[i].r;
+			if (v > 255) v = 255;
+
+			// Replace the pixel with the new value in the source image
+			image->data[i].r = image->data[i].g = image->data[i].b = v;
+		}
+	}
+}
+
+/*
+ * @inheritDoc
+ */
 void lane_image_free(lane_image_t *image) {
 	free(image->data);
 	free(image);

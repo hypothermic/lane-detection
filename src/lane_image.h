@@ -95,6 +95,14 @@ void lane_image_fill_solid(lane_image_t *image, lane_pixel_t color);
 void lane_image_draw_line(lane_image_t *image, lane_pixel_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 /**
+ * Merge two images by adding the pixel values together.
+ *
+ * @param image		The source image that will be added upon
+ * @param additions	The other image that whose values will be used
+ */
+void lane_image_add(lane_image_t *image, const lane_image_t *const additions);
+
+/**
  * Deallocates an image and its associated data.
  *
  * @param image		The image to be deallocated

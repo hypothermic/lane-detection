@@ -10,6 +10,8 @@
 #ifndef LANE_THRESHOLD_H
 #define LANE_THRESHOLD_H
 
+#include <stdbool.h>
+
 #include "lane_image.h"
 
 /**
@@ -29,11 +31,14 @@
  * specified by the <i>upper</i> and <i>lower</i> arguments with
  * a specific value indicated with the <i>new</i> argument.
  *
- * @param image	The image that will be modified by this function
- * @param lower	The inclusive lower bound of the threshold (0 for unused)
- * @param upper	The inclusive upper bound of the threshold (255 for unused)
- * @param new	The replacement value when outside of threshold
+ * @param image		The image that will be modified by this function
+ * @param lower		The inclusive lower bound of the threshold
+ * 			(0 or LANE_THRESHOLD_UNUSED_LOWER for unused)
+ * @param upper		The inclusive upper bound of the threshold
+ * 			(255 or LANE_THRESHOLD_UNUSED_UPPER for unused)
+ * @param new		The replacement value when outside of threshold
+ * @param inside	Replace inside or outside the range
  */
-void lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new);
+void lane_threshold_apply(lane_image_t *image, uint8_t lower, uint8_t upper, uint8_t new, bool inside);
 
 #endif /* LANE_THRESHOLD_H */

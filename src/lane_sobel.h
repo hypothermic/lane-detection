@@ -55,4 +55,17 @@ void lane_sobel_apply(const lane_image_t *const src, lane_image_t **magnitudes, 
  */
 void lane_nonmax_apply(const lane_image_t *const src, const double *const directions, lane_image_t **dest);
 
+/**
+ * @brief Apply edge tracking by hysteresis
+ *
+ * Track if weak edges are connected to strong edges.<br />
+ * <br />
+ * If they are not connected, they will be discarded.
+ *
+ * @param image		The input image with weak and strong edges
+ * @param weak		The value of weak edges
+ * @param strong	The value of strong edges
+ */
+void lane_hysteresis_apply(lane_image_t *image, uint8_t weak, uint8_t strong);
+
 #endif /* LANE_SOBEL_H */

@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	TEST_LOAD_IMAGE(argv[1], input);
 
 	LANE_PROFILE(sobel, lane_sobel_apply(input, &output, &directions));
-	LANE_PROFILE(threshold, lane_threshold_apply(output, ARTIFACT_THRESHOLD, 255, 0));
+	LANE_PROFILE(threshold, lane_threshold_apply(output, ARTIFACT_THRESHOLD, 255, 0, false));
 
 	TEST_SAVE_IMAGE(argv[2], output);
 
