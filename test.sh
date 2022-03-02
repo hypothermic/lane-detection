@@ -10,6 +10,7 @@
 #
 
 set -o nounset
+set -o errexit
 
 #
 # Run the first test
@@ -24,7 +25,6 @@ for ((i = 2; i <= $#; ++i))
 do
 	FILENAME+=".$@[i-1].out"
 	make test-lane-man ARG_TEST="$@[i]" ARG_SAMPLE="${SAMPLE}${FILENAME}"
-	
 done
 
 echo "Finished"
