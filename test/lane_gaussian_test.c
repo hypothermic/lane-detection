@@ -19,7 +19,7 @@
  * <br />
  * Increasing this will make the image seem more blurred.
  */
-#define GAUSSIAN_VARIANCE	(1.5)
+#define GAUSSIAN_VARIANCE	(2.5)
 
 int main(int argc, char **argv) {
 	lane_image_t *image = NULL,

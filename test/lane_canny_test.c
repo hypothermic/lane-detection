@@ -14,12 +14,12 @@
 /**
  * The threshold at which edges are questionable
  */
-#define LOWER_THRESHOLD		(8)
+#define LOWER_THRESHOLD		(4)
 
 /**
  * The threshold at which edges are certain
  */
-#define UPPER_THRESHOLD		(64)
+#define UPPER_THRESHOLD		(32)
 
 int main(int argc, char **argv) {
 	lane_image_t *input = NULL,

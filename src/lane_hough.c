@@ -39,9 +39,9 @@
 /**
  * @internal
  *
- * Checks if a line is horizontal (between 45 and 135 degrees)
+ * Checks if a line is vertical (between 45 and 135 degrees)
  */
-#define IS_LINE_HORIZONTAL(line)				(line.theta >= 45 && line.theta <= 135)
+#define IS_LINE_VERTICAL(line)					(line.theta >= 45 && line.theta <= 135)
 
 /**
  * @internal
@@ -141,15 +141,17 @@ size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **rspa
 	return lines_amount;
 }
 
+#define DegreesToRadians(deg)	RADIANS(deg)
+
 /*
  * @inheritDoc
  */
 lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line) {
 	lane_hough_resolved_line_t result;
-	uint16_t x1, y1, x2, y2;
+	int x1, y1, x2, y2;
 
 	// Check from which corner we need to base the line
-	if (IS_LINE_HORIZONTAL(line)) {
+	if (IS_LINE_VERTICAL(line)) {
 		x1 = 0;
 		y1 = POLARIZE(x1, image->width, image->height, line, space, cos, sin);
 		x2 = image->width;
@@ -166,7 +168,7 @@ lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const la
 	result.x2 = x2;
 	result.y2 = y2;
 
-	LANE_LOG_INFO("Resolved line with rho=%04d, th=%03d, estimating from (%04d, %04d) to (%04d, %04d)", line.rho, line.theta, x1, y1, x2, y2);
+	LANE_LOG_INFO("Resolved line with rho=%04d, th=%03d, estimating from (%04d, %04d) to (%04d, %04d)", line.rho, line.theta, result.x1, result.y1, result.x2, result.y2);
 
 	return result;
 }
@@ -175,6 +177,7 @@ lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const la
  * @inheritDoc
  */
 void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line) {
+	LANE_LOG_INFO("Reported line %d, %d, %d, %d", line->x1, line->y1, line->x2, line->y2);
 	lane_image_draw_line(image, (lane_pixel_t) {255, 0, 0}, line->x1, line->y1, line->x2, line->y2);
 }
 
@@ -183,7 +186,7 @@ void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t 
  */
 void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const space) {
 	lane_pixel_t pixel;
-	int x, y, val;
+	uint32_t x, y, val;
 
 	// Most values from HT are within 0-300 so it's not worth
 	// to correct them on a scale
@@ -193,11 +196,7 @@ void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const 
 	// within the 8-bit color channel of the output
 	for (y = 0; y < space->height; ++y) {
 		for (x = 0; x < space->width; ++x) {
-			val = (int) space->acc[(y * space->width) + x];
-
-			if (val < 0) { // uint8_t min
-				val = 0;
-			}
+			val = space->acc[(y * space->width) + x];
 
 			if (val > 255) { // uint8_t max
 				val = 255;
@@ -216,7 +215,8 @@ void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const 
  * @inheritDoc
  */
 static inline void quantize(const lane_image_t *const image, lane_hough_space_t *space, double h, uint8_t min, uint8_t max) {
-	uint16_t x, y, th;
+	uint16_t x, y;
+	uint8_t th;
 	double cx, cy;
 
 	// Center coordinates of the image
@@ -249,7 +249,7 @@ static inline uint32_t magnitude(const lane_hough_space_t *const space, uint16_t
 	for (y = -KERNEL_SIZE; y <= KERNEL_SIZE; ++y) {
 		for (x = -KERNEL_SIZE; x <= KERNEL_SIZE; ++x) {
 			if ((y + rho >= 0 && y + rho < space->height) && (x + th >= 0 && x + th < space->width)) {
-				if ((int) space->acc[((rho + y) * space->width) + (th + x)] > magnitude) {
+				if ((int) space->acc[((rho + y) * space->width) + (th + x)] > (int) magnitude) {
 					magnitude = space->acc[((rho + y) * space->width) + (th + x)];
 					goto found;
 				}
@@ -284,7 +284,7 @@ static inline size_t classify(lane_hough_normal_t **lines, const lane_hough_spac
 	for (rho = 0; rho < space->height; ++rho) {
 		for (th = 0; th < space->width; ++th) {
 			if ((int) space->acc[(rho * space->width) + th] >= thres) {
-				if (magnitude(space, rho, th) <= (int) space->acc[(rho * space->width) + th]) {
+				if (magnitude(space, rho, th) <= space->acc[(rho * space->width) + th]) {
 					
 					// Peak detected!
 					LANE_LOG_INFO("Detected rho=%04d th=%04d", rho, th);

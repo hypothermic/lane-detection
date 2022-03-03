@@ -40,7 +40,7 @@ typedef struct resolved_line	lane_hough_resolved_line_t;
  * th is the angle between the line and the x axis.
  */
 struct normal {
-	uint16_t rho, theta;
+	int rho, theta;
 };
 
 /**
@@ -62,7 +62,7 @@ struct space {
  * This includes the start and end coordinates.
  */
 struct resolved_line {
-	uint16_t x1, y1, x2, y2;
+	int x1, y1, x2, y2;
 };
 
 /**

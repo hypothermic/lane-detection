@@ -15,7 +15,7 @@
 /**
  * Accumulator value threshold for HT
  */
-#define HOUGH_THRESHOLD		(150)
+#define HOUGH_THRESHOLD		(100)
 
 /**
  * Minimum angle of the range.
