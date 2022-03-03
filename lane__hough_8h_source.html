@@ -84,7 +84,7 @@ $(function() {
 <div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="lane__hough_8h.html#ab6a5cc48df641ecfdab1385a7db5fb76">   30</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structresolved__line.html">resolved_line</a>    <a class="code" href="structresolved__line.html">lane_hough_resolved_line_t</a>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structnormal.html">   42</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structnormal.html">normal</a> {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    uint16_t rho, theta;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">int</span> rho, theta;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structspace.html">   53</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structspace.html">space</a> {</div>
@@ -92,7 +92,7 @@ $(function() {
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structresolved__line.html">   64</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structresolved__line.html">resolved_line</a> {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    uint16_t x1, y1, x2, y2;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">int</span> x1, y1, x2, y2;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;};</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keywordtype">size_t</span> <a class="code" href="lane__hough_8h.html#a6121c16a8c847618eaa381a3021a67cf">lane_hough_apply</a>(<span class="keyword">const</span> <a class="code" href="structimage.html">lane_image_t</a> *<span class="keyword">const</span> src, <a class="code" href="structspace.html">lane_hough_space_t</a> **<a class="code" href="structspace.html">space</a>, <a class="code" href="structnormal.html">lane_hough_normal_t</a> **rnormals, uint8_t min, uint8_t max, uint16_t thres);</div>
@@ -105,18 +105,18 @@ $(function() {
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LANE_HOUGH_H */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="alane__hough_8h_html_a9b7027b3087f870d9875d65c9ab322b5"><div class="ttname"><a href="lane__hough_8h.html#a9b7027b3087f870d9875d65c9ab322b5">lane_hough_resolve_line</a></div><div class="ttdeci">lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line)</div><div class="ttdoc">Resolve a line from polar coordinates to Cartesian coordinates.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:147</div></div>
+<div class="ttc" id="alane__hough_8h_html_a9b7027b3087f870d9875d65c9ab322b5"><div class="ttname"><a href="lane__hough_8h.html#a9b7027b3087f870d9875d65c9ab322b5">lane_hough_resolve_line</a></div><div class="ttdeci">lane_hough_resolved_line_t lane_hough_resolve_line(lane_image_t *image, const lane_hough_space_t *const space, const lane_hough_normal_t line)</div><div class="ttdoc">Resolve a line from polar coordinates to Cartesian coordinates.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:149</div></div>
 <div class="ttc" id="astructspace_html"><div class="ttname"><a href="structspace.html">space</a></div><div class="ttdoc">Accumulator for Hough transform.</div><div class="ttdef"><b>Definition:</b> lane_hough.h:53</div></div>
 <div class="ttc" id="astructresolved__line_html"><div class="ttname"><a href="structresolved__line.html">resolved_line</a></div><div class="ttdoc">A line represented in Cartesian space.</div><div class="ttdef"><b>Definition:</b> lane_hough.h:64</div></div>
 <div class="ttc" id="astructimage_html"><div class="ttname"><a href="structimage.html">image</a></div><div class="ttdoc">An image in memory.</div><div class="ttdef"><b>Definition:</b> lane_image.h:51</div></div>
 <div class="ttc" id="astructnormal_html"><div class="ttname"><a href="structnormal.html">normal</a></div><div class="ttdoc">A line represented by rho, theta values.</div><div class="ttdef"><b>Definition:</b> lane_hough.h:42</div></div>
 <div class="ttc" id="alane__image_8h_html"><div class="ttname"><a href="lane__image_8h.html">lane_image.h</a></div><div class="ttdoc">Generic image utilities.</div></div>
-<div class="ttc" id="alane__hough_8h_html_a47f504a1121cf4a6687a2df54ae2c465"><div class="ttname"><a href="lane__hough_8h.html#a47f504a1121cf4a6687a2df54ae2c465">lane_hough_plot_line</a></div><div class="ttdeci">void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line)</div><div class="ttdoc">Draw a line on an image.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:177</div></div>
-<div class="ttc" id="alane__hough_8h_html_a406dacc2d03736d874b31dae6bdb25a1"><div class="ttname"><a href="lane__hough_8h.html#a406dacc2d03736d874b31dae6bdb25a1">lane_hough_plot_graph</a></div><div class="ttdeci">void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const space)</div><div class="ttdoc">Draw the accumulator values on an image.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:184</div></div>
+<div class="ttc" id="alane__hough_8h_html_a47f504a1121cf4a6687a2df54ae2c465"><div class="ttname"><a href="lane__hough_8h.html#a47f504a1121cf4a6687a2df54ae2c465">lane_hough_plot_line</a></div><div class="ttdeci">void lane_hough_plot_line(lane_image_t *image, const lane_hough_resolved_line_t *const line)</div><div class="ttdoc">Draw a line on an image.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:179</div></div>
+<div class="ttc" id="alane__hough_8h_html_a406dacc2d03736d874b31dae6bdb25a1"><div class="ttname"><a href="lane__hough_8h.html#a406dacc2d03736d874b31dae6bdb25a1">lane_hough_plot_graph</a></div><div class="ttdeci">void lane_hough_plot_graph(lane_image_t *image, const lane_hough_space_t *const space)</div><div class="ttdoc">Draw the accumulator values on an image.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:187</div></div>
 <div class="ttc" id="alane__hough_8h_html_a6121c16a8c847618eaa381a3021a67cf"><div class="ttname"><a href="lane__hough_8h.html#a6121c16a8c847618eaa381a3021a67cf">lane_hough_apply</a></div><div class="ttdeci">size_t lane_hough_apply(const lane_image_t *const src, lane_hough_space_t **space, lane_hough_normal_t **rnormals, uint8_t min, uint8_t max, uint16_t thres)</div><div class="ttdoc">Use the Hough Transform to isolate lines.</div><div class="ttdef"><b>Definition:</b> lane_hough.c:114</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 2 2022 14:02:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Mar 3 2022 16:21:31 for Lane Detection Toolsuite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
