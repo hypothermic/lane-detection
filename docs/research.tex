@@ -474,8 +474,27 @@
 				\begin{subsubparagraaf}{Canny Edge Detector}
 
 					This edge detection technique is not an operator in itself; it suggests a routine around an existing edge detection operator such as the Sobel-Feldman operator \cite{canny1986computational}.
+					The biggest benefit of using this routine is that the resulting edges are thinned to only one pixel wide lines.
+					This thinning is achieved by applying a technique called non-maximum suppression.
+					It involves only keeping the pixel with the largest gradient magnitude of all the adjacent pixels that have the same gradient direction \cite{sarab2020canny}.
+					An example of multiple pixels laying on one Sobel-detected edge can be seen in \verwijzingb{figuur}{Illustration of an edge before applying non-maximum suppression}.
+					The goal of the non-maximum suppression is to discard all the indicated pixels which are not the gradient intensity, like $p$ and $r$.
+					Pixel $q$ will be kept because it is the maximum valued pixel in this particular direction.
+					
+					\begin{figuur}{Illustration of an edge before applying non-maximum suppression}
 
-					\textbf{[todo:]}
+						\includegraphics[width=0.5\textwidth]{teli2019canny-img1.png}
+						\cite{teli2019canny}
+
+					\end{figuur}
+
+					The next step in the routine is finding so-called weak and strong pixels based on their luminance values.
+					The thresholds for these luminance values depend on the situation and are arbitrarily set on a case-by-case basis.
+					Strong pixels are those that are certain to be part of an edge.
+					Weak pixels could either be image noise or edge pixels.
+					Whether or not weak pixels are indeed part of an edge is determined by if they are near a strong pixel or not.
+					If a weak pixel is (indirectly) connected to a strong pixel, it gets accepted as an edge pixel as well \cite{canny1986computional}.
+					This technique is known as edge tracking hysteresis.
 
 				\end{subsubparagraaf}
 
@@ -1023,6 +1042,88 @@
 
 			\end{subparagraaf}
 
+			\begin{subparagraaf}{$k$-means Image Separation}
+
+				When applying the Gaussian and Sobel steps as noted in \verwijzingb{subparagraaf}{Filter Development}, I still noticed a lot of noise in the Sobel output.
+				As recommended by my mentor, I took a step back and implemented a filter that could separate the pixels in a grayscale image using $k$-means.
+				The intention of this filter is to separate the lane from the non-lane pixels.
+				
+				\bigskip
+
+				I implemented the filter using Lloyd's algorithm.
+				For each pixel, the program keeps the luminance value and the distance to the closest centroid.
+				Each centroid has a mean luminance value that gets refined every iteration so that it nears the real mean value.
+				After $S_i$ iterations of the algorithm, the approximate means for all clusters are calculated.
+				Then, each pixel's luminance value gets updated to the nearest cluster's luminance value.
+				The memory required for this approach is $4 \cdot I_w \cdot I_h$ bytes because every pixel takes $4$ bytes: two for storing the nearest luminance value, one for storing its own luminance value and one for storing the cluster ID.
+				Therefore, we could easily store it in FPGA registers.
+
+				
+				\begin{figuur}{Example of two-means image separation on a grayscale image}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.kmseg.out.png} \\
+
+						&& $ k = 2 $
+					\end{tabular}
+
+				\end{figuur}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Canny Edge Detection Implementation}
+
+				Using the Gaussian filter and the Sobel filter that I had created, I possessed over the basic starting points for creating a Canny Edge Detector.
+				The reason why I wanted to use the Canny method was because I had too many false edges using just a combination of my Gaussian and Sobel filters.
+				I started off modifying my original Sobel filter because at the time it only output the gradient magnitudes, not the directions.
+				I used a $5 \times 5$ Gaussian filter because it helped with eliminating noise and making smooth lines from the road markings.
+				I tested it on many images and came to the conclusion that the standard deviation for the Gaussian kernel values should be tweaked on a case-by-case basis: on some images, a low value like $\sigma = 1.5$ works well, but on others, a high value around $2.5$ is better.
+				All of these parameters are easily modifiable in the test implementation and it should be considered to make them modifiable in the FPGA implementation.
+				Then, using the directions from the modified Sobel filter, I implemented non-maximum suppression.
+				I did this by looping over each pixel in the image, and checking if it had a higher value than the neighboring pixels that were in the same gradient direction as the target pixel.
+				If the target pixel had a higher value than both of his neighbors, it was kept in the output image.
+				I imagine that this could be easily done in parallel on an FPGA using line buffers for adjacent pixels.
+				Next, I implemented a double thresholding technique which could discard noise and categorize the remaining edge pixels into two categories:
+
+				\begin{itemize}
+					\item	a category for weak pixels, which values are between the lower and upper boundary of the threshold,
+					\item	a category for strong pixels, the values of which are above the upper boundary of the threshold.
+				\end{itemize}
+
+				The values I chose to use for the double threshold are $\frac{1}{4}$th of the maximum pixel value for the upper boundary and $\frac{1}{8}$th for the lower boundary.
+				I based these off the values that OpenCV used in their example program, and they work well in my program as well.
+				As per the Canny technique, weak edge pixels need to be connected to a strong edge pixel to be considered valid.
+				However, since this is a recursive operation -- making it unfeasible for implementation on a FPGA -- I decided to only check the direct adjacent pixels for presence of a strong pixel.
+				This is a sacrifice that I made because it means that the total amount of compilations is known beforehand, but it potentially decreases the effectiveness of the hysteresis.
+				An example image fed through a grayscale filter, a two-means seperation filter and finally the Canny filter, can be seen in \verwijzingb{figuur}{A test image processed with my Canny Edge Detector}.
+				Parameter $T_w$ is the weak edge threshold and $T_s$ is the strong edge threshold.
+
+				\begin{figuur}{A test image processed with my Canny Edge Detector}
+
+					\begin{tabular}{ccc}
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.png} &
+							
+						\begin{tikzpicture}
+							\draw[-to, white](0,0) -- (1,0);
+							\draw[-to, thick](0,1.65) -- (1,1.65);
+						\end{tikzpicture} &
+							
+						\includegraphics[width=0.4\textwidth]{0a0a0b1a-7c39d841.grayscale.out.kmseg.out.gaussian.out.canny.out.png} \\
+						&& $ T_w = \frac{1}{8}, \hspace{1cm} T_s = \frac{1}{4} $
+					\end{tabular}
+
+				\end{figuur}
+			\end{subparagraaf}
+
 			\begin{subparagraaf}{Hough Transform Implementation}
 		
 				The range of orientations of the Hough Transform can be fitted in two ways: $\pi \leq \theta < 0$ where $\rho$ holds both negative and positive values, or $0 \leq \theta < \pi$ where $\rho$ holds only positive values \cite{anvari2010fpga}.
@@ -1145,7 +1246,7 @@
 
 			\end{subparagraaf}
 
-			\begin{subparagraaf}{$k$-means Implementation}
+			\begin{subparagraaf}{$k$-means Hough Lines Clustering}
 
 				As can be seen in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}, multiple lines are left over per lane marking.
 				To get the average of these results, I decided to implement Lloyd's algorithm.
@@ -1178,6 +1279,8 @@
 				If enough test data is available, like was the case for the left lane in \verwijzingb{figuur}{Hough Transform results clustered using two-means}, the clustering works really well and the average of the lane gets found.
 				However, if not that many lines from the HT are available (from my testing, below 3 lines,) the clustering is suboptimal.
 				Therefore, we need to assure that the Hough Transform can recognize enough lines for the lane markings.
+				We can do this by altering the thresholds of the Canny edge detector and the threshold of the Hough peak detector.
+				However, these thresholds need to be modified on a case-by-case situation.
 
 				\begin{figuur}{Hough Transform results clustered using two-means}
 
@@ -1216,18 +1319,23 @@
 
 				\item	Grayscale conversion -- this strategy is widely used to turn the input video frame from the camera into a single-channel image composed only of the luminance of each pixel.
 					The advantages of using grayscale images is that less memory is required to store them and less computational power is required to process them, while keeping the same information.
-				\item	Gaussian blur -- from the testing done using the sample data, it turns out that lots of noise gets eliminated from the picture if the image is blurred before the edge detection operator is applied.
-					Therefore, I decided that it is worthwile to implement a Gaussian filter.
-				\item	Sobel operator -- I decided to use the plain Sobel operator instead of the full-fledged Canny Edge Detector because the latter didn't provide a much better result to make it worth my time.
-					The plain Sobel operator clearly defines the edges in every sample picture while being relatively simple to implement.
-				\item	Thresholding -- The output from the Sobel operator is still measured in a luminance values, meaning we have to convert it to a binary image first by applying a threshold.
-					This technique is easy to implement and my testing concluded that it reduces a lot of the leftover image artifacts.
-				\item	Hough Transform -- Although it is challenging to implement this algorithm on an FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
+				\item	Image segmentation -- clustering the pixels of the image into multiple buckets has shown to help with reducing artifacts.
+					In the test implementation I used two-means clustering using Lloyd's algorithm to group the image pixels into two categories: lane and non-lane.
+					From my experimentation, this has helped to achieve a lower false-positive rate when using Canny edge detection.
+				\item	Canny edge detection -- the combination of Gaussian blur to smooth out the image artifacts and the Sobel operator to highlight the edges has been widely used in practice.
+					The extra advantages of Canny, like the double threshold and edge tracking hysteresis, have shown to be impactful.
+					I'm not sure how difficult it will be to implement the non-maximum suppression and the edge hysteresis, but that will be made clear when I start with the implementation.
+				\item	Hough Transform -- although it is challenging to implement this algorithm on a FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
 					Because there are multiple approaches to implementing it on a FPGA, I think it will be possible for me to achieve this.
-					I chose the Hough Transform over other methods because it is perfect for detecting dashed lines, which makes it perfect for detecting lane markings.
-				\item	$k$-means clustering -- To group the results from the Hough Transform, I decided to use a clustering technique.
-					I chose to use $k$-means clustering over DBSCAN because the former only requires one parameter -- the amount of clusters -- which we know beforehand.
+					I chose the Hough Transform over other methods because it is good for detecting dashed lines, which makes it a good choice for detecting lane markings.
+				\item	Vanishing point detection -- even in an image with a well-defined road, there will inevitably be false positive lines resulting from the Hough transform, like the horizon of the earth.
+					We have to detect which lines cross each other, which will result in the vanishing point of the image.
+					Only lines crossing through the vanishing point are valid for the lane detection, and only those should be used.
+				\item	$k$-means clustering -- after we know which lines belong to the lane markings by correlating them with the vanishing point, we still need to uncover for each line if it belongs to the left or the right lane marking.
+					I choose to use two-means clustering to achieve this using Lloyd's algorithm over DBSCAN because the former only requires one parameter -- the amount of clusters -- which we know beforehand.
 					The parameters used in DBSCAN clustering depend on a given situation and need to be configured afterwards, making it harder to implement.
+				\item	Angle detection -- finally, once we know the two lane marking lines, which we detected in the previous step, we can determine if the car is driving the lane.
+					Simple angle detection can be used to detect if the car is veering off the lane: if a marking line gets too close to being vertical, we can output a warning signal.
 
 			\end{enumerate}
 
