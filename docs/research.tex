@@ -146,6 +146,9 @@
 		To detect if the car is properly centered, a camera is positioned on the dashboard of the car and it is faced towards the road.
 		The approximate position of the vehicle relative to the road lane is calculated by feeding the video feed from the camera through an algorithm.
 		If the result of this process indicates that the car is deterring from the lane, a signal is sent to the ADAS so that a warning can be provided to the driver of the vehicle.
+		FPGA technology is used because it enables low-cost high-throughput parallel computation for computer vision applications, especially ADASes \cite{peri2020how}.
+		Although FPGAs have been around for some time, they have been trending once again because of big tech companies investing in them.
+		Early 2022, AMD acquired the world's largest \cite{valuates2021field} manufacturer in the FPGA industry, Xilinx, for an unprecedented price of 50 million USD \cite{lee2022amd}.
 		
 		\bigskip
 
@@ -225,6 +228,13 @@
 					\includegraphics[width=0.5\textwidth]{malmir2019design-img1.png}
 					\cite{malmir2019design}
 				\end{figuur}
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Image Segmentation}
+
+				To determine which areas of the image contain useful information, we can divide the input image into several meaningful target areas \cite{shan2018image}.
+
 
 			\end{subparagraaf}
 
@@ -493,7 +503,7 @@
 					Strong pixels are those that are certain to be part of an edge.
 					Weak pixels could either be image noise or edge pixels.
 					Whether or not weak pixels are indeed part of an edge is determined by if they are near a strong pixel or not.
-					If a weak pixel is (indirectly) connected to a strong pixel, it gets accepted as an edge pixel as well \cite{canny1986computional}.
+					If a weak pixel is (indirectly) connected to a strong pixel, it gets accepted as an edge pixel as well \cite{canny1986computational}.
 					This technique is known as edge tracking hysteresis.
 
 				\end{subsubparagraaf}
@@ -501,6 +511,22 @@
 			\end{subparagraaf}
 
 			\begin{subparagraaf}{Thresholding}
+
+				This practice involves discarding data that is not within a certain bound.
+				A popular application of thresholding is the segmentation of monochrome images \cite{humaidi2018fpga}.
+				In this application, weak pixels like noise can be discarded and details can be extracted from the image.
+				It can also be used to turn grayscale images into binary images by turning all the pixels below some threshold to zero and all pixels above the threshold to one \cite{morse2000thresholding}.
+				Gupta et al. \cite{gupta2016automated} used a threshold to detect lane markings from an image under the assumption that any white patch on the video frame is a lane marking.
+				They used thresholding according to the equation in \verwijzingb{figuur}{Image thresholding for white lane markings}, where $i$ represents a luminance value of a particular pixel $p$ in image $I$.
+				The thresholding value is given as $T$.
+
+				\begin{figuur}{Image thresholding for white lane markings}
+
+					\begin{equation*}
+						\forall p \in I,\langle i \rangle \geq \langle T \rangle => \langle i \rangle p \equiv \langle 255 \rangle
+					\end{equation*}\cite{gupta2016automated}
+
+				\end{figuur}
 
 				\textbf{[todo:]}
 
@@ -697,6 +723,8 @@
 			These will be implemented in a computer program which will be able to run test images through them to determine how effective they are.
 			The final chosen algorithm pipeline will be implemented on a Field Programmable Gate Array (FPGA), because it needs to be a low-cost device that can analyze the video feed in real-time.
 %			A selection process will occur, in which the candidate algorithms will be judged by the following metrics:
+
+			\bigskip
 
 			This final pipeline will be judged on the following factors:
 
@@ -1042,7 +1070,7 @@
 
 			\end{subparagraaf}
 
-			\begin{subparagraaf}{$k$-means Image Separation}
+			\begin{subparagraaf}{$k$-means Image Segmentation Implementation}
 
 				When applying the Gaussian and Sobel steps as noted in \verwijzingb{subparagraaf}{Filter Development}, I still noticed a lot of noise in the Sobel output.
 				As recommended by my mentor, I took a step back and implemented a filter that could separate the pixels in a grayscale image using $k$-means.
