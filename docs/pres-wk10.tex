@@ -1,0 +1,68 @@
+% !TEX program = xelatex
+%\PassOptionsToPackage{draft}{graphicx}
+\documentclass[aspectratio=43,notes]{beamer}
+
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen}
+\setbeamertemplate{note page}[plain]
+
+\mode<presentation>
+\title{Mid-term presentation}
+\subtitle{\textit{Project Car Lane Detection using FPGAs}}
+\author{Matthijs Bakker}
+
+\usetheme{xilinx}
+
+\begin{document}
+
+	\frame{
+		\titlepage
+
+		\note[item]{Thank you for attending}
+
+		\note[item]{Presentation about 20 minutes, then time for questions}
+	}
+
+	\frame{
+		\frametitle{What I will be talking about}
+		\framesubtitle{My really long subtitle goes here...}
+
+		\begin{itemize}
+
+			\item The premise of this project
+			\item What's the planning like?
+			\item My progress so far
+			\item What's to do in the future?
+
+		\end{itemize}
+	}
+
+	\frame{
+		\frametitle{The premise of this project}
+		\framesubtitle{What does each stakeholder expect?}
+
+		\begin{itemize}
+
+			\item The premise of this project
+			\item What's the planning like?
+			\item My progress so far
+			\item What's to do in the future?
+
+		\end{itemize}
+	}
+
+	\frame {
+		\frametitle{Why use an FPGA?}
+
+		\begin{itemize}
+			\note{FPGA = Reconfigurable HW -- any combination possible}
+			\item High throughput parallel processing
+
+			\note{Popular GPU-accelerated (Nvidia Jetson) = expensive}
+			\item GPU prices are rising
+			\item Xilinx acquired by AMD last February\footnote{J. L. Lee, „AMD closes record \dots~ purchase of Xilinx”, \textit{Reuters}, Feb. 2022.}
+
+		\end{itemize}
+	}
+
+\end{document}
