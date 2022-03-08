@@ -30,21 +30,21 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: |
-            docs/project.tex
-            docs/research.tex
-            docs/timetable.tex
+            docs/plan-of-action/project.tex
+            docs/research-paper/research.tex
+            docs/timetable/timetable.tex
           work_in_root_file_dir: true
           latexmk_use_xelatex: true
         env:
-          TEXINPUTS: ".:../dotfiles/latex/texmf//:"
+          TEXINPUTS: ".:../dotfiles/latex//:./docs//:"
       - name: Upload documents as artifact
         uses: actions/upload-artifact@v2
         with:
           name: PDFs
           path: |
-            docs/project.pdf
-            docs/research.pdf
-            docs/timetable.pdf
+            docs/plan-of-action/project.pdf
+            docs/research-paper/research.pdf
+            docs/timetable/timetable.pdf
       - name: Compile code doc
         run: make compile-docs-code
       - name: Upload code documentation as artifact
