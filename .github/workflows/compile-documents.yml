@@ -32,6 +32,7 @@ jobs:
           root_file: |
             docs/plan-of-action/project.tex
             docs/research-paper/research.tex
+            docs/presentations/pres-wk10.tex
             docs/timetable/timetable.tex
           work_in_root_file_dir: false
           latexmk_use_xelatex: true
@@ -45,9 +46,10 @@ jobs:
         with:
           name: PDFs
           path: |
-            project.pdf
-            research.pdf
-            timetable.pdf
+            docs/plan-of-action/project.pdf
+            docs/research-paper/research.pdf
+            docs/presentations/pres-wk10.pdf
+            docs/timetable/timetable.pdf
       - name: Compile code doc
         run: make compile-docs-code
       - name: Upload code documentation as artifact
