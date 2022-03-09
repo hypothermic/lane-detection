@@ -114,6 +114,8 @@ clean-docs-research:
 
 clean-docs: clean-docs-project clean-docs-timetable clean-docs-research
 	$(RM_EXEC) -rf $(LATEXMK_OUT)
+	# latexmk doesn't delete snm,nav,runxml, and other files, so just nuke those:
+	find . -iregex '.*\.\(aux\|fls\|log\|nav\|fdb_latexmk\|out\|snm\|toc\|xdv\|run.xml\|bbl\|bcf\|lot\|lof\|blg\|synctex.gz\)$$' -type f -delete
 
 clean-lane:
 	$(RM_EXEC) -rf $(LANE_OUT)
