@@ -152,6 +152,11 @@ inspect-docs-timetable:
 inspect-docs-research:
 	$(XDG_OPEN_EXEC) docs/research.tex
 
+install-git-hook:
+	cp git-info-hook.sh .git/hooks/post-checkout
+	cp git-info-hook.sh .git/hooks/post-commit
+	cp git-info-hook.sh .git/hooks/post-merge
+	chmod g+x .git/hooks/post-*
 #
 # Test
 #
