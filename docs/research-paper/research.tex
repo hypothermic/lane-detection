@@ -428,8 +428,6 @@
 					Like with any kernel-based image convolution, the edge pixels can't be used because they lack neighbor pixels to be weighted.
 					A pixel cutoff occurs, which means that the dimensions of the output image are smaller than those of the input image.
 
-					\textbf{[todo:]}
-
 				\end{subsubparagraaf}
 
 				\begin{subsubparagraaf}{Laplacian Edge Detection}
@@ -488,6 +486,7 @@
 					The biggest benefit of using this routine is that the resulting edges are thinned to only one pixel wide lines.
 					This thinning is achieved by applying a technique called non-maximum suppression.
 					It involves only keeping the pixel with the largest gradient magnitude of all the adjacent pixels that have the same gradient direction \cite{sarab2020canny}.
+					The gradient direction of a pixel is derived from the vertical and horizontal magnitudes from the edge detection operator values using $\arctan \frac{G_y}{G_x}$.
 					An example of multiple pixels laying on one Sobel-detected edge can be seen in \verwijzingb{figuur}{Illustration of an edge before applying non-maximum suppression}.
 					The goal of the non-maximum suppression is to discard all the indicated pixels which are not the gradient intensity, like $p$ and $r$.
 					Pixel $q$ will be kept because it is the maximum valued pixel in this particular direction.
@@ -529,7 +528,13 @@
 
 				\end{figuur}
 
-				\textbf{[todo:]}
+				\bigskip
+				
+				Adaptive thresholding can be used to automatically determine appropriate threshold values in different environmental scenarios.
+				Situations wherein the quality of lane features is lower than that of surrounding objects like trees or guardrails are challenging scenarios for feature extraction because there will be more noise in the Hough accumulator space \cite{son2019robust}.
+				In these scenarios, a lower threshold should be used in areas on the image where lane markings are suspected to reside.
+				A common technique for determining the threshold value is to take the mean of the values from the neighbourhood area of a pixel \cite{yuan2018robust}.
+				Another technique is to use the weighted sum of neighbourhood values where the values are weighted using a Gaussian kernel \cite{soeleman2020adaptive}.
 
 			\end{subparagraaf}
 
@@ -596,18 +601,38 @@
 					\cite{dawkins2018polar}
 				\end{figuur}
 			
-				\begin{subsubparagraaf}{Time and Space Complexity}
+				\begin{subsubparagraaf}{Time and Space Complexities}
+					
 					Although the Hough transform is widely used, its high time and space complexity are serious downsides that are challenging to manage when implementing it on embedded systems \cite{dongkyun2008real}.
 					Assuming the size of a video frame is 1280 by 720 pixels and 10 percent of these pixels are edge points, the total number of multiplications are $1280 \cdot 720 \cdot 0.1\theta \cdot 2 $ and the total number of additions is $1280 \cdot 720 \cdot 0.1\theta$ \cite{dongkyun2008real}.
 					The space complexity is related to the memory needed to store the parameter space, which is influenced by the image resolution, $\rho$ and $\theta$.
 					Assuming the size of a video frame is 1280 by 720 pixels, the size of one accumulator cell is $\lceil (log_e(1280)/log_e(2)) \rceil$ bits and the size of the accumulator is $\rho \cdot \theta$.
 					Theoretically, we need at least 2 bytes of memory to fit each accumulator cell, meaning that we need a total of $16 \cdot(900 \cdot 2) \cdot 180$ bytes to store the parameter space for a 1280 by 720 video frame.
 					The main bottleneck of the Hough Transform comes from the amount of chained read and write memory operations; some cell values in the parameter space are read and increased by one, so the next calculated value must wait until this accumulating operation is finished \cite{dongkyun2008real}.
+
+					\bigskip
+
+					\begin{tabel}{Arty A7 35T board memory specifications}{l @{\extracolsep{\fill}} R}
+						
+						\emph{Memory Resource} & \emph{Quantity Available \cite{digilent2020arty}} \tabularnewline
+						\midrule
+						Flip-Flops & $33,280$ \tabularnewline
+						BRAM & $1,800$ kibibytes \tabularnewline
+						DRAM & ($64$ bits $\times$ $5,600$ SLICEM LUTs) $\approx 358,400$ bits max. \tabularnewline
+						RAM & $256$ mibibytes \tabularnewline
+					
+					\end{tabel}
+
+					\bigskip
+					
+					The Arty A7 35T -- our target FPGA development board -- only has $1,800$ kibibits \cite{digilent2020arty} of fast Block RAM, meaning that we cannot fit the entire accumulator in it.
+					On Artix 7 series FPGAs, unused SLICEM LUTs can be repurposed as Distributed RAM (DRAM) cells.
+					These cells can be written to in one clock cycle and can be read asynchronously, making them usable for high performance situations.
+					The downside of DRAM is that LUTs which are used for storing data cannot be used to house logic, restricting the size of the RTL \cite{green2020fpga}.
+					We will have to decide if we want to use the slower DDR3L RAM of which we have plenty, or decrease the needed space for the accumulator by using other prescribed techniques such as downscaling or ROI definition.
 					
 					\bigskip
 
-					The Arty A7 35T -- our target FPGA development board -- only has 1800 kibibits \cite{digilent2020arty} of fast Block RAM, meaning that we cannot fit the entire accumulator in it.
-					We have to decide if we want to use the slower DDR3L RAM of which we have plenty, or decrease the needed space for the accumulator by using other prescribed techniques such as downscaling or ROI definition.
 					According to the Arty A7 reference manual \cite{digilent2020arty}, the Artix FPGA chip includes $90$ DSP slices of type 48E1.
 					These can be used to implement fully parallel digital signal processing algorithms like FIR filters, Fast Fourier transforms and NN pattern detection \cite{xilinx2018series}.
 					Zhou et al. \cite{zhou2013efficient} used a combination of $178$ DSP48E1 slices and $3240$ kibibits of BRAM to create a parallel Hough implementation which can process a 512 by 512 image with 33232 edge points in $\approx 135.75 \mu s$.
