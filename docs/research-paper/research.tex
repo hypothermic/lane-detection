@@ -172,12 +172,12 @@
 		It will be interesting to gauge which algorithms are used in similar projects, because it helps us narrow down on the wide choice of available algorithms.
 		Because some papers share common stages in their algorithm, like the usage of the Sobel operator or the Hough transform, I will gather more information on these stages and why they are used in this field.
 		It will also be helpful to search if people have made optimizations or variations upon these standard procedures.
-		An example of such a variation is an optimized straight-lane Hough Transform targeting FPGAs \cite{el2020novel} which has a higher performance ceiling because it can be parallelized.
+		An example of such a variation is an optimized straight lane Hough transform targeting FPGAs \cite{el2020novel} which has a higher performance ceiling because it can be parallelized.
 		By taking into account existing optimizations and previous work from other research, we can speed up the process and increase the quality of the product.
 
 		\bigskip
 
-		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before being ran through a feature extraction technique like the Hough Transform, and finally being subjected to a line classification technique.
+		The methods used in the papers that were analyzed shared a common theme: first, the input video feed would be preprocessed and cleaned from artifacts, before being ran through a feature extraction technique like the Hough transform, and finally being subjected to a line classification technique.
 		This preprocessing stage is of high importance, because it directly affects the effectiveness of the feature extraction phase.
 		If the features of the image are not properly highlighted, the level of detail remains too high and the feature extraction technique might pick up photographic artifacts as lines \cite{felix2003low}.
 
@@ -287,7 +287,7 @@
 
 				\begin{subsubparagraaf}{Gaussian Filter}
 
-					In order to reduce the noise in the Hough Transform accumulator, a blur is applied to the image beforehand.
+					In order to reduce the noise in the Hough transform accumulator, a blur is applied to the image beforehand.
 					The blur reduces detail and eliminates noise in the source image \cite{fan2016faster}.
 					The advantage of using Gaussian Blur is that edges in the image get treated similarly no matter their direction \cite{waltz1998efficient}.
 					Another advantage is that this algorithm uses filter kernels which can be convoluted with the source image in parallel \cite{stroem2016parallel}.
@@ -310,7 +310,7 @@
 
 					\bigskip
 
-					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough Transform, but that the lane marking lines will be kept intact.
+					The goal is to pick a blur strength that will reduce noise enough so that no false edges get picked up by the Hough transform, but that the lane marking lines will be kept intact.
 					\mbox{Fan et al. \cite{fan2016faster} recommended} a kernel size of $ K_x = K_y = 3 $ and a strength of $ \sigma = 1.5 $ for this purpose.
 					The size of the kernel will affect how computationally expensive the convolution is, but the $\sigma$ does not affect the required amount of calculations.
 					A visual representation of this kernel with approximate values is shown in \verwijzingb{figuur}{Example of a Gaussian kernel}.
@@ -456,7 +456,7 @@
 
 					In an output of the Sobel filter, the intensity peaks are often not clearly defined as lines, but as 'blobs.'
 					When using Laplacian, the output of the zero-crossing detectors only holds true at a single pixel of the line, meaning that the output is a single pixel thick line \cite{alazzawi2015edge}.
-					This helps to cut down on the amount of edge pixels, and thus to reduce the amount of calculations needed to perform the Hough Transform.
+					This helps to cut down on the amount of edge pixels, and thus to reduce the amount of calculations needed to perform the Hough transform.
 
 					\begin{figuur}{Formula for the Laplacian on an image}
 						\begin{equation*}
@@ -538,8 +538,8 @@
 				Adaptive thresholding can be used to automatically determine appropriate threshold values in different environmental scenarios.
 				Situations wherein the quality of lane features is lower than that of surrounding objects like trees or guardrails are challenging scenarios for feature extraction because there will be more noise in the Hough accumulator space \cite{son2019robust}.
 				In these scenarios, a lower threshold should be used in areas on the image where lane markings are suspected to reside.
-				A common technique for determining the threshold value is to take the mean of the values from the neighbourhood area of a pixel \cite{yuan2018robust}.
-				Another technique is to use the weighted sum of neighbourhood values where the values are weighted using a Gaussian kernel \cite{soeleman2020adaptive}.
+				A common technique for determining the threshold value is to take the mean of the values from the neighborhood area of a pixel \cite{yuan2018robust}.
+				Another technique is to use the weighted sum of neighborhood values where the values are weighted using a Gaussian kernel \cite{soeleman2020adaptive}.
 
 			\end{subparagraaf}
 
@@ -554,7 +554,7 @@
 
 			\begin{subparagraaf}{Hough Transform}
 
-				The Hough Transform is a technique which can be used to isolate features of a particular shape within an image \cite{fisher2003hypermedia}.
+				The Hough transform is a technique which can be used to isolate features of a particular shape within an image \cite{fisher2003hypermedia}.
 				The classical variant is of this technique is mostly used to detect basic predefined shapes such as lines and ellipses.
 				Derivations of this variant such as the Generalized Hough Transform can be employed in applications where a simple analytic description of a feature is not possible \cite{fisher2003hypermedia}.
 				The advantage of the Hough transform is that pixels lying in one line need not all be contiguous.\cite{kahl2000hough}
@@ -568,7 +568,7 @@
 
 				Lines can be uniquely represented by using the distance from the line to the origin and the angle of the line.
 				These parameters are represented by $\rho$ and $\theta$ respectively \cite{caltech2009line}.
-				The idea behind the Hough Transform is that we map the Cartesian space of the image (represented by $x,y$) to the parameter space of lines \cite{solberg2009hough}.
+				The idea behind the Hough transform is that we map the Cartesian space of the image (represented by $x,y$) to the parameter space of lines \cite{solberg2009hough}.
 				For each pixel in the Cartesian space, we can represent all the possible lines through it by a single line in the parameter \mbox{space (see \verwijzingb{figuur}{Transformation of a single point to a line in the Hough space}).}
 				This means that all pixels which lie on the same line in the Cartesian space are represented by lines which all pass through a single point in the parameter space \cite{kahl2000hough}.
 
@@ -616,7 +616,7 @@
 					The space complexity is related to the memory needed to store the parameter space, which is influenced by the image resolution, $\rho$ and $\theta$.
 					Assuming the size of a video frame is 1280 by 720 pixels, the size of one accumulator cell is $\lceil (log_e(1280)/log_e(2)) \rceil$ bits and the size of the accumulator is $\rho \cdot \theta$.
 					Theoretically, we need at least 2 bytes of memory to fit each accumulator cell, meaning that we need a total of $16 \cdot(900 \cdot 2) \cdot 180$ bytes to store the parameter space for a 1280 by 720 video frame.
-					The main bottleneck of the Hough Transform comes from the amount of chained read and write memory operations; some cell values in the parameter space are read and increased by one, so the next calculated value must wait until this accumulating operation is finished \cite{dongkyun2008real}.
+					The main bottleneck of the Hough transform originates from the amount of chained read and write memory operations; some cell values in the parameter space are read and increased by one, so the next calculated value must wait until this accumulating operation is finished \cite{dongkyun2008real}.
 
 					\bigskip
 
@@ -642,10 +642,10 @@
 					\bigskip
 
 					According to the Arty A7 reference manual \cite{digilent2020arty}, the Artix FPGA chip includes $90$ DSP slices of type 48E1.
-					These can be used to implement fully parallel digital signal processing algorithms like FIR filters, Fast Fourier transforms and NN pattern detection \cite{xilinx2018series}.
+					These can be used to implement fully parallel digital signal processing algorithms like FIR filters, Fast Fourier transforms and Neural Network pattern detection \cite{xilinx2018series}.
 					Zhou et al. \cite{zhou2013efficient} used a combination of $178$ DSP48E1 slices and $3240$ kibibits of BRAM to create a parallel Hough implementation which can process a 512 by 512 image with 33232 edge points in $\approx 135.75 \mu s$.
 					This was done on a very expensive Virtex FPGA which had plenty of DSP slices and BRAM available, and thus not realistic to implement as a product.
-					Chuquimia et al \cite{chuquimia2018fpga} proposed a real time Hough Transform architecture on an Artix-7 FPGA using $2800$ kibibytes of BRAM and $153$ DSP48E1 slices for processing a 1920 by 1080 image in $\approx 32 ms$
+					Chuquimia et al \cite{chuquimia2018fpga} proposed a real time Hough transform architecture on an Artix-7 FPGA using $2800$ kibibytes of BRAM and $153$ DSP48E1 slices for processing a 1920 by 1080 image in $\approx 32 ms$
 					In addition to my assigned FPGA development board only having ninety DSP slices, I have no prior experience with them and there doesn't seem to be much documentation about them from Digilent.
 					Therefore, I am not too keen on using this technology.
 
@@ -654,7 +654,7 @@
 				\begin{subsubparagraaf}{Vanishing Point-Based Optimizations}
 
 					Road lane markings are typically at an angle between 45 and 90 degrees when viewed from a dashboard camera.
-					Knowing this, we can adapt the Hough Transform to only compute between these angles.
+					Knowing this, we can adapt the Hough transform to only compute between these angles.
 					There exist multiple ways to do this:
 
 					\begin{itemize}
@@ -671,7 +671,7 @@
 
 			\begin{subparagraaf}{Radon Transform}
 
-				The idea of the Radon transform is similar to that of the Hough Transform in that the image space is mapped to a parameter space of $\rho$ and $\theta$, however there exists a major difference in the methodology behind the two theorems.
+				The idea of the Radon transform is similar to that of the Hough transform in that the image space is mapped to a parameter space of $\rho$ and $\theta$, however there exists a major difference in the methodology behind the two theorems.
 				While the Radon transform derives a point in parameter space from image space (a reading paradigm), the Hough transform explicitly maps data points from image space to parameter space (a writing paradigm) \cite{orzechowski2014what} \cite{ginkel2004short}.
 				We can say that the Hough transform is a discretisation of the Radon transform because it suggests a voting algorithm.
 				By adjusting the resolution of $\rho$ and $\theta$ and thus dividing the pixels from the source image into subpixels, the Radon transform allows for a higher resolution parameter space than the Hough transform \cite{orzechowski2014what}.
@@ -691,13 +691,13 @@
 
 			\begin{subparagraaf}{Clustering of HT Results}
 
-				The Hough Transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
+				The Hough transform used in the feature extraction phase gives us the extremes of the lane marking lines \cite{gupta2016automated}.
 				To convert these extremes into usable data, it must be clustered and grouped into line segments.
 				Clustering is grouping of unlabeled data points in such a way that the data points within the same group are similar to each other and the data points in different groups are dissimilar to each other \cite{sharma2020kmeans}.
 				From the size and spread of the resulting clusters, we will be able to determine if a cluster represents a road lane marking.
 				\bigskip
 
-				$k$-means is an unsupervised clustering method that allows us to find groups of similar entries within a dataset such that the total variance within groups is minimised \cite{martin2019implementing}.
+				$k$-means is an unsupervised clustering method that allows us to find groups of similar entries within a dataset such that the total variance within groups is minimized \cite{martin2019implementing}.
 				For grouping lines, a two dimensional variant of the Lloyd algorithm is used because each pixel of the line has a $x$ and $y$ value.
 				A special attribute of the Lloyd algorithm is that the accuracy of clustering is increased at every iteration.
 				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each probabilistic Hough line to find the averages of these lines and to find the vanishing point of the image.
@@ -707,10 +707,10 @@
 
 				\bigskip
 
-				Tumasov et al. \cite{tumasov2021research} proposed to use the DBSCAN algorithm to cluster the lines from the Hough Transform.
+				Tumasov et al. \cite{tumasov2021research} proposed to use the DBSCAN algorithm to cluster the lines from the Hough transform.
 				This algorithm is highly suitable for situations in which different groups have a small difference in density.
 				Line segments belonging to a lane have densities which are uniform or nearly uniform \cite{niu2016robust}.
-				The difference between DBSCAN and $k$-means clustering is that the latter is a partitioned algorithm, which means that the final goal of the algorithm is to find the nearest densest neightbours instead of the transitive closure computation \cite{shi2014fpga}.
+				The difference between DBSCAN and $k$-means clustering is that the latter is a partitioned algorithm, which means that the final goal of the algorithm is to find the nearest densest neighbors instead of the transitive closure computation \cite{shi2014fpga}.
 				What this means in our situation is that outliers like roadside artifacts will get ignored in DBSCAN clustering and only the high density areas such as the lines will get clustered.
 				If we were to use $k$-means clustering, all of the input data would get considered when forming a result, including the outliers.
 				Shi et al. \cite{shi2014fpga} implemented parallel DBSCAN which can be horizontally scaled over an FPGA.
@@ -814,7 +814,7 @@
 				\midrule
 				0a0a0b1a-7c39d841.jpg & Clearly defined lane markings, with high contrast between the sky and the road \tabularnewline
 				0b16507a-49b0aca9.jpg & Yellow lane marking, to test if the algorithm can detect multiple colors \tabularnewline
-				0cf398b3-ce65ab54.jpg & Unclear, partially wiped-out lane markings. This image tests if the algorithm would work in night time as well \tabularnewline
+				0cf398b3-ce65ab54.jpg & Unclear, partially wiped out lane markings. This image tests if the algorithm would work in night time as well \tabularnewline
 				0d4268d5-3c617dd8.jpg & Off-center vehicle. It would be interesting whether the algorithm detects the left or the right lane \tabularnewline
 				0d62200b-85aeaa3d.jpg & Unusual markings on the left side of the lane, not a clear separation between road and curb \tabularnewline
 				0fc0b0cc-75d5e23d.jpg & Bad lighting; sunflare disrupts the luminance of the road in the image \tabularnewline
@@ -934,7 +934,7 @@
 			\begin{itemize}
 				\item Grayscale Conversion and Thresholding are widely used
 				\item Edge Detection is often used; Sobel and the derived Canny algorithm are both popular
-				\item The Hough Transform is widely used, with various improved methods having been suggested
+				\item The Hough transform is widely used, with various improved methods having been suggested
 				\item Clustering of Hough results is sometimes used, with DBSCAN or $k$-means clustering
 			\end{itemize}
 
@@ -1192,12 +1192,12 @@
 
 			\begin{subparagraaf}{Hough Transform Implementation}
 		
-				The range of orientations of the Hough Transform can be fitted in two ways: $\pi \leq \theta < 0$ where $\rho$ holds both negative and positive values, or $0 \leq \theta < \pi$ where $\rho$ holds only positive values \cite{anvari2010fpga}.
+				The range of orientations of the Hough transform can be fitted in two ways: $\pi \leq \theta < 0$ where $\rho$ holds both negative and positive values, or $0 \leq \theta < \pi$ where $\rho$ holds only positive values \cite{anvari2010fpga}.
 				I chose to go with the former approach because it allows the use of fixed point values, which is useful when implementing it in digital logic.
 				This is the reason why in my implementation, the height of the Hough space is $\sqrt{2} \cdot I_x$ where $I_x$ is the image width.
 				I also considered the Hough-Green transform as proposed by Shapiro et al. \cite{shapiro2006accuracy} because it is a kernel-based approach, but I realized that it would require even more memory operations than the classical Hough transform due to it needing information about neighbor pixels during the voting phase.
 
-				\begin{figuur}{A test image processed with Hough Transform using a too low threshold}
+				\begin{figuur}{A test image processed with Hough transform using a too low threshold}
 
 					\begin{tabular}{ccc}
 							
@@ -1218,10 +1218,10 @@
 				\bigskip
 
 				The threshold of the peaks in the histogram can be arbitrarily modified in my Hough implementation.
-				I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{A test image processed with Hough Transform using a too low threshold}.
+				I first tested the implementation on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} with $ T_H \approx 15\% $, which resulted in \verwijzingb{figuur}{A test image processed with Hough transform using a too low threshold}.
 				As can be seen in the image, many lines get picked up including roadside artifacts and those from the outline of the car in front.
 			
-				\begin{figuur}{A test image processed with Hough Transform using a reasonable threshold}
+				\begin{figuur}{A test image processed with Hough transform using a reasonable threshold}
 
 					\begin{tabular}{ccc}
 							
@@ -1243,15 +1243,15 @@
 
 				After some testing, I found that thresholds around 60 percent worked well with the images from the test dataset.
 				Though, for the end product to be suitable for many different environments, this threshold needs to be configurable.
-				Using the value of 60 percent on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} resulted in \verwijzingb{figuur}{A test image processed with Hough Transform using a reasonable threshold}.
-				The Hough space that resulted from this transformation is visualized in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}.
+				Using the value of 60 percent on the output of \verwijzingb{figuur}{Example of thresholding applied to the output of the Sobel-Feldman operator} resulted in \verwijzingb{figuur}{A test image processed with Hough transform using a reasonable threshold}.
+				The Hough space that resulted from this transformation is visualized in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough transform using a reasonable threshold} as a graph}.
 				In this figure, the luminance of each pixel is the raw accumulator value, capped at the value of 255 because of color channel size restrictions.
 				The white blobs near $(50,400)$ represent the left lane marking.
 				The two clearly defined peaks near $(150,500)$ represent the edges of the right lane marking.
-				If we overlay a polar grid as in \verwijzingb{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} centered on the vanishing point}, we can see that the $\theta$-values match up.
-				This proves that my implementation of the Hough Transform is correct.
+				If we overlay a polar grid as in \verwijzingb{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough transform using a reasonable threshold} centered on the vanishing point}, we can see that the $\theta$-values match up.
+				This proves that my implementation of the Hough transform is correct.
 
-				\begin{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}
+				\begin{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough transform using a reasonable threshold} as a graph}
 
 					% ok dit is echt hele lelijke code...
 					\begin{tikzpicture}
@@ -1291,7 +1291,7 @@
 
 				\end{figuur}
 
-				\begin{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} centered on the vanishing point}
+				\begin{figuur}{Polar grid overlay applied to Figure \getrefnumber{figuur:A test image processed with Hough transform using a reasonable threshold} centered on the vanishing point}
 
 					\begin{tikzpicture}
 
@@ -1314,7 +1314,7 @@
 
 			\begin{subparagraaf}{$k$-means Hough Lines Clustering}
 
-				As can be seen in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough Transform using a reasonable threshold} as a graph}, multiple lines are left over per lane marking.
+				As can be seen in \verwijzingb{figuur}{Hough space visualization of Figure \getrefnumber{figuur:A test image processed with Hough transform using a reasonable threshold} as a graph}, multiple lines are left over per lane marking.
 				To get the average of these results, I decided to implement Lloyd's algorithm.
 				Because we don't determine the exact start and end of the detected lines, we can't use an approach like Ebrahimpour et al. \cite{ebrahimpour2012vanishing} did.
 				Therefore, I decided to cluster the lines based on their $\rho$ and angle.
@@ -1342,13 +1342,13 @@
 					(adapted from \cite{sharma2020kmeans}\cite{martin2019implementing}\cite{dias2020parallel})
 				\end{figuur}
 
-				If enough test data is available, like was the case for the left lane in \verwijzingb{figuur}{Hough Transform results clustered using two-means}, the clustering works really well and the average of the lane gets found.
+				If enough test data is available, like was the case for the left lane in \verwijzingb{figuur}{Hough transform results clustered using two-means}, the clustering works really well and the average of the lane gets found.
 				However, if not that many lines from the HT are available (from my testing, below 3 lines,) the clustering is suboptimal.
-				Therefore, we need to assure that the Hough Transform can recognize enough lines for the lane markings.
+				Therefore, we need to assure that the Hough transform can recognize enough lines for the lane markings.
 				We can do this by altering the thresholds of the Canny edge detector and the threshold of the Hough peak detector.
 				However, these thresholds need to be modified on a case-by-case situation.
 
-				\begin{figuur}{Hough Transform results clustered using two-means}
+				\begin{figuur}{Hough transform results clustered using two-means}
 
 					\begin{tabular}{ccc}
 							
@@ -1392,9 +1392,9 @@
 				\item	Canny edge detection -- the combination of Gaussian blur to smooth out the image artifacts and the Sobel operator to highlight the edges has been widely used in practice.
 					The extra advantages of Canny, like the double threshold and edge tracking hysteresis, have shown to be impactful.
 					I'm not sure how difficult it will be to implement the non-maximum suppression and the edge hysteresis, but that will be made clear when I start with the implementation.
-				\item	Hough Transform -- although it is challenging to implement this algorithm on an FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
+				\item	Hough transform -- although it is challenging to implement this algorithm on an FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
 					Because there are multiple approaches to implementing it on an FPGA, I think it will be possible for me to achieve this.
-					I chose the Hough Transform over other methods because it is good for detecting dashed lines, which makes it a good choice for detecting lane markings.
+					I chose the Hough transform over other methods because it is good for detecting dashed lines, which makes it a good choice for detecting lane markings.
 				\item	Vanishing point detection -- even in an image with a well-defined road, there will inevitably be false positive lines resulting from the Hough transform, like the horizon of the earth.
 					We have to detect which lines cross each other, which will result in the vanishing point of the image.
 					Only lines crossing through the vanishing point are valid for the lane detection, and only those should be used.
