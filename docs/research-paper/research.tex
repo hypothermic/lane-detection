@@ -235,7 +235,15 @@
 			\begin{subparagraaf}{Image Segmentation}
 
 				To determine which areas of the image contain useful information, we can divide the input image into several meaningful target areas \cite{shan2018image}.
+				Image segmentation is a method which can classify the pixels of an image in a decision oriented approach to cluster them into discrete regions such that the pixels have high similarity \cite{dhanachandra2015image}.
+				The metric on which the pixels get judged can be determined beforehand.
 
+				\bigskip
+
+				A popular metric on which the pixels get judged is the mean color value.
+				$k$-means clustering is such an approach which clusters the pixels from the source image into $k$ different clusters.
+				Using an algorithm like Lloyd's algorithm, $k$ clusters of pixels are determined where the pixels get grouped on their similarity.
+				In the output image, the color value of each pixel gets replaced by the mean value of the pixels of the cluster it belongs to.
 
 			\end{subparagraaf}
 
@@ -542,7 +550,10 @@
 
 		\begin{paragraaf}{Feature Extraction Techniques}
 
-			\textbf{[todo:]}
+			The challenge of shape detection resides in the computational complexity of determining whether an edge point contributes to a shape.
+			For detecting the lines of lane markings, we have to iterate through every edge pixel in the source image and determine if it contributes to a line in any direction between $0 \leq \theta < 180$ where $\theta$ is a possible angle of the line.
+			Various algorithms like the Hough transform and the Radon transform have been used to calculate these properties.
+			The advantages and disadvantages of these algorithms are evaluated in the paragraphs below.
 
 			\begin{subparagraaf}{Hough Transform}
 
@@ -663,9 +674,13 @@
 
 			\begin{subparagraaf}{Radon Transform}
 
-				Whereas the Hough Transform is an inherently discrete algorithm that is prone to artifacts, the Radon Transform.
-
-				\textbf{[todo:]}
+				The idea of the Radon transform is similar to that of the Hough Transform in that the image space is mapped to a parameter space of $\rho$ and $\theta$, however there exists a major difference in the methodology behind the two theorems.
+				While the Radon transform derives a point in parameter space from image space (a reading paradigm), the Hough transform explicitly maps data points from image space to parameter space (a writing paradigm) \cite{orzechowski2014what} \cite{ginkel2004short}.
+				We can say that the Hough transform is a discretisation of the Radon transform because it suggests a voting algorithm.
+				By adjusting the resolution of $\rho$ and $\theta$ and thus dividing the pixels from the source image into subpixels, the Radon transform allows for a higher resolution parameter space than the Hough transform \cite{orzechowski2014what}.
+				The characteristic of the reading paradigm of the Radon transform means that the transform is continuous: in contrast to the Hough transform, it does not have to complete the whole transformation of all $\theta$ combinations to deliver results.
+				This is useful when the range of the $\theta$ is known beforehand, like in detecting lane markings.
+				However, due to the parameter space being higher resolution and having to read image data, the Radon transform is more resource intensive.
 
 			\end{subparagraaf}
 
@@ -1419,7 +1434,26 @@
 
 	\begin{hoofdstuk}{Conclusion}
 
-		\textbf{[todo:]}
+		In this paper I wrote about different methods used in the field of Computer Vision and I researched which of these methods are commonly used in existing lane detection methods.
+		I implemented the most commonly used methods in a computer program to test their effectiveness.
+		Based on the information available, I chose to build a pipeline around these techniques which can determine the angles of the lane markings on an image captured by a dashboard camera.
+		The pipeline consists of seven individual steps which can be categorized in three overarching phrases: preprocessing of the image to extract edge pixels, feature extraction to detect lines from these edge pixels and line classification to determine which lines contribute to the road marking lines.
+		The angles of these road marking lines are given as an output of the pipeline.
+		From this angle data, it is trivial to implement business logic that can determine the actions for the car when it is about to leave the lane.
+		The pipeline forms the essential basis of a Lane Departure Warning System which can be built upon and modified to fit a car manufacturer's needs.
+
+		\bigskip
+
+		A major issue with the proposed image processing pipeline is the adjustment to different environmental situations.
+		The road needs clear lane markings for the pipeline to function correctly, which means that the proposed method will not work on unpaved roads or in weather conditions where the lane markings are covered by a substance like snow.
+		Furthermore, inconsistencies in lighting like shadows on the road might lower the accuracy of detection because the contrast between the road surface and the lane markings decreases.
+		Another problem with the pipeline is that arbitrary non-lane lines like trees and guardrails get detected.
+		I tried to minimize their impact on the result by limiting the $\theta$ of the lines in the Hough transform phase and using the vanishing point of the road to exclude lines that do not cross through the vanishing point.
+		These mitigations have shown to help when applying the pipeline on test images, however, we will have to see how it works out in real world scenarios.
+		The pipeline might need reevaluation to work in different environments if we deem the FPGA implementation to be inaccurate.
+		However, the more complex the pipeline gets, the harder it will be to fit in hardware.
+		As it stands, the pipeline is already complex and it will already be a monumental task to fit it on the Artix FPGA.
+		I tried to make the trade off between effectiveness and complexity, and we will have to see if this was correct.
 
 	\end{hoofdstuk}
 
