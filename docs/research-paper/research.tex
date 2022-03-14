@@ -150,6 +150,7 @@
 		FPGA technology is used because it enables low-cost high-throughput parallel computation for computer vision applications, especially ADASes \cite{peri2020how}.
 		Although FPGAs have been around for some time, they have been trending once again because of big tech companies investing in them.
 		Early 2022, AMD acquired the world's largest \cite{valuates2021field} manufacturer in the FPGA industry, Xilinx, for an unprecedented price of 50 million USD \cite{lee2022amd}.
+		A company of this caliber is sure to bring attention and support for the FPGA market.
 		
 		\bigskip
 
@@ -279,7 +280,7 @@
 					\end{figuur}
 
 					The equation looks complex, but the storage of the rolling average value can be easily implemented in VHDL using an intermediate variable or signal.
-					Accessing the little amount of memory that a FPGA has is time intensive, making memory operations expensive.
+					Accessing the little amount of memory that an FPGA has is time intensive, making memory operations expensive.
 					Therefore, the method as described in \verwijzingb{figuur}{Equation for a rolling average variant of a pixel averaging filter} is more suitable for implementation on FPGAs.
 				
 				\end{subsubparagraaf}
@@ -453,13 +454,9 @@
 
 					\end{figuur}
 
-					\bigskip
-
 					In an output of the Sobel filter, the intensity peaks are often not clearly defined as lines, but as 'blobs.'
 					When using Laplacian, the output of the zero-crossing detectors only holds true at a single pixel of the line, meaning that the output is a single pixel thick line \cite{alazzawi2015edge}.
 					This helps to cut down on the amount of edge pixels, and thus to reduce the amount of calculations needed to perform the Hough Transform.
-
-					\bigskip
 
 					\begin{figuur}{Formula for the Laplacian on an image}
 						\begin{equation*}
@@ -485,7 +482,7 @@
 						\cite{tai2008fast}
 					\end{figuur}
 
-					Because the Laplacian can be applied to an image by using only kernel, it is faster to apply than the Sobel operator, but it is more sensitive to noise \cite{sinha2017sobel}.
+					Because the Laplacian can be applied to an image by using only one kernel, it is faster to apply than the Sobel operator, but it is more sensitive to noise \cite{sinha2017sobel}.
 				\end{subsubparagraaf}
 
 				\begin{subsubparagraaf}{Canny Edge Detector}
@@ -663,7 +660,7 @@
 					\begin{itemize}
 
 						\item Specify subdivisions in the $\rho\theta$ plane such that the peaks outside these areas are not taken into account in the thresholding phase \cite{solberg2009hough}
-						\item Restrict the accumulation stage to only increase the accumulator values that correspond to $ max > \theta > min $ \cite{looges1993hough}
+						\item Restrict the accumulation stage to only increase the accumulator values that correspond to $ min \leq \theta \leq max $ \cite{looges1993hough}
 					\end{itemize}
 
 					However, we can further decrease the angle by looking at the vanishing point position in the road scene \cite{shang2011lane}.
@@ -705,7 +702,7 @@
 				A special attribute of the Lloyd algorithm is that the accuracy of clustering is increased at every iteration.
 				Ebrahimpour et al. \cite{ebrahimpour2012vanishing} proposed to use this algorithm on the start and end points of each probabilistic Hough line to find the averages of these lines and to find the vanishing point of the image.
 				They found that four iterations of Lloyd's algorithm are enough to reliably determine the averages of the lines.
-				Dias et al. \cite{dias2020parallel} designed a FPGA architecture for Lloyd's algorithm that can run an iteration on 4096 two-dimensional data points within $8500 \mu s$.
+				Dias et al. \cite{dias2020parallel} designed an FPGA architecture for Lloyd's algorithm that can run an iteration on 4096 two-dimensional data points within $8500 \mu s$.
 				It required around 50 percent of the registers and around 80 percent of the LUTs available on their Kintex-7 FPGA, making it too exhaustive to run on an Artix-7.
 
 				\bigskip
@@ -716,7 +713,7 @@
 				The difference between DBSCAN and $k$-means clustering is that the latter is a partitioned algorithm, which means that the final goal of the algorithm is to find the nearest densest neightbours instead of the transitive closure computation \cite{shi2014fpga}.
 				What this means in our situation is that outliers like roadside artifacts will get ignored in DBSCAN clustering and only the high density areas such as the lines will get clustered.
 				If we were to use $k$-means clustering, all of the input data would get considered when forming a result, including the outliers.
-				Shi et al. \cite{shi2014fpga} implemented parallel DBSCAN which can be horizontally scaled over a FPGA.
+				Shi et al. \cite{shi2014fpga} implemented parallel DBSCAN which can be horizontally scaled over an FPGA.
 
 			\end{subparagraaf}
 
@@ -948,7 +945,7 @@
 
 		\begin{paragraaf}{Application of Techniques}
 
-			Next up, I wrote a computer program which implemented the most used processing steps from \verwijzingb{paragraaf}{Listing of Candidate Algorithms}.
+			Next up, I wrote a computer program which implemented the most used processing steps from \verwijzingn{paragraaf}{Listing of Candidate Algorithms}.
 			The program takes two arguments: a path to an input image and a destination path that points to a location where the output image should be written to.
 
 			\begin{subparagraaf}{Image Handling}
@@ -1113,7 +1110,7 @@
 
 			\begin{subparagraaf}{$k$-means Image Segmentation Implementation}
 
-				When applying the Gaussian and Sobel steps as noted in \verwijzingb{subparagraaf}{Filter Development}, I still noticed a lot of noise in the Sobel output.
+				When applying the Gaussian and Sobel steps as noted in \verwijzingn{subparagraaf}{Filter Development}, I still noticed a lot of noise in the Sobel output.
 				As recommended by my mentor, I took a step back and implemented a filter that could separate the pixels in a grayscale image using $k$-means.
 				The intention of this filter is to separate the lane from the non-lane pixels.
 				
@@ -1170,7 +1167,7 @@
 				The values I chose to use for the double threshold are $\frac{1}{4}$th of the maximum pixel value for the upper boundary and $\frac{1}{8}$th for the lower boundary.
 				I based these off the values that OpenCV used in their example program, and they work well in my program as well.
 				As per the Canny technique, weak edge pixels need to be connected to a strong edge pixel to be considered valid.
-				However, since this is a recursive operation -- making it unfeasible for implementation on a FPGA -- I decided to only check the direct adjacent pixels for presence of a strong pixel.
+				However, since this is a recursive operation -- making it unfeasible for implementation on an FPGA -- I decided to only check the direct adjacent pixels for presence of a strong pixel.
 				This is a sacrifice that I made because it means that the total amount of compilations is known beforehand, but it potentially decreases the effectiveness of the hysteresis.
 				An example image fed through a grayscale filter, a two-means seperation filter and finally the Canny filter, can be seen in \verwijzingb{figuur}{A test image processed with my Canny Edge Detector}.
 				Parameter $T_w$ is the weak edge threshold and $T_s$ is the strong edge threshold.
@@ -1373,7 +1370,8 @@
 				Now that we have calculated the two means that correspond to the lane lines, we have to interpret this data in a useful way.
 				Because the goal of this project is to detect whether a car is properly centered in the lane, I propose that we detect this using the $\theta$-values of the two means.
 				If $\theta \approx 90$, we can conclude that the car is driving over the road lane and that it has partially exited it with two tires.
-				This angle measurement will take place in hardware.
+				This angle measurement will take place in the business logic of the application.
+				It will be better to do this in software on a microcontroller because processors are better fitted to make choices upon incoming signals than hardware is.
 
 			\end{subparagraaf}
 
@@ -1394,8 +1392,8 @@
 				\item	Canny edge detection -- the combination of Gaussian blur to smooth out the image artifacts and the Sobel operator to highlight the edges has been widely used in practice.
 					The extra advantages of Canny, like the double threshold and edge tracking hysteresis, have shown to be impactful.
 					I'm not sure how difficult it will be to implement the non-maximum suppression and the edge hysteresis, but that will be made clear when I start with the implementation.
-				\item	Hough Transform -- although it is challenging to implement this algorithm on a FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
-					Because there are multiple approaches to implementing it on a FPGA, I think it will be possible for me to achieve this.
+				\item	Hough Transform -- although it is challenging to implement this algorithm on an FPGA, numerous research papers have suggested different ways of implementing it, making it well documented.
+					Because there are multiple approaches to implementing it on an FPGA, I think it will be possible for me to achieve this.
 					I chose the Hough Transform over other methods because it is good for detecting dashed lines, which makes it a good choice for detecting lane markings.
 				\item	Vanishing point detection -- even in an image with a well-defined road, there will inevitably be false positive lines resulting from the Hough transform, like the horizon of the earth.
 					We have to detect which lines cross each other, which will result in the vanishing point of the image.
@@ -1422,7 +1420,7 @@
 			In my opinion, it will be relatively feasible to implement the pipeline in hardware, because others have done so as well.
 			Each of the stages in the pipeline have been widely used by researchers and have been implemented on FPGAs in many papers that I have analyzed.
 			On a scale of one to five, I think the difficulty of implementing it would be a four.
-			As I mentioned in \verwijzingb{subsubparagraaf}{Time and Space Complexity}, I will not be able to use the DSP slices because the FPGA development board manufacturer has no documentation on them.
+			As I mentioned in \verwijzingn{subsubparagraaf}{Time and Space Complexity}, I will not be able to use the DSP slices because the FPGA development board manufacturer has no documentation on them.
 			Therefore, I think it will be a challenge to manage the resources on the FPGA.
 			In the studies that I've read, most researchers used Kintex or Virtex-series FPGAs, while I only have an Artix FPGA.
 			This difference in available resources means that I will have to make choices in the future on how exactly I will implement certain things.
@@ -1459,7 +1457,23 @@
 
 	\begin{hoofdstuk}{Discussion}
 
-		\textbf{[todo:]}
+		The proposed image processing pipeline was tested using a dataset that consisted of footage mainly captured in North America \cite{yu2020bdd100k}.
+		These images may not be representative of the roads in the target area of deployment.
+		A difference between the roads in North America and Europe is the color of the lane markings.
+		In Europe, lane markings are colored white, which gives a higher contrast to the road surface and positively impacts test results.
+		Therefore, the pipeline may be more accurate than what the tests make it out to be.
+		It depends in which regions AROBS wants to deploy this LDWS, as it turns out to be more effective in some regions.
+
+		\bigskip
+
+		In this research, I made an estimate on how many resources such a pipeline would take to implement on an FPGA.
+		I based this claim off the results of other research papers.
+		However, the amount of resources all depends on how the algorithm is implemented.
+		For example, an algorithm handwritten in optimized RTL code would take less resources than an algorithm written in a high level language using High Level Synthesis.
+		According to the Plan of Action, I only have six weeks to implement the whole pipeline on the FPGA.
+		I have my doubts that I would be able to handwrite all of the RTL code in this amount of time, so I will be looking towards High Level Synthesis as a time-saving measure.
+		This factor has to be taken into account when estimating the computational resources needed for this project.
+		If during the implementation phase it becomes clear that the target FPGA board won't have enough resources to fit the pipeline, I will have to reflect upon the choices made in this research and determine which stages can be left out at a decreased accuracy.
 
 	\end{hoofdstuk}
 
