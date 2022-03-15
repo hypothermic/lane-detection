@@ -1,0 +1,211 @@
+% !TEX program = xelatex
+\PassOptionsToPackage{table}{xcolor}
+\documentclass{matthijs}
+\graphicspath{{../assets/}{./docs/assets/}{./docs/functional-design/}}
+
+% Style for first and last page
+\usepackage{wallpaper}
+\usepackage{color}
+\definecolor{arobsblue}{HTML}{0e335c}
+\definecolor{table head}{HTML}{4472c4}
+
+\usepackage{csquotes}
+\usepackage{biblatex}
+\addbibresource{fd.bib}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+
+\usepackage{tabularx}
+
+% Versioning
+\usepackage[maxdepth=2]{gitinfo2}
+
+\begin{document}
+
+	% Set language to English
+	\taal{en}
+
+	\begin{titelpagina}
+		\color{white}
+
+		\titel{\vspace{50pt}Functional Design}{\emph{Project Lane Detection using FPGAs}}
+		\author{
+			\begin{tabular}{r l}
+				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
+				\textbf{Course:} & HBO-ICT ESA Full-Time \\
+				\\
+				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
+				\textbf{Company Supervisor:} & Pangyu Jeong \\
+				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\\
+				\textbf{Version:} & 0.1 \\
+				\textbf{Commit:} & \gitAbbrevHash @master \\
+			\end{tabular}
+			\vspace{8ex}
+		}
+
+		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
+		
+	\end{titelpagina}
+
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+	
+	\begin{inhoudspagina}
+
+	\end{inhoudspagina}
+
+	\pagenumbering{arabic}
+
+	\begin{hoofdstuk}{Preface}
+
+		The functional design consists of the requirements and expectations of the end product.
+		It is a way to establish that the product meets the demands that were assigned to it.
+		The requirements are framed from the perspective of the users and stakeholders to give background on why they need to be implemented.
+
+		\bigskip
+
+		Furthermore, a general high-level overview of the system is given to show where it will be integrated in the total picture.
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{System Overview}
+
+		To give a total picture of the system and where it should be integrated with existing systems, an overview graphic is provided which gives a visual representation of the situation.
+		The information flow between the parts of the system is visualized by arrows.
+		These arrows are accompanied by labels which describe the type of information that is passed on.
+
+		\vspace{4ex}
+
+		\begin{figuur}{A high-level overview of the system integration}
+
+			\begin{tikzpicture}
+
+				\node[inner sep=0] (fpga) {
+					\includegraphics[width=0.2\textwidth]{asset_csdx_netscaler.pdf}
+				};
+				\node[anchor=south, above=1ex of fpga, align=center, inner sep=0] (fpga label) {FPGA Accelerated\\Vision Processing Unit};
+
+				\node[inner sep=1ex, below left=8ex and 18ex of fpga] (camera) {
+					\includegraphics[width=0.1\textwidth]{asset_csdx_camera.pdf}
+				};
+				\node[anchor=south, above=0.5ex of camera, align=center, inner sep=0] (camera label) {Dashboard\\Camera};
+				
+				\node[inner sep=1ex, below right=8ex and 18ex of fpga] (ldws) {
+					\includegraphics[width=0.1\textwidth]{asset_csdx_switch.pdf}
+				};
+				\node[anchor=south, above=0.5ex of ldws, align=center, inner sep=0] (ldws label) {Lane Departure\\Warning System};
+
+				\node[below=22ex of fpga, align=center, inner sep=0, xshift=1ex] (info) {
+						(graphics used from the Allied Telesis stencil set \cite{allied2014stencils})
+				};
+
+				\draw [-{Latex[length=5pt, width=5pt]}] (camera) -- (fpga) node [pos=.5, above, sloped] (camera fpga label) {\small video stream};;
+				\draw [-{Latex[length=5pt, width=5pt]}] (fpga) -- (ldws) node [pos=.5, above, sloped] (fpga ldws label) {\small lane params};;
+
+			\end{tikzpicture}
+
+			\vspace{-1.5ex}
+
+		\end{figuur}
+
+		It is assumed that the dashcam and the Lane Departure Warning System (LDWS) already exist in the context of the car.
+		This project will only focus on the research and development of the Vision Processing Unit (VPU).
+		The dashcam is an OV7670 camera module which will be connected to the VPU to provide a video stream from the front perspective of a vehicle.
+		The LDWS is a subsystem of the Advanced Driver-Assistance System (ADAS) which will trigger certain actions based on observations made by arbitrary business logic on the basis of the lane parameter data.
+		This lane parameter data consists of information which can be used to determine whether the car is driving in the lane or not.
+		Deciding which actions take place in the LDWS is out of scope of this project.
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Requirements}
+
+		A user story is a requirement that is viewed from the perspective of a user or stakeholder.
+		This story helps to identify what a certain person expects from the product and why he expects it.
+		Each story is made concrete and measurable by acceptance criteria to guarantee that the product meets the goal of the user.
+
+		\bigskip
+
+		A product quality category from the ISO/IEC 25010:2011 standard \cite{iso25010systems} has been assigned to every user story and is represented in italic text in the enumeration below.
+
+		\vspace{1ex}
+
+		\begin{figuur}{User Stories}
+
+			\begin{enumerate}[labelsep=2ex, font=\bfseries]
+				
+				\item	As the production company I want to be able to produce the lane detection system as economically as possible
+
+					\begin{enumerate}[leftmargin=8ex]
+
+						\item	The system is formally verified and implemented on an FPGA -- \textit{Maturity}
+						\item	Faulty systems can be fixed by only replacing the FPGA -- \textit{Replaceability}
+						\item	The digital logic layer is compact enough to fit on the Artix 7 XC7A35T chip family -- \textit{Resource utilization}
+						\item	The system interacts with the existing OV7670 camera module -- \textit{Adaptability}
+
+					\end{enumerate}
+
+				\item	As a systems integrator I want to be able to integrate the lane detection system into existing Advanced Driver-Assistance Systems
+
+					\begin{enumerate}[leftmargin=8ex]
+
+						\item	Up-to-date technical documentation is provided which explains how the lane detection system interacts with other automobile systems -- \textit{Maintainability}
+						\item	The protocols used to communicate with other automobile systems are documented -- \textit{Maintainability}
+						\item	The system can be integrated into other ecosystems -- \textit{Reusability \& adaptability}
+
+					\end{enumerate}
+
+				\item	As an automobile technician I want to be able to troubleshoot issues with the lane detection system when repairing vehicles
+
+					\begin{enumerate}[leftmargin=8ex]
+
+						\item	The system can be debugged using a laptop -- \textit{Maintainability}
+						\item	The resulting video feed can be extracted in real-time -- \textit{Analysability}
+						\item	The resulting lane parameters can be extracted in real-time -- \textit{Analysability}
+
+					\end{enumerate}
+
+				\item	As a vehicle driver I want my vehicle to warn me in real-time if I'm about to leave the road lane
+
+					\begin{enumerate}[leftmargin=8ex]
+
+						\item The lane detection system can operate on the camera video feed in \mbox{real-time -- \textit{Availability}}
+						\item The latency of the lane detection system is shorter than the time between the frames of the camera feed -- \textit{Time behavior}
+
+					\end{enumerate}
+
+			\end{enumerate}
+
+		\end{figuur}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Use Case Model}
+
+		\textbf{[todo: use case diagram]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{User Interface Design}
+
+		\textbf{[todo: screen model of debugging program (uad: uart debugger?)]}
+
+	\end{hoofdstuk}
+
+	% Bibliography page
+	\begin{hoofdstuk}{References}
+
+		\printbibliography[heading=none]
+
+	\end{hoofdstuk}
+
+	% Empty last page
+	\clearpage
+	\thispagestyle{empty}
+	\addtocounter{page}{-1}
+	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
+	\
+	\clearpage
+
+\end{document}
