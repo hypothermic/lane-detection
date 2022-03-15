@@ -112,13 +112,50 @@
 		
 	\end{titelpagina}
 
-	\begin{hoofdstuk*}{Abstract}
+	\setlength{\parindent}{0cm}
+	\setlength{\parskip}{0cm}
+	\singlespacing
+	\section*{Abstract}
+	\label{hoofdstuk:Abstract}
+	\onehalfspacing
+	\thispagestyle{empty}
 
-		\thispagestyle{empty}
+	For the improvement of its Advanced Driver-Assistance System, AROBS wants to develop a Lane Detection Warning System.
+	In this research paper, an image processing pipeline is suggested which can detect the road lane from dashboard camera footage.
+	The pipeline must be able to be implemented in digital logic on platforms such as FPGAs.
+	Several trade-offs were made with regards to the accuracy of the pipeline to make it feasible to implement in digital logic.
+	The pipeline is accurate when the road markings are clearly defined and the weather conditions are optimal.
+	Roadside artifacts like trees and guardrails can cause hinder in the detection phase of the algorithm.
+	The parameters of the system are configurable for fine-tuning depending on the region of deployment and the characteristics of the roads.
 
-		\textbf{[todo:]}
+	\setlength{\parindent}{0cm}
+	\setlength{\parskip}{0cm}
+	\singlespacing
+	\section*{Terminology}
+	\label{hoofdstuk:Terminology}
+	\onehalfspacing
 
-	\end{hoofdstuk*}
+	To keep the text concise and readable, the following abbreviations have been used:
+
+	\begin{table}[!ht]
+		\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} R}
+			\toprule
+
+			\textbf{Abbreviation} & \textbf{Definition} \\
+			\midrule
+			ADAS & Advanced Driver-Assistance System \tabularnewline
+			DSP & Digital Signal Processing; the act of modifying and converting digital signals in real-time \tabularnewline
+			FPGA & Field Programmable Gate Array; a customizable logic circuit \tabularnewline
+			High Level Synthesis & A technique for synthesizing high level computer code to RTL \tabularnewline
+			Image Feature & A characteristic of an image that is useful for image processing \tabularnewline
+			MATLAB & A computer program for prototyping and simulating concept designs \tabularnewline
+			ROI & Region of Interest; a part of an image containing useful features \tabularnewline
+			RTL & Register Transfer Level code; a way of describing the behavior of digital logic \tabularnewline
+
+			\bottomrule
+		\end{tabular*}
+		\label{tabel:Abbreviations}
+	\end{table}
 
 	\begin{inhoudspagina}
 
@@ -143,14 +180,14 @@
 		To improve the safety of vehicles, AROBS has been developing an Advanced Driver\Hyphdash Assistance System -- hereafter referred to as an ADAS.
 		This system comprises of numerous subsystems which monitor and control certain processes inside of the car.
 		One of these subsystems is the Lane Departure Warning System \cite{el2020novel}.
-		As the name implies, this component of the ADAS assists the driver in keeping the vehicle within in a road lane.
-		To detect if the car is properly centered, a camera is positioned on the dashboard of the car and it is faced towards the road.
-		The approximate position of the vehicle relative to the road lane is calculated by feeding the video feed from the camera through an algorithm.
+		As the name implies, this component of the ADAS will assist the driver in keeping the vehicle within in a road lane.
+		To detect if the car is properly centered, a camera will be positioned on the dashboard of the car, facing towards the road.
+		The approximate position of the vehicle relative to the road lane will be calculated by feeding the video feed from the camera through an algorithm.
 		If the result of this process indicates that the car is deterring from the lane, a signal is sent to the ADAS so that a warning can be provided to the driver of the vehicle.
-		FPGA technology is used because it enables low-cost high-throughput parallel computation for computer vision applications, especially ADASes \cite{peri2020how}.
+		FPGA technology will be used because it enables low-cost high-throughput parallel computation for computer vision applications, especially ADASes \cite{peri2020how}.
 		Although FPGAs have been around for some time, they have been trending once again because of big tech companies investing in them.
 		Early 2022, AMD acquired the world's largest \cite{valuates2021field} manufacturer in the FPGA industry, Xilinx, for an unprecedented price of 50 million USD \cite{lee2022amd}.
-		A company of this caliber is sure to bring attention and support for the FPGA market.
+		A company of this caliber will ensure that the FPGA market will continue to grow and be relevant in the future.
 		
 		\bigskip
 
@@ -160,7 +197,7 @@
 		\bigskip
 
 		This paper is written using the IMRaD format, because it is what we were taught to use at Windesheim.
-		However, I realised that this might not be the best format to write the paper in, because the literature study section was exceptionally big compared to the other sections.
+		However, I realized that this might not be the best format to write the paper in, because the literature study section was exceptionally big compared to the other sections.
 		As advised by my mentor, I moved the literature study to a separate section before the main part of the paper.
 		I tried to spread out the findings in this section as much as possible by creating (sub-)paragraphs for different topics.
 
@@ -1420,7 +1457,7 @@
 			In my opinion, it will be relatively feasible to implement the pipeline in hardware, because others have done so as well.
 			Each of the stages in the pipeline have been widely used by researchers and have been implemented on FPGAs in many papers that I have analyzed.
 			On a scale of one to five, I think the difficulty of implementing it would be a four.
-			As I mentioned in \verwijzingn{subsubparagraaf}{Time and Space Complexity}, I will not be able to use the DSP slices because the FPGA development board manufacturer has no documentation on them.
+			As I mentioned in \verwijzingn{subsubparagraaf}{Time and Space Complexities}, I will not be able to use the DSP slices because the FPGA development board manufacturer has no documentation on them.
 			Therefore, I think it will be a challenge to manage the resources on the FPGA.
 			In the studies that I've read, most researchers used Kintex or Virtex-series FPGAs, while I only have an Artix FPGA.
 			This difference in available resources means that I will have to make choices in the future on how exactly I will implement certain things.
