@@ -84,6 +84,9 @@ compile-docs-research:
 compile-docs-fd:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/functional-design/fd.tex
 
+compile-docs-td:
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/technical-design/td.tex
+
 compile-docs-code:
 	$(DOXYGEN_EXEC) $(DOXYGEN_CONF)
 	cd ./build/latex && $(MAKE_EXEC) all

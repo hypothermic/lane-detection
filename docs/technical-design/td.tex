@@ -1,0 +1,131 @@
+% !TEX program = xelatex
+\documentclass{matthijs}
+\graphicspath{{../assets/}{./docs/assets/}{./docs/technical-design/}}
+
+% Style for first and last page
+\usepackage{wallpaper}
+\usepackage{color}
+\definecolor{arobsblue}{HTML}{0e335c}
+
+\usepackage{csquotes}
+\usepackage{biblatex}
+\addbibresource{td.bib}
+
+\usepackage{tikz}
+\usepackage{tikz-uml}
+\usetikzlibrary{positioning, arrows.meta}
+
+% Versioning
+\usepackage[maxdepth=2]{gitinfo2}
+
+\begin{document}
+
+	% Set language to English
+	\taal{en}
+
+	\begin{titelpagina}
+		\color{white}
+
+		\titel{\vspace{50pt}Technical Design}{\emph{Project Lane Detection using FPGAs}}
+		\author{
+			\begin{tabular}{r l}
+				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
+				\textbf{Course:} & HBO-ICT ESA Full-Time \\
+				\\
+				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
+				\textbf{Company Supervisor:} & Pangyu Jeong \\
+				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\\
+				\textbf{Version:} & 0.1 \\
+				\textbf{Commit:} & \gitAbbrevHash @master \\
+			\end{tabular}
+			\vspace{8ex}
+		}
+
+		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
+		
+	\end{titelpagina}
+
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+	
+	\begin{inhoudspagina}
+
+	\end{inhoudspagina}
+
+	\pagenumbering{arabic}
+
+	\begin{hoofdstuk}{Preface}
+
+		This project is centered around the realization of an ADAS subsystem which can detect the position of a vehicle within a lane.
+		A camera is positioned on the dashboard facing the road in front of the vehicle.
+		The video feed from this camera is analyzed in real-time by a computer vision system called the Vision Processing Unit.
+		This system is implemented on a Field Programmable Gate Array to achieve low-latency detection.
+		The output data, existing of information about the lane the car currently occupies, is passed on to the Lane Departure Warning System so that the car can make decisions with it.
+
+		\bigskip
+
+		This document pertains to the technical side of the system.
+		The main goal of this document is to give insight on the inner workings of the system so that the knowledge is preserved and modifications to the system can be easily made in the future.
+		Design choices and the overcoming of bottlenecks are mentioned to give advice for future projects.
+		Another goal is to describe how the system is integrated in a vehicle so that technicians can troubleshoot issues with it.
+		The target audience for this document is whom want to get hands-on with the system and its internals.
+
+		\bigskip
+
+		A global system overview is given in the first paragraph to provide context to the reader.
+		In the following paragraphs, the layers of the system are described starting with the hardware layer and ending with the software layer.
+		The hardware paragraph is about the physical hardware components which are used in the project.
+		The digital logic layer is about the register transfer level code and how it is synthesized on the FPGA.
+		The software layer includes the program that runs on the microprocessor and the troubleshooting application.
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{System Overview}
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Integrated Block Design}
+
+		The block design for the system has been created using the Vivado IP Integrator (IPI) because it is the recommended tool to integrate a MicroBlaze soft core processor in a digital design \cite{xilinx2018designing}.
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Hardware Layer}
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Digital Logic Layer}
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Software Layer}
+
+		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+	
+	% Bibliography page
+	\begin{hoofdstuk}{References}
+
+		\printbibliography[heading=none]
+
+	\end{hoofdstuk}
+
+	% Empty last page
+	\clearpage
+	\thispagestyle{empty}
+	\addtocounter{page}{-1}
+	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
+	\
+	\clearpage
+
+\end{document}
