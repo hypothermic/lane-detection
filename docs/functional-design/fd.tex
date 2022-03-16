@@ -14,6 +14,7 @@
 \addbibresource{fd.bib}
 
 \usepackage{tikz}
+\usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
 
 \usepackage{tabularx}
@@ -181,9 +182,47 @@
 
 	\end{hoofdstuk}
 
-	\begin{hoofdstuk}{Use Case Model}
+	\begin{hoofdstuk}{Use Cases}
 
-		\textbf{[todo: use case diagram]}
+		An illustration of the actions of the system's components and the relationships with external components can be seen in \verwijzingb{figuur}{Use case diagram}.
+		Human actors as well as system actors are modelled in this illustration.
+
+		\vspace{2ex}
+
+		\begin{figuur}{Use case diagram}
+
+			\begin{tikzpicture}
+
+				\begin{umlsystem}[x=4, fill=arobsblue!5]{Lane Detection System}
+					\umlusecase[alias=cv, x=3]{Capture video}
+					\umlusecase[alias=dl, y=-2,x=0.25]{Detect lane}
+					\umlusecase[alias=pv, x=6, y=-2, fill=yellow!20]{Process video}
+					
+					\umlusecase[alias=cl, x=0.5, y=-4]{Calculate position}
+					\umlusecase[draw=none, fill=none, y=-5.5]{} %phantom to extend system
+				\end{umlsystem}
+
+				\umlactor[x=0,y=-2]{Video Unit}
+				\umlactor[x=14]{Dashcam}
+				\umlactor[x=14,y=-3]{Technician}
+				\umlactor[x=14,y=-6]{LDWS}
+
+				\umlassoc{Dashcam}{cv}
+				\umlassoc[stereo=use]{Video Unit}{cv}
+				\umlassoc{Video Unit}{dl}
+				\umlassoc{Video Unit}{cl}
+				\umlassoc[stereo=use]{Technician}{pv}
+				\umlassoc[stereo=use]{Technician}{cl}
+				\umlassoc[stereo=use]{cl}{LDWS}
+
+				\umlinclude{cv}{pv}
+				\umlinclude{dl}{pv}
+
+			\end{tikzpicture}
+
+			\vspace{-3ex}
+
+		\end{figuur}
 
 	\end{hoofdstuk}
 

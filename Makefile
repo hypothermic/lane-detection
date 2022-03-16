@@ -13,7 +13,7 @@ all: clean compile test
 LATEXMK_OUT		?= ./build/
 LATEXMK_OPTS		?= -emulate-aux-dir -auxdir=./docs/ -xelatex -output-directory=$(LATEXMK_OUT)
 export TEXINPUTS	:= $(CURDIR)/docs/assets/:$(CURDIR)/docs/research-paper/:$(CURDIR)/docs/plan-of-action/:$(CURDIR)/docs/timetable/:$(TEXINPUTS):
-export BIBINPUTS	:= $(CURDIR)/docs/research-paper/:$(CURDIR)/docs/plan-of-action/:
+export BIBINPUTS	:= $(CURDIR)/docs/research-paper/:$(CURDIR)/docs/plan-of-action/:$(CURDIR)/docs/functional-design/:
 
 LANE_DEPS		?= -lm
 LANE_SRCS		?= $(wildcard ./src/lane_*.c)
@@ -80,6 +80,9 @@ compile-docs-timetable:
 
 compile-docs-research:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/research-paper/research.tex
+
+compile-docs-fd:
+	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/functional-design/fd.tex
 
 compile-docs-code:
 	$(DOXYGEN_EXEC) $(DOXYGEN_CONF)
