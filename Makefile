@@ -91,7 +91,7 @@ compile-docs-code:
 	$(DOXYGEN_EXEC) $(DOXYGEN_CONF)
 	cd ./build/latex && $(MAKE_EXEC) all
 
-compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research compile-docs-code
+compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-docs-research compile-docs-fd compile-docs-td compile-docs-code
 
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
