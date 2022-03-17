@@ -97,6 +97,20 @@
 
 	\begin{hoofdstuk}{Hardware Layer}
 
+		\begin{paragraaf}{Memory Layout}
+
+			\textbf{Note:} the abbrevation \textit{DRAM} is ambiguous and is often mixed up in FPGA literature.
+			In some situations it means \textit{Distributed RAM} (the memory that can be instantiated in SLICEM LUTs) and in other situations it means \textit{Dynamic RAM} (the external memory that is implemented on our FPGA board).
+			To avoid confusion, I will be using the abbrevation \textit{SDRAM} to reference the Dynamic RAM that is used on the Arty board.
+
+			\bigskip
+
+			The problem I faced regarding the storage of the video frames had to do with the limited amount of BRAM on the FPGA.
+			Arty A7-35T, the target FPGA board, only has $1,800$ kibibits of BRAM, which is not enough to store a single image frame, as can be seen in \textbf{[todo: ref, make table with image size in bits]}.
+
+
+		\end{paragraaf}
+
 		\textbf{[todo:]}
 
 	\end{hoofdstuk}
