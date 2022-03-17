@@ -21,6 +21,11 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
           path: dotfiles
+      - name: Fetch dependency packages
+        run: |
+          curl -OL "https://perso.ensta-paris.fr/~kielbasi/tikzuml/var/files/src/tikzuml-v1.0-2016-03-29.tbz"
+          tar xfvj tikzuml-v1.0-2016-03-29.tbz tikzuml-v1.0-2016-03-29/tikz-uml.sty --strip-components=1
+          mv ./tikz-uml.sty ./dotfiles/latex/texmf/tex/latex/local/
       - name: Emulate gitinfo2 shim
         run: |
           FIRSTTAG=$(git describe --tags --always --dirty='-*' 2>/dev/null)
