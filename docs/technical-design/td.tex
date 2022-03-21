@@ -66,6 +66,7 @@
 				FPGA & Field Programmable Gate Array; a customizable logic circuit \tabularnewline
 				Hard-core processor & A dedicated processor as an ASIC \tabularnewline
 				HLS & High Level Synthesis; a technique for synthesizing high level computer code to RTL \tabularnewline
+				IPI & Vivado IP Integrator; a tool for integrating IP Cores into block designs \tabularnewline
 				IP Core & A pre-made digital logic design \tabularnewline
 				MPSoC & Multi-Processor SoC; a SoC with multiple physical cores in the processor \tabularnewline
 				PL & Programmable Logic; digital logic that can be reconfigured \tabularnewline
@@ -155,7 +156,7 @@
 				5+6+5 = 16 b & 4800 Kib & 1200 Kib  \tabularnewline
 			\end{tabel}
 			
-			The alternatives places to store an image are the 16MiB of Quad-SPI flash or the 256MB DDR3 SDRAM.
+			The alternatives places to store an image are the 16 MiB of Quad-SPI flash or the 256 MB DDR3 SDRAM.
 			The QSPI flash memory has two downsides: it requires controller logic which is only available as an IP Core with a full AXI4 bus, making it difficult to use, and it is shared with the MicroBlaze flash sector, so we would have to make sure that we don't overwrite those contents.
 			The DDR3 SDRAM has one major downside: it requires the use of the proprietary Xilinx Memor Interface Generator (MIG) which Digilent does not provide any support for.
 			The MIG provides little to no abstraction over the raw DDR3 protocol, making it a challenge of its own to implement it.
@@ -171,6 +172,7 @@
 			These AXI Streams can be connected to those on the the Vitis Vision HLS-generated RTL solution.
 			Another reason why I chose the PYNQ-Z2 is its larger BRAM capacity; it has 4900 Kib of BRAM.
 			However, if using the PYNQ Processing System, this memory will be shared with the processor component, leaving a smaller usable space.
+			My final decision is to use the DDR3 SDRAM because it is plentyful on the Z2 board; all 512 MB can be used by the user.
 
 		\end{paragraaf}
 
@@ -179,6 +181,32 @@
 	\end{hoofdstuk}
 
 	\begin{hoofdstuk}{Programmable Logic Layer}
+
+		\begin{paragraaf}{Lane Detection IP}
+
+			% ----- Introductie; wat is HLS en Vitis Vision?
+			I chose to implement the image processing stages using High Level Synthesis because Xilinx provides a well-designed OpenCV port that is tested and formally proven.
+			This port was formerly called xfOpenCV prior to it being integrated into the Vitis standard libraries and renamed to Vitis Vision.
+			It is a clean-room implementation of OpenCV functions that includes instruction pragmas which tell the compiler how certain code should be synthesized to RTL.
+			These pragmas include information on how certain loops should be unrolled and how variables can be synthesized to registers.
+			The developer can write C++ code which specifies which AXI interfaces have to be created and which vision functions have to be applied.
+			This code can be simulated on the developer's system using the official OpenCV library to verify the working of the code.
+			Once verified, the code can be synthesized to HDL and can be co-simulated to verify that the automatically generated HDL performs exactly like the original code.
+			Finally, Vivado can synthesize the HDL to a netlist and implement it into an IP Core, which can be used in other projects.
+			
+
+			\bigskip
+
+			% ----- Hoe heb ik de vision libs gebruikt?
+			\textbf{[todo: leg uit, een AXI stream voor input en voor output]}
+
+			\bigskip
+
+			% ----- Hoe heb ik de IP Core geintegreerd in het systeem
+			I incorporate this IP Core into the block design using IPI and connect the AXI Streams
+			\textbf{[todo:]}
+
+		\end{paragraaf}
 
 		\textbf{[todo:]}
 
