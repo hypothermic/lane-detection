@@ -6,6 +6,7 @@
 \usepackage{wallpaper}
 \usepackage{color}
 \definecolor{arobsblue}{HTML}{0e335c}
+\usepackage{microtype}
 
 \usepackage{csquotes}
 \usepackage{biblatex}
@@ -53,7 +54,9 @@
 	
 	\begin{inhoudspagina}
 
-		\begin{table}[!ht]
+		\clearpage
+
+		%\begin{table}[!ht]
 			\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} R}
 				\toprule
 
@@ -68,7 +71,7 @@
 				HLS & High Level Synthesis; a technique for synthesizing high level computer code to RTL \tabularnewline
 				IPI & Vivado IP Integrator; a tool for integrating IP Cores into block designs \tabularnewline
 				IP Core & A pre-made digital logic design \tabularnewline
-				MPSoC & Multi-Processor SoC; a SoC with multiple physical cores in the processor \tabularnewline
+				MPSoC & Multi-Processor SoC; a SoC with multiple physical processing cores; just a marketing term someone at Xilinx made up \tabularnewline
 				PL & Programmable Logic; digital logic that can be reconfigured \tabularnewline
 				PS & Processing System; everything related to hard- or softcore processors on the device \tabularnewline
 				RTL & Register Transfer Level code; a way of describing the behavior of digital logic \tabularnewline
@@ -79,12 +82,22 @@
 
 				\bottomrule
 			\end{tabular*}
-			\label{tabel:Abbreviations}
-		\end{table}
+			%\label{tabel:Abbreviations}
+		%\end{table}
+
+		\vspace{3ex}
+
+		\textbf{Note:} the abbrevation \textit{DRAM} is ambiguous and is often mixed up in FPGA literature.
+		In some situations it means \textit{Distributed RAM} (the memory that can be instantiated in SLICEM LUTs~\cite{xilinxug474}) and in other situations it means \textit{Dynamic RAM} (the external memory that is implemented on our FPGA board).
+		To avoid confusion, I will be using the abbrevation \textit{SDRAM} to reference the Dynamic RAM variant.
 
 	\end{inhoudspagina}
 
 	\pagenumbering{arabic}
+	\tolerance=1
+	\emergencystretch=\maxdimen
+	\hyphenpenalty=10000
+	\hbadness=10000
 
 	\begin{hoofdstuk}{Preface}
 
@@ -126,7 +139,7 @@
 
 	\begin{hoofdstuk}{Integrated Block Design}
 
-		The block design for the system has been created using the Vivado IP Integrator (IPI) because it is the recommended tool to integrate a MicroBlaze soft core processor in a digital design \cite{xilinx2018designing}.
+		The block design for the system has been created using the Vivado IP Integrator (IPI) because it is the recommended tool to integrate a MicroBlaze soft core processor in a digital design~\cite{xilinxug994}.
 
 		\textbf{[todo:]}
 
@@ -135,12 +148,6 @@
 	\begin{hoofdstuk}{Hardware Layer}
 
 		\begin{paragraaf}{Memory Layout}
-
-			\textbf{Note:} the abbrevation \textit{DRAM} is ambiguous and is often mixed up in FPGA literature.
-			In some situations it means \textit{Distributed RAM} (the memory that can be instantiated in SLICEM LUTs) and in other situations it means \textit{Dynamic RAM} (the external memory that is implemented on our FPGA board).
-			To avoid confusion, I will be using the abbrevation \textit{SDRAM} to reference the Dynamic RAM variant.
-
-			\bigskip
 
 			The problem I faced regarding the storage of the video frames had to do with the limited amount of Block RAM (BRAM) on the FPGA.
 			The camera outputs an image of 640 by 480 pixels with a configurable color channel configuration of RGB444, RGB555 or RGB565.
@@ -156,23 +163,27 @@
 				5+6+5 = 16 b & 4800 Kib & 1200 Kib  \tabularnewline
 			\end{tabel}
 			
-			The alternatives places to store an image are the 16 MiB of Quad-SPI flash or the 256 MB DDR3 SDRAM.
+			The alternatives places to store an image are the 16 MiB of Quad-SPI flash or the 256 MB DDR3L SDRAM.
 			The QSPI flash memory has two downsides: it requires controller logic which is only available as an IP Core with a full AXI4 bus, making it difficult to use, and it is shared with the MicroBlaze flash sector, so we would have to make sure that we don't overwrite those contents.
-			The DDR3 SDRAM has one major downside: it requires the use of the proprietary Xilinx Memor Interface Generator (MIG) which Digilent does not provide any support for.
+			The DDR3L SDRAM has one major downside: it requires the use of the proprietary Xilinx Memor Interface Generator (MIG) which Digilent does not provide any support for.
 			The MIG provides little to no abstraction over the raw DDR3 protocol, making it a challenge of its own to implement it.
+			Besides, it is a soft IP, which means that it is delivered in a generic way and the developer has to tailor it to the specific board.
+			What makes the SDRAM appealing is its high input clock speed of 166MHz and the ability to read/write 128 bits of information per cycle.
+			This high data throughput would mean that we would not have to worry about speed limitations.
+			However, the trade-off between the complexity of implementing the memory interface and the benefits that it would bring would need to be considered.
 
 			\bigskip
 
 			The problems with the memory on the Arty A7 development board as I described above made me question the choice of using this particular board.
-			I reevaluated the choice and started looking at other development boards.
+			I reevaluated the choice and started exploring other development boards.
 			Along the way, I discovered the Zynq-7000 SoC lineup that is officially supported by the Vitis Vision libraries.
 			One of the cheapest boards available that has a Zynq-7000 SoC is the TUL PYNQ-Z2.
 			The SoC on this development board provides a predefined AXI interconnect between the PL and PS which connects the SDRAM via AXI buses.
-			In the PL, this SDRAM can be accessed using a VDMA controller which provides data over AXI Streams.
-			These AXI Streams can be connected to those on the the Vitis Vision HLS-generated RTL solution.
+			In the PL, this SDRAM can be accessed using a hard IP VDMA controller which provides data over AXI Stream buses.
+			These AXI Stream buses can be connected to those on the the Vitis Vision HLS-generated RTL solution.
 			Another reason why I chose the PYNQ-Z2 is its larger BRAM capacity; it has 4900 Kib of BRAM.
 			However, if using the PYNQ Processing System, this memory will be shared with the processor component, leaving a smaller usable space.
-			My final decision is to use the DDR3 SDRAM because it is plentyful on the Z2 board; all 512 MB can be used by the user.
+			My final decision is to use the DDR3 SDRAM because it is plentyful on the Z2 board: all 512 MB is available to the developer.
 
 		\end{paragraaf}
 
