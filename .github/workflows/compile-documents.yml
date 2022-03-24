@@ -59,8 +59,8 @@ jobs:
             docs/presentations/pres-wk10-slides.pdf
             docs/presentations/pres-wk10-notes.pdf
             docs/timetable/timetable.pdf
-            docs/functional-design/fd.tex
-            docs/technical-design/td.tex
+            docs/functional-design/fd.pdf
+            docs/technical-design/td.pdf
       - name: Compile code doc
         run: make compile-docs-code
       - name: Upload code documentation as artifact
