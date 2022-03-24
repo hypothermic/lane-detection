@@ -13,6 +13,7 @@
 \addbibresource{td.bib}
 
 \usepackage{tikz}
+\usepackage{tikzscale}
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
 
@@ -133,6 +134,35 @@
 
 	\begin{hoofdstuk}{System Overview}
 
+		The goal of this paragraph is to describe the problem that the product will solve in different layers of complexity.
+		Each layer will dissect the problem into more complexity than the previous.
+		This approach gives context to readers who might not be familiar with the fine technical concepts and who wish to grasp the knowledge at a higher level.
+
+		\begin{paragraaf}{Problem Domain}
+
+			Although the system is not directly controlled by a user, many external forces influence the working of the system.
+			We have to take them into account when developing the system because they may affect which choices we will make in the development process and how we integrate the system in a vehicle.
+
+			\begin{figuur}{Operational Problem Domain}
+				\singlespacing
+				\includegraphics[width=\textwidth]{problem-domain}
+				\onehalfspacing
+			\end{figuur}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Information Context}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Component Definition}
+
+			In order to describe which components make up the total system, I have modeled two SysML block diagrams; a Block Definition Diagram (BDD) and an Internal Block Diagram (IBD).
+			The BDD shows the components that the system consists of and the Internal Block Diagram shows the relations and interfaces between these components.
+			The BDD can be thought of as a black box view that does not represent the inner workings of the system but rather the specifications of it, while the IBD shows exactly how the system is internally composed.
+		\end{paragraaf}
+
+		\
 		\textbf{[todo:]}
 
 	\end{hoofdstuk}
