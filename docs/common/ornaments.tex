@@ -1,0 +1,17 @@
+% BEGIN ornaments.tex
+
+% Create an ornamant on every page
+\usepackage{atbegshi}
+\AtBeginShipout{
+	\begin{tikzpicture}[remember picture,overlay]
+		\fill (current page.north west) node[below right,fill=arobsblue,draw=arobsblue,minimum width=\paperwidth,minimum height=2ex] (box) {};
+	\end{tikzpicture}
+}
+
+% This doesnt really look good honestly
+%\ULCornerWallPaper{1}{asset_bg_top.jpg}
+%\LRCornerWallPaper{1}{asset_ornament.png}
+%\LLCornerWallPaper{1}{asset_ornament_3f.png}
+
+% END ornaments.tex
+

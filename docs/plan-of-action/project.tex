@@ -2,59 +2,20 @@
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/plan-of-action/}}
 
-% Style for first and last page
-\usepackage{wallpaper}
-\usepackage{color}
-%\definecolor{arobsblue}{HTML}{0e2642}
-%\definecolor{arobsblue}{HTML}{0f2c4c}
-\definecolor{arobsblue}{HTML}{0e335c}
+\input{preamble.tex}
+\usepackage{titlepage}
+
+\addbibresource{project.bib}
 
 % Gantt chart for chapter Planning
 \usepackage{pgfgantt}
-
-\usepackage{csquotes}
-\usepackage{biblatex}
-\addbibresource{project.bib}
-
-% Versioning
-\usepackage[maxdepth=2]{gitinfo2}
-
-%\usepackage{atbegshi}
-%\AtBeginShipout{
-%	\begin{tikzpicture}[remember picture,overlay]
-%		\fill (current page.north west) node[below right,fill=arobsblue,draw=arobsblue,minimum width=\paperwidth,minimum height=2ex] (box) {};
-%	\end{tikzpicture}
-%}
 
 \begin{document}
 
 	% Set language to English
 	\taal{en}
 
-	% Cover page
-	\begin{titelpagina}
-		\color{white}
-
-		\titel{\vspace{50pt}Plan of Action}{\emph{Project Lane Detection using FPGAs}}
-		\author{
-			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
-				\textbf{Course:} & HBO-ICT ESA Full-Time \\
-				\\
-				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
-				\textbf{Company Supervisor:} & Pangyu Jeong \\
-				\textbf{Windesheim Supervisor:} & Willie Conen \\
-				\\
-				\textbf{Version:} & 1.2 \\
-				\textbf{Commit:} & \gitAbbrevHash @master \\
-			\end{tabular}
-			\vspace{8ex}
-		}
-
-		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
-		
-	\end{titelpagina}
-
+	\maketitlepage{Plan of Action}{1.2}
 	\pagenumbering{arabic}
 	\thispagestyle{empty}
 	
@@ -495,12 +456,6 @@
 		\printbibliography[heading=none]
 	\end{hoofdstuk}
 
-	% Empty last page
-	\clearpage
-	\thispagestyle{empty}
-	\addtocounter{page}{-1}
-	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
-	\
-	\clearpage
+	\makelastpage
 
 \end{document}

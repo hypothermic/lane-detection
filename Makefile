@@ -12,8 +12,8 @@ all: clean compile test
 
 LATEXMK_OUT		?= ./build/
 LATEXMK_OPTS		?= -emulate-aux-dir -auxdir=./docs/ -xelatex -output-directory=$(LATEXMK_OUT)
-export TEXINPUTS	:= $(CURDIR)/docs/assets/:$(CURDIR)/docs/research-paper/:$(CURDIR)/docs/plan-of-action/:$(CURDIR)/docs/timetable/:$(TEXINPUTS):
-export BIBINPUTS	:= $(CURDIR)/docs/research-paper/:$(CURDIR)/docs/plan-of-action/:$(CURDIR)/docs/functional-design/:
+export TEXINPUTS	:= $(CURDIR)/docs//:$(TEXINPUTS):
+export BIBINPUTS	:= $(CURDIR)/docs//:
 
 LANE_DEPS		?= -lm
 LANE_SRCS		?= $(wildcard ./src/lane_*.c)

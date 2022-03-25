@@ -3,14 +3,9 @@
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/functional-design/}}
 
-% Style for first and last page
-\usepackage{wallpaper}
-\usepackage{color}
-\definecolor{arobsblue}{HTML}{0e335c}
-\definecolor{table head}{HTML}{4472c4}
+\input{preamble.tex}
+\usepackage{titlepage}
 
-\usepackage{csquotes}
-\usepackage{biblatex}
 \addbibresource{fd.bib}
 
 \usepackage{tikz}
@@ -19,37 +14,12 @@
 
 \usepackage{tabularx}
 
-% Versioning
-\usepackage[maxdepth=2]{gitinfo2}
-
 \begin{document}
 
 	% Set language to English
 	\taal{en}
 
-	\begin{titelpagina}
-		\color{white}
-
-		\titel{\vspace{50pt}Functional Design}{\emph{Project Lane Detection using FPGAs}}
-		\author{
-			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
-				\textbf{Course:} & HBO-ICT ESA Full-Time \\
-				\\
-				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
-				\textbf{Company Supervisor:} & Pangyu Jeong \\
-				\textbf{Windesheim Supervisor:} & Willie Conen \\
-				\\
-				\textbf{Version:} & 0.1 \\
-				\textbf{Commit:} & \gitAbbrevHash @master \\
-			\end{tabular}
-			\vspace{8ex}
-		}
-
-		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
-		
-	\end{titelpagina}
-
+	\maketitlepage{Functional Design}{0.1}
 	\pagenumbering{arabic}
 	\thispagestyle{empty}
 	
@@ -239,12 +209,6 @@
 
 	\end{hoofdstuk}
 
-	% Empty last page
-	\clearpage
-	\thispagestyle{empty}
-	\addtocounter{page}{-1}
-	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
-	\
-	\clearpage
+	\makelastpage
 
 \end{document}

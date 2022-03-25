@@ -1,0 +1,28 @@
+% BEGIN preamble.tex
+
+% Style for first and last page
+\usepackage{wallpaper}
+\usepackage{color}
+\definecolor{arobsblue}{HTML}{0e335c}
+
+% Versioning plugin that retrieves data from the git repo dir
+% Needs the "gitInfoHead" file to be generated, make sure
+% that the shim script or the git hook is enabled
+\usepackage[maxdepth=2]{gitinfo2}
+
+% Use biblatex with biber backend for bibliography
+\usepackage{csquotes}
+\usepackage[style=ieee]{biblatex}
+\renewcommand*{\mkbibacro}[1]{#1}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% This lets the text look really juicy
+\usepackage{microtype}
+\usepackage{extdash}
+
+% A column for right-aligned autowrap text
+\newcolumntype{R}{>{\arraybackslash}m{10cm}}
+
+% END preamble.tex
+

@@ -2,57 +2,27 @@
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/technical-design/}}
 
-% Style for first and last page
-\usepackage{wallpaper}
-\usepackage{color}
-\definecolor{arobsblue}{HTML}{0e335c}
-\usepackage{microtype}
+\input{preamble.tex}
+\usepackage{titlepage}
 
-\usepackage{csquotes}
-\usepackage{biblatex}
+% Load bibliography file
 \addbibresource{td.bib}
 
+% Use tikz for drawings
 \usepackage{tikz}
 \usepackage{tikzscale}
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
-
-\newcolumntype{R}{>{\arraybackslash}m{10cm}}
-
-% Versioning
-\usepackage[maxdepth=2]{gitinfo2}
 
 \begin{document}
 
 	% Set language to English
 	\taal{en}
 
-	\begin{titelpagina}
-		\color{white}
-
-		\titel{\vspace{50pt}Technical Design}{\emph{Project Lane Detection using FPGAs}}
-		\author{
-			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
-				\textbf{Course:} & HBO-ICT ESA Full-Time \\
-				\\
-				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
-				\textbf{Company Supervisor:} & Pangyu Jeong \\
-				\textbf{Windesheim Supervisor:} & Willie Conen \\
-				\\
-				\textbf{Version:} & 0.1 \\
-				\textbf{Commit:} & \gitAbbrevHash @master \\
-			\end{tabular}
-			\vspace{8ex}
-		}
-
-		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
-		
-	\end{titelpagina}
-
+	\maketitlepage{Technical Design}{0.1}
 	\pagenumbering{arabic}
 	\thispagestyle{empty}
-	
+
 	\begin{inhoudspagina}
 
 		\clearpage

@@ -1,0 +1,42 @@
+% Macro for creating the title page
+% Argument 1: name of the document
+% Argument 2: version of the document
+\newcommand{\maketitlepage}[2]{
+	\begin{titelpagina}
+		\color{white}
+
+		\titel{\vspace{50pt}#1}{\emph{Project Lane Detection using FPGAs}}
+		\author{
+			\begin{tabular}{r l}
+				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
+				\textbf{Course:} & HBO-ICT ESA Full-Time \\
+				\\
+				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
+				\textbf{Company Supervisor:} & Pangyu Jeong \\
+				\textbf{Windesheim Supervisor:} & Willie Conen \\
+				\\
+				\textbf{Version:} & #2 \\
+				\textbf{Commit:} & \gitAbbrevHash @master \\
+			\end{tabular}
+			\vspace{8ex}
+		}
+
+		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
+		
+	\end{titelpagina}
+
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+}
+
+% Macro for creating the last page
+% Could have used \input{} as well
+\newcommand{\makelastpage}{
+	% Empty last page
+	\clearpage
+	\thispagestyle{empty}
+	\addtocounter{page}{-1}
+	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
+	\
+	\clearpage
+}

@@ -2,18 +2,10 @@
 \documentclass{matthijs}
 \graphicspath{{../assets/}{../images/}{./docs/assets/}{./docs/images}{./docs/research-paper/}}
 
-\newcolumntype{R}{>{\arraybackslash}m{10cm}}
-
-% First/last page style and page ornaments
-\usepackage{wallpaper}
-\usepackage{color}
+\input{preamble.tex}
+\usepackage{titlepage}
 \definecolor{arobsblue2}{HTML}{0e2642}
-%\definecolor{arobsblue}{HTML}{0f2c4c}
-\definecolor{arobsblue}{HTML}{0e335c}
 \definecolor{invisible}{rgb}{1,1,1}
-%\ULCornerWallPaper{1}{asset_bg_top.jpg}
-%\LRCornerWallPaper{1}{asset_ornament.png}
-%\LLCornerWallPaper{1}{asset_ornament_3f.png}
 
 % Confirm geometry (already set in cls)
 % This is needed for fancyhdr
@@ -29,21 +21,6 @@
 \renewcommand{\headrulewidth}{0pt}
 \lfoot{\textcolor{invisible}{\gitAbbrevHash~\gitAuthorName~\gitAuthorIsoDate}}
 \rfoot{\textbf{\thepage}\hspace{1ex}of\hspace{1ex}\pageref{LastPage}}
-
-% Bibliography
-\usepackage{csquotes}
-\usepackage[style=ieee]{biblatex}
-\addbibresource{research.bib}
-\renewcommand*{\mkbibacro}[1]{#1}
-\setcounter{biburllcpenalty}{7000}
-\setcounter{biburlucpenalty}{8000}
-
-% Versioning
-\usepackage[maxdepth=2]{gitinfo2}
-
-% This lets the text look really juicy
-\usepackage[verbose=errors,babel=true]{microtype}
-\usepackage{extdash}
 
 % Figures
 \usepackage{amsmath}
@@ -89,28 +66,7 @@
 	\pagenumbering{gobble}
 
 	% Cover page
-	\begin{titelpagina}
-		\color{white}
-
-		\titel{\vspace{50pt}Research into Lane Detection Algorithms for FPGAs}{\emph{Project Lane Detection using FPGAs}}
-		\author{
-			\begin{tabular}{r l}
-				\textbf{Author:} & Matthijs Bakker{\color{white}\footnote{\color{white}\textsuperscript{1} s1142121@student.windesheim.nl}} \\
-				\textbf{Course:} & HBO-ICT ESA Full-Time \\
-				\\
-				\textbf{Company:} & AROBS Transilvania SA, Cluj-Napoca, Romania \\
-				\textbf{Company Supervisor:} & Pangyu Jeong \\
-				\textbf{Windesheim Supervisor:} & Willie Conen \\
-				\\
-				\textbf{Version:} & 0.1 \\
-				\textbf{Commit:} & \gitAbbrevHash @master \\
-			\end{tabular}
-			\vspace{8ex}
-		}
-
-		\ThisULCornerWallPaper{1.001}{asset_bg_first_page.jpg}
-		
-	\end{titelpagina}
+	\maketitlepage{Research into Lane Detection Algorithms for FPGAs}{0.1}
 
 	\setlength{\parindent}{0cm}
 	\setlength{\parskip}{0cm}
@@ -1521,12 +1477,6 @@
 	
 	\end{hoofdstuk}
 
-	% Empty last page
-	\clearpage
-	\thispagestyle{empty}
-	\addtocounter{page}{-1}
-	\ThisULCornerWallPaper{1.005}{asset_bg_last_page.jpg}
-	\
-	\clearpage
+	\makelastpage
 
 \end{document}
