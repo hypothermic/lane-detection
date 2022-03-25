@@ -1,0 +1,55 @@
+\begin{tikzpicture}
+
+	\tikzstyle{sysml block}=[draw,rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
+
+	\newcommand{\sysmlstereo}[1]{\textcolor{darkgray}{\guillemotleft \small{#1}\guillemotright}}
+	%\newcommand{\sysmlrect}[2]{
+	%	\node[sysml block] {
+	%		%\foreach \stereo in {#1} {\sysmlstereo{\stereo}}
+	%		\sysmlstereo{block} \\
+	%		#2
+	%	}
+	%}
+	%\newcommand{\sysmlblock}[1]{
+	%	\sysmlrect{{block}}{#1}
+	%}
+	%\sysmlblock{Lane Detector};
+
+	\node (embedded) [sysml block] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{embedded system}\\
+		Lane Detector
+	};
+	\node (driver) [above left=0.75cm and 3cm of embedded, anchor=east, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (driver) {
+		Driver
+	};
+	\node (maintainer) [below left=0.75cm and 3cm of embedded, anchor=east, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (maintainer) {
+		Mechanic
+	};
+	\node (ext-weather) [below right=0.75cm and 3cm of embedded, anchor=west, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (ext-weather) {
+		\sysmlstereo{external} \\
+		Weather
+	};
+	\node (ext-road) [above right=0.75cm and 3cm of embedded, anchor=west, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (ext-road) {
+		\sysmlstereo{external} \\
+		Road
+	};
+	\draw [-] (driver) -- (embedded) node [midway,sloped,above] {\small influences};
+	\draw [-] (maintainer) -- (embedded) node [midway,sloped,above] {\small troubleshoots};
+	\draw [-] (ext-weather) -- (embedded) node [midway,sloped,above] {\small influences};
+	\draw [-] (ext-road) -- (embedded) node [midway,sloped,above] {\small influences};
+
+\end{tikzpicture}
+
