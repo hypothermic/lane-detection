@@ -26,4 +26,4 @@ data/**.ppm
 
 # Ignore the image assets for documents
 !**/asset_*.pdf
-
+!docs/*/*-asset.pdf
