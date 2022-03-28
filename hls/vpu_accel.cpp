@@ -18,6 +18,7 @@ void vpu_accel_top(hls_stream_t &in, hls_stream_t &out, int in_height, int in_wi
 	#pragma HLS interface s_axilite port=in_width
 	#pragma HLS interface s_axilite port=out_height
 	#pragma HLS interface s_axilite port=out_width
+	#pragma HLS interface s_axilite port=return
 
 	img_mat_t input(in_height, in_width),
 		  output(out_height, out_width);
