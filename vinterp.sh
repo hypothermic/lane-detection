@@ -11,13 +11,16 @@
 WORK_DIR=$(dirname "$1")
 
 # Relative path to the directory to store the log and journal in
-LOG_DIR=${2:=/build}
+LOG_DIR=${3:=/build}
+
+# Make this script also work for Vitis HLS if you pass vitis_hls as the 2rd arg
+PROGRAM_NAME=${2:=vivado}
 
 # The default path of the Vivado installation
 VIVADO_DIR_DEFAULT=/opt/Xilinx/Vivado
 
 # The user specified Vivado installation path (may be undefined)
-VIVADO_DIR_ARG=${3:=${VIVADO_DIR_DEFAULT}}
+VIVADO_DIR_ARG=${4:=${VIVADO_DIR_DEFAULT}}
 
 # Use a regex to find all Vivado installations (yyyy.v) and sort it in descending order
 # so that the latest version appears as the first element in the array
@@ -52,11 +55,11 @@ fi
 cd $WORK_DIR
 
 # Launch vivado in Tcl mode with the log and journal outputting to LOG_DIR
-vivado -mode tcl \
+$PROGRAM_NAME -mode tcl \
 	-source $1 \
 	-verbose \
-	-log $WORK_DIR/$LOG_DIR/vivado.log \
-	-journal $WORK_DIR/$LOG_DIR/vivado.jou
+	-log $WORK_DIR/$LOG_DIR/$PROGRAM_NAME.log \
+	-journal $WORK_DIR/$LOG_DIR/$PROGRAM_NAME.jou
 
 times
 
