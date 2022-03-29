@@ -231,11 +231,30 @@
 			}
 
 		\end{figuur}
+		
+		\bigskip
 
-		Initially we thought of connecting a camera to the development board to feed the algorithm video data, however, on our new PYNQ board we can just input images via the framework.
-		This has rendered the camera obsolete, meaning that we don't have to plan I/O pins for it anymore.
+		The DMA is connected to the SDRAM using one of the High Performance AXI ports that comes as hard-IP on the SoC.
+		Because the capacity of the SDRAM is half a gibibyte, the range of the memory map has the range to accomodate this.
+		It starts at the lowest possible address, 0x0, because the processors expect the system memory to be installed at this location.
+		The AXI-HP port has a fixed address size of 32 bits, so this is reflected in the use of the 32 bit addresses for our mapping.
+		The DMA is also connected to the Zynq Processing System using an AXI-Lite interface.
+		This connection is needed to give control instructions from the software that's running on the PS.
+
+		\bigskip
+
+		Our VPU IP Core is connected to the processing system using AXI-Lite to make the parameters configurable on-the-fly.
+		This control interface also provides a way of starting/stopping the video processing function of the core.
+		I chose to use an address size of 32 bits to match the size of the hard-IP AXI-GP port that it is connected to.
+
+		\bigskip
+
+		Initially we thought of connecting a camera to the development board to feed the algorithm video data, however, on our new PYNQ board we can simply input images via the framework.
+		This change has rendered the camera obsolete, meaning that we don't have to plan I/O pins for it anymore.
 		The only pins that are currently used are the hardwired connections and the pre-planned Zynq-PS conections that are retrieved from the board constraints file.
-		The package pin planning looks 
+		The package pin planning can be viewed in \verwijzingb{figuur}{FPGA Package Pin Planning}, where orange-marked pins are the pins that are used for the Zynq-PS and connections marked as C or S are hardwired.
+		If we wish to use a camera in the future, we have lots of unused pins that could be used to connect it.
+		These unused pins are marked with a gray circle or blue hexagon on the afforementioned figure.
 
 		\begin{figuur}{FPGA Package Pin Planning}
 
@@ -243,6 +262,27 @@
 
 		\end{figuur}
 
+		Having read up on case studies about high level synthesis, I was worried that we would hit the resource cap because code translation is inherently more inefficient than writing low level code yourself.
+		Without creating any timing constraints for the place and route phases, Vivado managed to implement the netlist on the FPGA in an efficient manner.
+		It only consumed about 20 percent of the available LUTs and 30 percent of the available FFs while keeping the WNS at 1,2 ns
+		As I talked about in~\verwijzingb{paragraaf}{Memory Layout}, the BRAM usage is high, but not as high as I expected.
+		Presumably due to under-the-hood optimizations in the memory streaming pipeline -- remember, the AXI-Stream IP that we are using in the design is proprietary and closed-source IP, meaning that we cannot access it ourselves -- it has managed to cram the whole system into only 14 BRAM blocks.
+		What I find really interesting is that Vivado has placed the bus infrastructure (AXI interconnects, AXI data width converters, etc) near the Processor System and the VPU IP Core further away from the PS.
+		To visualize this in \verwijzingb{figuur}{FPGA Place And Route Floorplan}, I have highlighted with white color the CLBs that house the bus infrastructure and with red color our VPU IP Core.
+		This confirms that the place and route phases have been correctly executed and the latency is kept to a minimum.
+		It also signals to me that I do not need to invest extra time in manually setting timing constraints.
+
+
+		\begin{figuur}{FPGA Place And Route Floorplan}
+
+			\includegraphics[width=0.8\textwidth]{vivado-impl-placement.png}
+
+			White CLBs = AXI Bus Infrastructure \\
+			Blue CLBs = VDMA Controller \\
+			Yellow CLBs = VPU IP Core
+
+		\end{figuur}
+		
 		\textbf{[todo:]}
 
 	\end{hoofdstuk}
