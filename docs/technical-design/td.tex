@@ -141,6 +141,30 @@
 
 		\end{paragraaf}
 
+		\begin{paragraaf}{Implementation Strategy}
+
+			Before starting with the implementation phase, I had to figure out in which layer which parts of the system would need to be implemented.
+			Different parts of the system have different advantages, e.g. hardware has the potential to have low latency and fast execution and software excels in decision making.
+			I explored the capabilities of the PYNQ-Z2 development board and discovered that it has an SoC with an Artix-7 85K programmable logic fabric and a dual-core ARM Cortex A9 processor.
+			The processor comes pre-programmed with an embedded Linux distribution that has the PYNQ software running on it.
+			This PYNQ software consists of an FPGA programming framework and a Jupyter webserver.
+			The programming framework can be used to program pre-generated bitstreams that were created using Vivado onto the FPGA.
+			The Jupyter webserver allows the developer to create code snippets -- so-called 'notebooks' -- that run on the embedded Linux distribution and interact with the Programmable Logic via AXI interfaces.
+			These AXI interfaces are hard-IP that connect PS and PL with user-definable 32-bit wide digital connections.
+			
+			\begin{figuur}{The Strategy used for implementing The System}
+				\singlespacing
+				\includegraphics{implementation-strategy}
+				\onehalfspacing
+			\end{figuur}
+
+			What makes the Zynq SoC appealing is that is has a hard memory controller that is directly connected to the SDRAM.
+			Therefore, the developer does not need to implement the DDR3 memory interface themselves.
+			I used this benefit to my advantage; my strategy is to place the images into memory using the CPU and then access them using VDMA in the digital logic.
+			The VDMA IP Cores with the driving logic for the memory interface are supplied by Xilinx, requiring little work on my part to fetch the images in PL.
+
+		\end{paragraaf}
+
 		\
 		\textbf{[todo:]}
 
@@ -172,7 +196,7 @@
 
 		\bigskip
 
-		The Zynq Processing System has multiple types of AXI interfaces, including General Purpose (GP) interfaces and High Performance (HP) interfaces.
+		The Zynq Processing System has multiple types of hard-IP AXI interfaces, including General Purpose~(GP) interfaces and High Performance~(HP) interfaces.
 		Although it would be easy to put every component on the HP interface, this is not the proper way to do it.
 		For good measure, I have connected the control interfaces of the DMA and the Image Processor to the GP interface using an interconnect.
 		Only the DMA interfaces which need to be low-latency are connected to the HP interface.
@@ -278,8 +302,6 @@
 		\printbibliography[heading=none]
 
 	\end{hoofdstuk}
-
-	%\appendix
 
 	\begin{appendices}
 		\begin{hoofdstuk}{Enlarged Figures}

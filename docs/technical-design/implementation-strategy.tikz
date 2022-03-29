@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+
+	\node (soc bg) [draw=none, fill=black!7, rounded corners=2ex, minimum width=66ex, minimum height=46ex] at (0,0) {};
+	\node (ps bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=30ex, minimum height=20ex, anchor=west, below right=2ex and 2ex of soc bg.north west] {};
+	\node (ps label) [anchor=south, inner sep=1.5ex] at (ps bg.south) {Processor System (PS)};
+	\node (ps core left) [inner sep=0, xshift=-7.125ex, yshift=1.75ex] at (ps bg.center) {
+		\includegraphics[width=10.5ex]{arm-cortex-a9.png}
+	};
+	\node (ps core right) [inner sep=0, xshift=7.125ex, yshift=1.75ex] at (ps bg.center) {
+		\includegraphics[width=10.5ex]{arm-cortex-a9.png}
+	};
+	\node (pl bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=30ex, minimum height=20ex, anchor=east, below left=2ex and 2ex of soc bg.north east] {};
+	\node (pl label) [anchor=south, inner sep=1.5ex] at (pl bg.south) {Programmable Logic (PL)};
+	\node (pl die) [inner sep=0, yshift=1.75ex] at (pl bg.center) {
+		\includegraphics[width=14ex]{artix-7.png}
+	};
+	\node (mem bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=62ex, minimum height=16ex, anchor=south, above=2ex of soc bg.south] {};
+	\node (mem label) [anchor=south, inner sep=1.5ex] at (mem bg.south) {Dedicated Memory PHY};
+	\node (mem die) [inner sep=0, yshift=1.25ex] at (mem bg.center) {
+		\includegraphics[width=12ex]{micron-ddr3l-sdram.png}
+	};
+	\coordinate [above left=18ex and 16ex of soc bg.south] (mem coord left);
+	\coordinate [above right=18ex and 16ex of soc bg.south] (mem coord right);
+	\draw [draw, latex-latex, thick] (ps bg.south) -- (mem coord left) node[inner sep=0.6ex, midway, fill=black!7] {Hard-IP};
+	\draw [draw, latex-latex, thick] (pl bg.south) -- (mem coord right) node[inner sep=0.6ex, midway, fill=black!7] {AXI DMA};
+
+\end{tikzpicture}
+
