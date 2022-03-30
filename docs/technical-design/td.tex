@@ -14,7 +14,15 @@
 \usepackage{tikzscale}
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
+
+% Not quite ConTeXt tables but good enough
 \usepackage{colortbl}
+\usepackage{multirow}
+
+% IEC/ISO units
+\usepackage[exponent-mode=engineering]{siunitx}
+\sisetup{detect-all}
+\DeclareSIUnit{\bit}{b}
 
 \begin{document}
 
@@ -39,6 +47,7 @@
 				ADAS & Advanced Driver-Assistance System \tabularnewline
 				ASIC & A non-reconfigurable digital circuit \tabularnewline
 				AXIS & AXI Stream; a bus protocol for data streaming interfaces \tabularnewline
+				CLB & Configurable Logic Block; the basic physical component of an FPGA fabric that can contain LUTs, FFs and multiplexers. \tabularnewline
 				DMA & Direct Memory Access; a way of reading from / writing to memory without utilizing a processor \tabularnewline
 				FPGA & Field Programmable Gate Array; a customizable logic circuit \tabularnewline
 				Hard-core processor & A dedicated processor as an ASIC \tabularnewline
@@ -100,8 +109,9 @@
 
 		\bigskip
 
-		In this document I will name binary quantities according to the binary multiples convention as described in ISO/IEC 60027-2:2019.
-		E.g. one kilobit (Kb) is 1000 bits and one kibibit (Kib) is 1024 bits.
+		In this document I will name binary quantities according to the binary multiples convention as described in ISO/IEC 60027-2:2019, which uses the SI prefixes.
+		I choose to use this standard because it is widely used in the embedded industry.
+		E.g. one kilobit (\qty{1}{\kilo\bit}) is 1000 bits and one kibibit (\qty{1}{\kibi\bit}) is 1024 bits.
 
 	\end{hoofdstuk}
 
@@ -254,7 +264,7 @@
 		The only pins that are currently used are the hardwired connections and the pre-planned Zynq-PS conections that are retrieved from the board constraints file.
 		The package pin planning can be viewed in \verwijzingb{figuur}{FPGA Package Pin Planning}, where orange-marked pins are the pins that are used for the Zynq-PS and connections marked as C or S are hardwired.
 		If we wish to use a camera in the future, we have lots of unused pins that could be used to connect it.
-		These unused pins are marked with a gray circle or blue hexagon on the afforementioned figure.
+		These unused pins are marked with a gray circle on the afforementioned figure.
 
 		\begin{figuur}{FPGA Package Pin Planning}
 
@@ -264,22 +274,48 @@
 
 		Having read up on case studies about high level synthesis, I was worried that we would hit the resource cap because code translation is inherently more inefficient than writing low level code yourself.
 		Without creating any timing constraints for the place and route phases, Vivado managed to implement the netlist on the FPGA in an efficient manner.
-		It only consumed about 20 percent of the available LUTs and 30 percent of the available FFs while keeping the WNS at 1,2 ns
+		It only consumed about 20 percent of the available LUTs and 30 percent of the available FFs while keeping the WNS at 1,2 ns.
 		As I talked about in~\verwijzingb{paragraaf}{Memory Layout}, the BRAM usage is high, but not as high as I expected.
-		Presumably due to under-the-hood optimizations in the memory streaming pipeline -- remember, the AXI-Stream IP that we are using in the design is proprietary and closed-source IP, meaning that we cannot access it ourselves -- it has managed to cram the whole system into only 14 BRAM blocks.
-		What I find really interesting is that Vivado has placed the bus infrastructure (AXI interconnects, AXI data width converters, etc) near the Processor System and the VPU IP Core further away from the PS.
+		Presumably due to under-the-hood optimizations in the memory streaming pipeline -- remember, the AXI-Stream IP that we are using in the design is proprietary and closed-source, meaning that we cannot access it ourselves -- it has managed to cram the whole system into only 14 BRAM blocks.
+		
+		\bigskip
+
+		What I find really interesting is that Vivado has placed the bus infrastructure (AXI interconnects, AXI data width converters, etc) near the Processing System and the VPU IP Core further away from the PS.
 		To visualize this in \verwijzingb{figuur}{FPGA Place And Route Floorplan}, I have highlighted with white color the CLBs that house the bus infrastructure and with red color our VPU IP Core.
 		This confirms that the place and route phases have been correctly executed and the latency is kept to a minimum.
-		It also signals to me that I do not need to invest extra time in manually setting timing constraints.
+		It also signals me that I do not need to invest extra time in manually setting timing constraints.
 
+		\begin{tabel}{Post-Implementation Utilization Report}{l @{\extracolsep{\fill}} rr rr S[table-format=3.2]S[table-format=3.2]}
+					& \multicolumn{2}{c}{Utilization}	& \multicolumn{2}{c}{Available} & \multicolumn{2}{c}{Utilization \%} \tabularnewline
+			\cmidrule{2-3} \cmidrule{4-5} \cmidrule{6-7}
+			Resource	& \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total}		    & VPU & Total \tabularnewline
+			\midrule
+			LUT	& 0 & 5678	& 0 & 53200	& 0 & 10.67	\tabularnewline
+			FF	& 0 & 7559	& 0 & 106400	& 0 & 7.10	\tabularnewline
+			DSP	& 0 & 16	& 0 & 220	& 0 & 7.27	\tabularnewline
+			DRAM	& 0 & 304	& 0 & 17400	& 0 & 1.75	\tabularnewline
+			BRAM	& 0 & 14	& 0 & 140	& 0 & 10.00	\tabularnewline
+			BUFG	& 0 & 1		& 0 & 32	& 0 & 3.13	\tabularnewline
+
+		\end{tabel}
 
 		\begin{figuur}{FPGA Place And Route Floorplan}
 
 			\includegraphics[width=0.8\textwidth]{vivado-impl-placement.png}
 
-			White CLBs = AXI Bus Infrastructure \\
-			Blue CLBs = VDMA Controller \\
-			Yellow CLBs = VPU IP Core
+			\definecolor{floorplanclbwhite}{HTML}{ccccff}
+			\definecolor{floorplanclbblue}{HTML}{0095ff}
+			\definecolor{floorplanclbyellow}{HTML}{a0c400}
+			\definecolor{floorplanclbgreen}{HTML}{009e00}
+
+			\vspace{1.5ex}
+
+			\begin{tabular}{rlrl}
+				\tikz{\draw[draw=black,fill=floorplanclbwhite] rectangle(1ex, 1ex)} & AXI Bus Infrastructure &
+				\tikz{\draw[draw=black,fill=floorplanclbyellow] rectangle(1ex, 1ex)} & VPU IP Core \tabularnewline
+				\tikz{\draw[draw=black,fill=floorplanclbblue] rectangle(1ex, 1ex)} & VDMA Controller &
+				\tikz{\draw[draw=floorplanclbgreen,line width=0.5mm] (0, 0) -- (1ex, 1ex)} \hspace{-1.325mm} & Connections to PS \tabularnewline
+			\end{tabular}
 
 		\end{figuur}
 		
