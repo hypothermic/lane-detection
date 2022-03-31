@@ -72,6 +72,8 @@ MAKE_EXEC		?= /usr/bin/make
 make-out-dir:
 	$(MKDIR_EXEC) -p $(LATEXMK_OUT)
 
+# TODO wildcard based approach for doc rules
+
 compile-docs-project:
 	$(LATEXMK_EXEC) $(LATEXMK_OPTS) docs/plan-of-action/project.tex
 
@@ -96,14 +98,22 @@ compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-d
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
 
-compile-rtl: make-out-dir
+test-rtl: make-out-dir
 	# GHDL uses current directory as output, so cd into build dir first
 	#(cd $(RTL_OUT) && eval "$(GHDL_EXEC) ${goal}");
 	for goal in $(RTL_GOALS); do \
 		(cd $(RTL_OUT); echo "$$goal"; eval "ghdl $$goal"); \
 	done
 
-compile: compile-docs compile-lane compile-rtl
+compile-hls: make-out-dir
+	# TODO set targets and include directories as user adjustable
+	export SIM=1 && export SYNTH=1 && export TARGET_PART=zynq && export OPENCV_INCLUDE=/usr/include/opencv4 && export OPENCV_LIB=/usr/lib && export VISION_INCLUDE=/home/mbr/ext/Vitis_Libraries/vision/L1/include && vitis_hls -f hls.tcl
+
+compile-hw: compile-hls
+	# Just override the usage of all targets right now, maybe adjust this later TODO
+	export SYNTH=1 && export IMPL=1 && export TIMING=1 && ./hw.tcl
+
+compile: compile-docs compile-lane # compile-hw
 
 #
 # Cleaning-related targets
@@ -129,7 +139,14 @@ clean-lane:
 clean-rtl:
 	$(RM_EXEC) -rf $(RTL_OUT)
 
-clean: clean-docs clean-lane clean-rtl
+clean-hls:
+	# As far as I've noticed these are the only products Vitis creates but there may be more
+	$(RM_EXEC) -rf vitis_hls.log ./build/lane_vpu.prj ./build/misc
+
+clean-hw:
+	$(RM_EXEC) -rf ./build/lane_hw** ./build/syn_*.* ./build/imp_*.* ./build/vivado.*
+
+clean: clean-docs clean-lane clean-rtl clean-hls clean-hw
 
 #
 # Program execution target
