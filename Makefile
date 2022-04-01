@@ -66,6 +66,14 @@ MKDIR_EXEC		?= /usr/bin/mkdir
 MAKE_EXEC		?= /usr/bin/make
 
 #
+# Library paths; can be overridden by env vars
+#
+
+OPENCV_INCLUDE		?= /usr/include/opencv4
+OPENCV_LIB		?= /usr/lib
+VISION_INCLUDE		?= /home/mbr/ext/Vitis_Libraries/vision/L1/include
+
+#
 # Compilation-related targets
 #
 
@@ -106,8 +114,10 @@ test-rtl: make-out-dir
 	done
 
 compile-hls: make-out-dir
-	# TODO set targets and include directories as user adjustable
-	export SIM=1 && export SYNTH=1 && export TARGET_PART=zynq && export OPENCV_INCLUDE=/usr/include/opencv4 && export OPENCV_LIB=/usr/lib && export VISION_INCLUDE=/home/mbr/ext/Vitis_Libraries/vision/L1/include && vitis_hls -f hls.tcl
+ifndef VIVADO_FOUND
+	$(error "Vivado scripts not found in PATH; make sure they are sourced")
+endif
+	unset SIM && export SYNTH=1 && export TARGET_PART=zynq && vitis_hls -f hls.tcl
 
 compile-hw: compile-hls
 	# Just override the usage of all targets right now, maybe adjust this later TODO
@@ -204,6 +214,12 @@ endif
 	$(XDG_OPEN_EXEC) "data/$(ARG_SAMPLE).$(ARG_TEST).out.ppm"
 
 test-lane: test-lane-verify
+
+test-hls: make-out-dir
+ifndef VIVADO_FOUND
+	$(error "Vivado scripts not found in PATH; make sure they are sourced")
+endif
+	export SIM=1 && unset SYNTH && export TARGET_PART=zynq && vitis_hls -f hls.tcl
 
 test: test-lane
 
