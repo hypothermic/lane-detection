@@ -65,13 +65,15 @@ RM_EXEC			?= /usr/bin/rm
 MKDIR_EXEC		?= /usr/bin/mkdir
 MAKE_EXEC		?= /usr/bin/make
 
+VIVADO_FOUND		:= $(shell which vitis_hls 2> /dev/null)
+
 #
 # Library paths; can be overridden by env vars
 #
 
-OPENCV_INCLUDE		?= /usr/include/opencv4
-OPENCV_LIB		?= /usr/lib
-VISION_INCLUDE		?= /home/mbr/ext/Vitis_Libraries/vision/L1/include
+export OPENCV_INCLUDE	?= /usr/include/opencv4
+export OPENCV_LIB	?= /usr/lib
+export VISION_INCLUDE	?= /home/mbr/ext/Vitis_Libraries/vision/L1/include
 
 #
 # Compilation-related targets

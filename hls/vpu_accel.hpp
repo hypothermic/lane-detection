@@ -13,17 +13,17 @@
 #include <hls_stream.h>
 #include <common/xf_common.hpp>
 #include <common/xf_infra.hpp>
-#include <imgproc/xf_resize.hpp>
-
+#include <common/xf_utility.hpp>
+#include <imgproc/xf_median_blur.hpp>
 /**
  * Image width in pixels.
  */
-#define VPU_IMAGE_WIDTH		(3840)
+#define VPU_IMAGE_WIDTH		(1920)
 
 /**
  * Image height in pixels.
  */
-#define VPU_IMAGE_HEIGHT	(2160)
+#define VPU_IMAGE_HEIGHT	(1080)
 
 /**
  * Bits per pixel of the image.
@@ -63,7 +63,7 @@ typedef xf::cv::Mat<XF_8UC3, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, XF_NPPC1> img_ma
  * @param row		Which row is currently being processed
  * @param col		Which column is currently being processed
  */
-void vpu_accel_top(hls_stream_t &in, hls_stream_t &out, int in_height, int in_width, int out_height, int out_width);
+void vpu_accel_top(hls_stream_t &in, hls_stream_t &out, int in_height, int in_width);
 
 #endif /* VPU_ACCEL_HPP */
 
