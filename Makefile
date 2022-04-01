@@ -64,6 +64,8 @@ XDG_OPEN_EXEC		?= /usr/bin/xdg-open
 RM_EXEC			?= /usr/bin/rm
 MKDIR_EXEC		?= /usr/bin/mkdir
 MAKE_EXEC		?= /usr/bin/make
+CHMOD_EXEC		?= /usr/bin/chmod
+GIT_EXEC		?= /usr/bin/git
 
 VIVADO_FOUND		:= $(shell which vitis_hls 2> /dev/null)
 
@@ -191,7 +193,8 @@ install-git-hook:
 	cp git-info-hook.sh .git/hooks/post-checkout
 	cp git-info-hook.sh .git/hooks/post-commit
 	cp git-info-hook.sh .git/hooks/post-merge
-	chmod g+x .git/hooks/post-*
+	$(CHMOD_EXEC) g+x .git/hooks/post-*
+	$(GIT_EXEC) config --local include.path ../.gitconfig
 #
 # Test
 #

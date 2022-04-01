@@ -1,4 +1,5 @@
 *.tex linguist-vendored=false
 *.tex linguist-generated=false
 *.tex linguist-detectable=true
+*.ipynb filter=clear-notebooks
 

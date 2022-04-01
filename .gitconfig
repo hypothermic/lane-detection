@@ -1,0 +1,5 @@
+# Removes the output of the Jupyter notebook cells
+[filter "clear-notebooks"]
+	clean = jupyter nbconvert --to notebook --ClearOutputPreprocessor.enabled=True --inplace %f
+	required
+
