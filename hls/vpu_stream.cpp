@@ -12,8 +12,9 @@
 /*
  * @inheritDoc
  */
-void vpu_stream_read(hls_stream_t &stream, img_mat_t &mat) {
-	hls_pixel_t pixel;
+template<typename T, XF_npt_e BPP>
+void vpu_stream_read(hls_stream_t<T> &stream, img_mat_t<BPP> &mat) {
+	hls_pixel_t<T> pixel;
 	int rows = mat.rows;
 	int cols = mat.cols >> XF_BITSHIFT(VPU_IMAGE_PPC);
 
@@ -23,7 +24,7 @@ l_cols:		for (int j = 0; j < cols; ++j) {
 			#pragma HLS pipeline II=1
 
 			stream.read(pixel);
-			mat.write(i*rows + j, pixel.data(VPU_IMAGE_THT - 1, 0));
+			mat.write(i*rows + j, pixel.data(VPU_IMAGE_INPUT_THT - 1, 0));
 		}
 	}
 }
@@ -31,8 +32,9 @@ l_cols:		for (int j = 0; j < cols; ++j) {
 /*
  * @inheritDoc
  */
-void vpu_stream_write(img_mat_t &mat, hls_stream_t &stream) {
-	hls_pixel_t pixel;
+template<typename T, XF_npt_e BPP>
+void vpu_stream_write(img_mat_t<BPP> &mat, hls_stream_t<T> &stream) {
+	hls_pixel_t<T> pixel;
 	int rows = mat.rows;
 	int cols = mat.cols >> XF_BITSHIFT(VPU_IMAGE_PPC);
 	
@@ -49,7 +51,7 @@ l_col:		for (int j = 0; j < cols; ++j) {
 			}
 
 			pixel.data = 0;
-			pixel.data(VPU_IMAGE_THT - 1, 0) = mat.read(i*rows + j);
+			pixel.data(VPU_IMAGE_OUTPUT_THT - 1, 0) = mat.read(i*rows + j);
 			pixel.keep = -1;
 			stream.write(pixel);
 		}

@@ -161,7 +161,7 @@ set_property -dict [ list \
 set_property -dict [ list \
 	CONFIG.HAS_MI_TKEEP {1} \
 	CONFIG.M_TDATA_NUM_BYTES {4} \
-	CONFIG.S_TDATA_NUM_BYTES {3} \
+	CONFIG.S_TDATA_NUM_BYTES {1} \
 ] $axis_dwidth_converter_1
 
 connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins axi_dma_0/M_AXI_MM2S] [get_bd_intf_pins axi_interconnect_1/S00_AXI]

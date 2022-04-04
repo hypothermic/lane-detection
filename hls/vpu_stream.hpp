@@ -11,6 +11,7 @@
 #define VPU_STREAM_HPP
 
 #include "vpu_accel.hpp"
+#include "vpu_type.hpp"
 
 /**
  * Reads an image from an AXI Stream
@@ -18,7 +19,8 @@
  * @param stream	The AXI Stream to read the image from
  * @param mat		The matrix to save image data in
  */
-void vpu_stream_read(hls_stream_t &stream, img_mat_t &mat);
+template<typename T, XF_npt_e BPP>
+void vpu_stream_read(hls_stream_t<T> &stream, img_mat_t<BPP> &mat);
 
 /**
  * Writes an image to an AXI Stream
@@ -26,7 +28,8 @@ void vpu_stream_read(hls_stream_t &stream, img_mat_t &mat);
  * @param mat		The image matrix to read from
  * @param stream	The AXI Stream to write the image to
  */
-void vpu_stream_write(img_mat_t &mat, hls_stream_t &stream);
+template<typename T, XF_npt_e BPP>
+void vpu_stream_write(img_mat_t<BPP> &mat, hls_stream_t<T> &stream);
 
 #endif /* VPU_STREAM_HPP */
 

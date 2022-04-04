@@ -124,7 +124,7 @@ ifndef VIVADO_FOUND
 endif
 	unset SIM && export SYNTH=1 && export TARGET_PART=zynq && vitis_hls -f hls.tcl
 
-compile-hw: compile-hls
+compile-hw: #compile-hls
 	# Just override the usage of all targets right now, maybe adjust this later TODO
 	export SYNTH=1 && export IMPL=1 && export TIMING=1 && ./hw.tcl
 
