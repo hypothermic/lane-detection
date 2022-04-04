@@ -31,7 +31,7 @@ void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAG
 
 	vpu_stream_read<VPU_IMAGE_INPUT_TYPE, VPU_IMAGE_INPUT_BPP>(in, input);
 
-	xf::cv::rgb2gray<VPU_IMAGE_INPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(input, intermediate);
+	xf::cv::bgr2gray<VPU_IMAGE_INPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(input, intermediate);
 	
 	xf::cv::medianBlur<5, XF_BORDER_REPLICATE, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(intermediate, output);
 	

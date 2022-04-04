@@ -60,14 +60,14 @@
  *
  * Total number of bits per AXI Transfer.
  */
-#define VPU_IMAGE_INPUT_THT	(VPU_IMAGE_INPUT_BPP * XF_NPIXPERCYCLE(VPU_IMAGE_PPC))
+#define VPU_IMAGE_INPUT_THT	(/*VPU_IMAGE_INPUT_BPP*/ 24 * XF_NPIXPERCYCLE(VPU_IMAGE_PPC))
 
 /**
  * Data throughput of the outbound AXI Stream.
  *
  * Total number of bits per AXI Transfer.
  */
-#define VPU_IMAGE_OUTPUT_THT	(VPU_IMAGE_OUTPUT_BPP * XF_NPIXPERCYCLE(VPU_IMAGE_PPC))
+#define VPU_IMAGE_OUTPUT_THT	(/*VPU_IMAGE_OUTPUT_BPP*/ 8 * XF_NPIXPERCYCLE(VPU_IMAGE_PPC))
 
 /**
  * The data type for a pixel
