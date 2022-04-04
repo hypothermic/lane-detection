@@ -63,6 +63,7 @@ GTKWAVE_EXEC		?= /usr/bin/gtkwave
 XDG_OPEN_EXEC		?= /usr/bin/xdg-open
 RM_EXEC			?= /usr/bin/rm
 MKDIR_EXEC		?= /usr/bin/mkdir
+GIO_EXEC		?= /usr/bin/gio
 MAKE_EXEC		?= /usr/bin/make
 CHMOD_EXEC		?= /usr/bin/chmod
 GIT_EXEC		?= /usr/bin/git
@@ -227,4 +228,14 @@ endif
 	export SIM=1 && unset SYNTH && export TARGET_PART=zynq && vitis_hls -f hls.tcl
 
 test: test-lane
+
+#
+# Transfer bitstream to device
+#
+
+transfer-bitstream:
+	# TODO make address configurable
+	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh smb://pynq/xilinx/jupyter_notebooks/lane/hw_overlay.hwh
+	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh smb://pynq/xilinx/jupyter_notebooks/lane/hw_overlay.hwh
+	$(GIO_EXEC) copy ./rtl/driver.ipynb smb://pynq/xilinx/jupyter_notebooks/lane/driver.ipyb
 
