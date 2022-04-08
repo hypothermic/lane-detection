@@ -25,6 +25,8 @@ void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAG
 
 	img_mat_t<VPU_IMAGE_INPUT_BPP>	input(in_height, in_width);
 	img_mat_t<VPU_IMAGE_OUTPUT_BPP>	intermediate(in_height, in_width),
+					dstmatx(in_height, in_width),
+					dstmaty(in_height, in_width),
 					output(in_height, in_width);
 
 	#pragma HLS dataflow
@@ -33,7 +35,8 @@ void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAG
 
 	xf::cv::bgr2gray<VPU_IMAGE_INPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(input, intermediate);
 	
-	xf::cv::medianBlur<5, XF_BORDER_REPLICATE, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(intermediate, output);
+	xf::cv::Sobel<XF_BORDER_CONSTANT, XF_FILTER_3X3, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC, false>(intermediate, dstmatx, dstmaty);
+	xf::cv::addWeighted<VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(dstmatx, 0.5, dstmaty, 0.5, 0.0, output);
 	
 	vpu_stream_write<VPU_IMAGE_OUTPUT_TYPE, VPU_IMAGE_OUTPUT_BPP>(output, out);
 }

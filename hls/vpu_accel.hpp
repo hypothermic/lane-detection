@@ -10,8 +10,11 @@
 #ifndef VPU_ACCEL_HPP
 #define VPU_ACCEL_HPP
 
+#include <core/xf_arithm.hpp>
 #include <imgproc/xf_cvt_color.hpp>
 #include <imgproc/xf_median_blur.hpp>
+#include <imgproc/xf_sobel.hpp>
+#include <imgproc/xf_add_weighted.hpp>
 
 #include "vpu_type.hpp"
 #include "vpu_stream.hpp"
