@@ -16,12 +16,12 @@
 /**
  * Width for the test output image
  */
-#define TEST_OUT_WIDTH	(VPU_IMAGE_WIDTH  / 2)
+#define TEST_IMAGE_WIDTH	VPU_IMAGE_WIDTH
 
 /**
  * Height of the test output image
  */
-#define TEST_OUT_HEIGHT	(VPU_IMAGE_HEIGHT / 2)
+#define TEST_IMAGE_HEIGHT	VPU_IMAGE_HEIGHT
 
 int main(int argc, char **argv) {
 	cv::Mat src, sw, hw, diff;
@@ -39,11 +39,11 @@ int main(int argc, char **argv) {
 		return 2;
 	}
 
-	sw.create(TEST_OUT_WIDTH, TEST_OUT_HEIGHT, CV_8UC3);
-	hw.create(TEST_OUT_WIDTH, TEST_OUT_HEIGHT, CV_8UC3);
-	diff.create(TEST_OUT_WIDTH, TEST_OUT_HEIGHT, CV_8UC3);
+	sw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
+	hw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
+	diff.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
 
-	cv::resize(src, sw, cv::Size(TEST_OUT_WIDTH, TEST_OUT_HEIGHT), 0, 0, CV_INTER_LINEAR);
+	cv::bgr2gray(src, sw, cv::COLOR_BGR2GRAY)
 	
 	vpu_accel_top((ap_uint<VPU_IMAGE_WIDTH> *) src.data, (ap_uint<VPU_IMAGE_WIDTH> *) hw.data, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH);
 
