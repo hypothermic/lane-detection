@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include <common/xf_headers.hpp>
+#include <common/xf_axi.hpp>
 
 #include "vpu_accel.hpp"
 
@@ -24,7 +25,9 @@
 #define TEST_IMAGE_HEIGHT	VPU_IMAGE_HEIGHT
 
 int main(int argc, char **argv) {
-	cv::Mat src, sw, hw, diff;
+	cv::Mat src, sw1, sw2, hw, diff;
+	hls::stream<ap_axiu<24, 1, 1, 1>> hw_in_stream;
+	hls::stream<ap_axiu<8, 1, 1, 1>> hw_out_stream;
 	float error;
 
 	if (argc != 2) {
@@ -39,17 +42,21 @@ int main(int argc, char **argv) {
 		return 2;
 	}
 
-	sw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
-	hw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
-	diff.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC3);
+	sw1.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
+	sw2.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
+	hw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
+	diff.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
 
-	cv::bgr2gray(src, sw, cv::COLOR_BGR2GRAY)
+	cv::cvtColor(src, sw1, cv::COLOR_BGR2GRAY);
+	cv::Sobel(sw1, sw2, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
 	
-	vpu_accel_top((ap_uint<VPU_IMAGE_WIDTH> *) src.data, (ap_uint<VPU_IMAGE_WIDTH> *) hw.data, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH);
+	xf::cv::cvMat2AXIvideoxf<XF_NPPC1, 24>(src, hw_in_stream);
+	vpu_accel_top(hw_in_stream, hw_out_stream, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH);
+	xf::cv::AXIvideo2cvMatxf<XF_NPPC1>(hw_out_stream, hw);
 
-	absdiff(sw, hw, diff);
+	absdiff(sw2, hw, diff);
 
-	cv::imwrite("test_sw.png", sw);
+	cv::imwrite("test_sw.png", sw2);
 	cv::imwrite("test_hw.png", hw);
 	cv::imwrite("test_diff.png", diff);
 
