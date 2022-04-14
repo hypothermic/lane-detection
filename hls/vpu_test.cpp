@@ -12,17 +12,21 @@
 #include <common/xf_headers.hpp>
 #include <common/xf_axi.hpp>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "vpu_accel.hpp"
 
 /**
  * Width for the test output image
  */
-#define TEST_IMAGE_WIDTH	VPU_IMAGE_WIDTH
+#define TEST_IMAGE_WIDTH	(/*VPU_IMAGE_WIDTH*/1280)
 
 /**
  * Height of the test output image
  */
-#define TEST_IMAGE_HEIGHT	VPU_IMAGE_HEIGHT
+#define TEST_IMAGE_HEIGHT	(/*VPU_IMAGE_HEIGHT*/720)
 
 int main(int argc, char **argv) {
 	cv::Mat src, sw1, sw2, hw, diff;
@@ -35,23 +39,26 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	src = cv::imread(argv[1], 0);
+	src = cv::imread(argv[1], cv::IMREAD_COLOR);
 
 	if (src.data == NULL) {
 		std::cerr << "Failed to read image: " << argv[1] << std::endl;
 		return 2;
 	}
 
-	sw1.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
-	sw2.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
-	hw.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
-	diff.create(TEST_IMAGE_WIDTH, TEST_IMAGE_HEIGHT, CV_8UC1);
+	std::cout << "Image from: " << argv[1]  << " with res " << src.rows << "x" << src.cols << " px" << std::endl;
+
+	sw1.create(src.rows, src.cols, CV_8UC1);
+	sw2.create(src.rows, src.cols, CV_8UC1);
+	hw.create(src.rows, src.cols, CV_8UC1);
+	diff.create(src.rows, src.cols, CV_8UC1);
 
 	cv::cvtColor(src, sw1, cv::COLOR_BGR2GRAY);
+
 	cv::Sobel(sw1, sw2, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
 	
 	xf::cv::cvMat2AXIvideoxf<XF_NPPC1, 24>(src, hw_in_stream);
-	vpu_accel_top(hw_in_stream, hw_out_stream, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH);
+	vpu_accel_top(hw_in_stream, hw_out_stream, src.rows, src.cols);
 	xf::cv::AXIvideo2cvMatxf<XF_NPPC1>(hw_out_stream, hw);
 
 	absdiff(sw2, hw, diff);
