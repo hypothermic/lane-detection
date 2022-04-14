@@ -71,6 +71,13 @@ set_clock_uncertainty 27.0%
 if {[info exists ::env(SIM)]} {
 	puts "Running sim"
 	csim_design -ldflags ${LDFLAGS} -argv ${TEST_IMAGE}
+} else {
+	csynth_design
+}
+
+if {[info exists ::env(COSIM)]} {
+	puts "Running cosim"
+	cosim_design -ldflags ${LDFLAGS} -argv ${TEST_IMAGE}
 }
 
 if {[info exists ::env(SYNTH)]} {
@@ -84,7 +91,6 @@ if {[info exists ::env(SYNTH)]} {
 	config_export -vendor "com.arobs"
 	config_export -version "0.1.0"; # fix for y2k22 bug
 
-	csynth_design
 	export_design -format ip_catalog
 	exec mkdir -p misc
 	exec cp $TEST_LOGO "./misc/logo.png"

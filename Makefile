@@ -221,11 +221,19 @@ endif
 
 test-lane: test-lane-verify
 
-test-hls: make-out-dir
+test-hls-sim: make-out-dir
 ifndef VIVADO_FOUND
 	$(error "Vivado scripts not found in PATH; make sure they are sourced")
 endif
-	export SIM=1 && unset SYNTH && export TARGET_PART=zynq && vitis_hls -f hls.tcl
+	export SIM=1 && unset SYNTH && unset COSIM && export TARGET_PART=zynq && vitis_hls -f hls.tcl
+
+test-hls-cosim: make-out-dir
+ifndef VIVADO_FOUND
+	$(error "Vivado scripts not found in PATH; make sure they are sourced")
+endif
+	unset SIM && export SYNTH=1 && export COSIM=1 && export TARGET_PART=zynq && vitis_hls -f hls.tcl
+
+test-hls: test-hls-sim test-hls-cosim
 
 test: test-lane
 
