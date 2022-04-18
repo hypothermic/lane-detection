@@ -29,62 +29,97 @@
 #define TEST_IMAGE_HEIGHT	(/*VPU_IMAGE_HEIGHT*/720)
 
 /**
+ * Maximum percentage of difference between the OCV-
+ * generated image and the VPU generated image
+ */
+#define TEST_MAX_DIFF		(0.05f)
+
+/**
+ * @block
+ *
+ * Exit code for when certain tests fail
+ */
+#define EXIT_FAILURE_READ	(EXIT_FAILURE + 0)
+#define EXIT_FAILURE_EMPTY	(EXIT_FAILURE + 1)
+#define EXIT_FAILURE_DIFF	(EXIT_FAILURE + 2)
+
+/**
  * Apply the filters in software using OpenCV to create a reference image
  */
 static void apply_ocv(cv::Mat &src, cv::Mat &dst) {
-	cv::Mat i1;
+	cv::Mat i1, i2;
 
 	i1.create(src.rows, src.cols, CV_8UC1);
+	i2.create(src.rows, src.cols, CV_8UC1);
 
 	cv::cvtColor(src, i1, cv::COLOR_BGR2GRAY);
-	cv::Sobel(i1, dst, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
+	cv::Sobel(i1, i2, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
+	cv::threshold(i2, dst, 127, 255, cv::THRESH_BINARY);
 }
 
+/**
+ * Run the image through the hardware kernel
+ *
+ * Depending if csim or cosim is used, Vitis workflow will adapt and
+ * automatically choose if the executable runs in XSim or not
+ */
+static void apply_hw(cv::Mat &src, cv::Mat &dst) {
+	hls_stream_t<VPU_IMAGE_INPUT_TYPE> hw_in_stream;
+	hls_stream_t<VPU_IMAGE_OUTPUT_TYPE> hw_out_stream;
+	
+	xf::cv::cvMat2AXIvideoxf<XF_NPPC1, VPU_IMAGE_INPUT_THT>(src, hw_in_stream);
+	vpu_accel_top(hw_in_stream, hw_out_stream, src.rows, src.cols);
+	xf::cv::AXIvideo2cvMatxf<XF_NPPC1>(hw_out_stream, dst);
+}
+
+/**
+ * Entry point function which loads the image from disk and runs tests
+ */
 int main(int argc, char **argv) {
 	cv::Mat src, sw, hw, diff;
-	hls::stream<ap_axiu<24, 1, 1, 1>> hw_in_stream;
-	hls::stream<ap_axiu<8, 1, 1, 1>> hw_out_stream;
 	float error;
 
+	// Check if user supplied a path argument when running the executable
 	if (argc != 2) {
 		std::cerr << "Provide an image path as argument!" << std::endl;
-		return 1;
+		return EXIT_FAILURE_READ;
 	}
 
+	// Load the image from disk
 	src = cv::imread(argv[1], cv::IMREAD_COLOR);
 
-	if (src.data == NULL) {
+	// Check if the image is loaded correctly by measuring if it has data
+	if (src.empty()) {
 		std::cerr << "Failed to read image: " << argv[1] << std::endl;
-		return 2;
+		return EXIT_FAILURE_EMPTY;
 	}
 
-	std::cout << "Image from: " << argv[1]  << " with res " << src.rows << "x" << src.cols << " px" << std::endl;
+	std::cout << "Image from: " << argv[1]  << " with res " << src.cols << "x" << src.rows << " px" << std::endl;
 
+	// Allocate memory to store the results
 	sw.create(src.rows, src.cols, CV_8UC1);
 	hw.create(src.rows, src.cols, CV_8UC1);
 	diff.create(src.rows, src.cols, CV_8UC1);
 
 	apply_ocv(src, sw);
+	apply_hw(src, hw);
 
-	xf::cv::cvMat2AXIvideoxf<XF_NPPC1, 24>(src, hw_in_stream);
-	vpu_accel_top(hw_in_stream, hw_out_stream, src.rows, src.cols);
-	xf::cv::AXIvideo2cvMatxf<XF_NPPC1>(hw_out_stream, hw);
-
+	// Calculate how much the images differ
 	absdiff(sw, hw, diff);
+	xf::cv::analyzeDiff(diff, false, error);
 
+	// Write results to file for visual inspection
 	cv::imwrite("test_sw.png", sw);
 	cv::imwrite("test_hw.png", hw);
 	cv::imwrite("test_diff.png", diff);
 
-	xf::cv::analyzeDiff(diff, false, error);
-
-	// Allow less than 5 percent difference
-	if (error > 0.05f) {
+	// Allow less than X percent difference
+	if (error > TEST_MAX_DIFF) {
 		std::cerr << "VPU Test failed with " << error << "% difference" << std::endl;
-		return 3;
+		return EXIT_FAILURE_DIFF;
 	} else {
 		std::cout << "VPU Test OK" << std::endl;
-		return 0;
+		return EXIT_SUCCESS;
 	}
 }
 
