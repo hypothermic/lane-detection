@@ -10,6 +10,8 @@
 #ifndef VPU_ACCEL_HPP
 #define VPU_ACCEL_HPP
 
+#include <common/xf_structs.hpp>
+#include <common/xf_infra.hpp>
 #include <core/xf_arithm.hpp>
 #include <imgproc/xf_add_weighted.hpp>
 #include <imgproc/xf_cvt_color.hpp>

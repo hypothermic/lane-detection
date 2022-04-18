@@ -32,7 +32,11 @@ void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAG
 
 	#pragma HLS dataflow
 
-	vpu_stream_read<VPU_IMAGE_INPUT_TYPE, VPU_IMAGE_INPUT_BPP>(in, input);
+	#ifdef __VITIS_HLS_PHASE_CSIM__
+		xf::cv::AXIvideo2xfMat(in, input);
+	#else
+		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, VPU_IMAGE_INPUT_BPP>(in, input);
+	#endif
 
 	xf::cv::bgr2gray<VPU_IMAGE_INPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(input, intermediate);
 	
@@ -41,6 +45,15 @@ void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAG
 
 	xf::cv::Threshold<XF_THRESHOLD_TYPE_BINARY, XF_8UC1, VPU_IMAGE_HEIGHT, VPU_IMAGE_WIDTH, VPU_IMAGE_PPC>(sobel, output, 127, 255);
 
-	vpu_stream_write<VPU_IMAGE_OUTPUT_TYPE, VPU_IMAGE_OUTPUT_BPP>(output, out);
+	/*
+	 * For the hardware implementation we need to set TLAST ourselves,
+	 * so we use our own function. But for simulation we can just use
+	 * the provided function.
+	 */
+	#ifdef __VITIS_HLS_PHASE_CSIM__
+		xf::cv::xfMat2AXIvideo(output, out);
+	#else
+		vpu_stream_write<VPU_IMAGE_OUTPUT_TYPE, VPU_IMAGE_OUTPUT_BPP>(output, out);
+	#endif
 }
 
