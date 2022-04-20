@@ -39,6 +39,8 @@ RTL_OUT			?= ./build/
 RTL_TARGET		?= hw_grayscale
 RTL_SIMTIME		?= 100ns
 RTL_WAVE		?= $(RTL_OUT)$(RTL_TARGET).vcd
+#RTL_DEST		?= smb://z2/xilinx/jupyter_notebooks/lane
+RTL_DEST		?= /run/user/1000/gvfs/smb-share:server=192.168.2.99,share=xilinx/jupyter_notebooks/lane
 
 ifdef DEBUG
 RTL_GOALS		?= "-a ../rtl/$(RTL_TARGET).vhd" \
@@ -242,8 +244,13 @@ test: test-lane
 #
 
 transfer-bitstream:
-	# TODO make address configurable
-	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh smb://pynq/xilinx/jupyter_notebooks/lane/hw_overlay.hwh
-	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh smb://pynq/xilinx/jupyter_notebooks/lane/hw_overlay.hwh
-	$(GIO_EXEC) copy ./rtl/driver.ipynb smb://pynq/xilinx/jupyter_notebooks/lane/driver.ipyb
+	# If it is mounted via GVFS:
+	mkdir -p $(RTL_DEST)
+	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.runs/impl_1/bd_wrapper.bit $(RTL_DEST)/hw_overlay.bit
+	$(GIO_EXEC) copy ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh $(RTL_DEST)/hw_overlay.hwh
+	$(GIO_EXEC) copy ./rtl/driver.ipynb $(RTL_DEST)/driver.ipynb
+	# Otherwise:
+	#curl --upload-file ${RTL_OUT}/lane_hw.runs/impl_1/bd_wrapper.bit --user "WORKGROUP\xilinx:xilinx" $(RTL_DEST)/hw_overlay.bit
+	#curl --upload-file ${RTL_OUT}/lane_hw.gen/sources_1/bd/bd/hw_handoff/bd.hwh --user "WORKGROUP\xilinx:xilinx" $(RTL_DEST)/hw_overlay.bit
+	#curl --upload-file ./rtl/driver.ipynb --user "WORKGROUP\xilinx:xilinx" $(RTL_DEST)/driver.ipynb
 
