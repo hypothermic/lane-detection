@@ -47,14 +47,12 @@
  * Apply the filters in software using OpenCV to create a reference image
  */
 static void apply_ocv(cv::Mat &src, cv::Mat &dst) {
-	cv::Mat i1, i2;
+	cv::Mat i1;
 
 	i1.create(src.rows, src.cols, CV_8UC1);
-	i2.create(src.rows, src.cols, CV_8UC1);
 
 	cv::cvtColor(src, i1, cv::COLOR_BGR2GRAY);
-	cv::Sobel(i1, i2, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
-	cv::threshold(i2, dst, 127, 255, cv::THRESH_BINARY);
+	cv::Sobel(i1, dst, CV_8UC1, 1, 1, 3, 1, 0, cv::BORDER_CONSTANT);
 }
 
 /**

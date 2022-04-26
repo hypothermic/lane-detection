@@ -96,6 +96,13 @@
 #define VPU_IMAGE_OUTPUT_THT	(VPU_IMAGE_OUTPUT_WIDTH * XF_NPIXPERCYCLE(VPU_IMAGE_PPC))
 
 /**
+ * Use the standard vitis AXI<->xfMat when simulating/cosimming
+ */
+#ifdef __SYNTHESIS__
+#define __VITIS_HLS_PHASE_CSIM__
+#endif
+
+/**
  * The data type for a pixel
  */
 //typedef ap_axiu<T::pixelwidth, 1, 1, 1> hls_pixel_t;

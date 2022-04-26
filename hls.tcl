@@ -35,7 +35,7 @@ set TEST_LOGO		[file normalize ./data/ip-core-logo.png]
 set OPENCV_INCLUDE	$::env(OPENCV_INCLUDE)
 set OPENCV_LIB		$::env(OPENCV_LIB)
 set VISION_INCLUDE	$::env(VISION_INCLUDE)
-set CFLAGS		"-I ${OPENCV_INCLUDE} -I ${VISION_INCLUDE} -D __SDSVHLS__ -D __XF__AXI_SDATA__ -std=c++17 -D__VITIS_HLS_PHASE_CSIM__"
+set CFLAGS		"-I ${OPENCV_INCLUDE} -I ${VISION_INCLUDE} -D __SDSVHLS__ -D __XF__AXI_SDATA__ -std=c++17"
 set LDFLAGS		"-L ${OPENCV_LIB} -lopencv_imgcodecs -lopencv_imgproc -lopencv_core -lopencv_highgui -lopencv_flann -lopencv_features2d"
 
 # Create the build dir if it doesn't already exist
