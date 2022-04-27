@@ -18,6 +18,7 @@
 #include <imgproc/xf_median_blur.hpp>
 #include <imgproc/xf_sobel.hpp>
 #include <imgproc/xf_threshold.hpp>
+#include <imgproc/xf_houghlines.hpp>
 
 #include "vpu_stream.hpp"
 #include "vpu_type.hpp"
@@ -30,7 +31,7 @@
  * @param row		Which row is currently being processed
  * @param col		Which column is currently being processed
  */
-void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAGE_OUTPUT_TYPE> &out, int in_height, int in_width);
+void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32, 1, 1, 1>> &out, int in_height, int in_width, short thres);
 
 #endif /* VPU_ACCEL_HPP */
 

@@ -25,7 +25,7 @@
  * The input image width must be smaller or equal to this number
  * and can be set/modified at runtime via the AXI-Lite registers.
  */
-#define VPU_IMAGE_MAX_WIDTH	(1920)
+#define VPU_IMAGE_MAX_WIDTH	(1280)
 
 /**
  * The maximum image height that will be supported by the hardware.
@@ -36,7 +36,7 @@
  * The input image height must be smaller or equal to this number
  * and can be set/modified at runtime via the AXI-Lite registers.
  */
-#define VPU_IMAGE_MAX_HEIGHT	(1080)
+#define VPU_IMAGE_MAX_HEIGHT	(720)
 
 /**
  * Pixels per cycle.

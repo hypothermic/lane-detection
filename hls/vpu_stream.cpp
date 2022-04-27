@@ -58,3 +58,31 @@ l_col:		for (int j = 0; j < cols; ++j) {
 	}
 }
 
+/*
+ * @inheritDoc
+ */
+template<unsigned int ROWS, unsigned int COLS>
+void vpu_stream_fwrite(float data[ROWS][COLS], hls::stream<ap_axiu<32, 1, 1, 1>> &stream) {
+	ap_axiu<32, 1, 1, 1> elem;
+	int rows = ROWS;
+	int cols = COLS >> XF_BITSHIFT(XF_NPPC1);
+	
+l_row:	for (int i = 0; i < rows; ++i) {
+l_col:		for (int j = 0; j < cols; ++j) {
+			#pragma HLS loop_flatten off
+			#pragma HLS pipeline II=1
+
+			// pixel.last = (j == cols-1) && (i == rows-1);
+			if ((j == cols-1) && (i == rows-1)) {
+				elem.last = 1;
+			} else {
+				elem.last = 0;
+			}
+
+			elem.data = 0;
+			elem.data((32 * XF_NPIXPERCYCLE(XF_NPPC1)) - 1, 0) = data[i][j];
+			elem.keep = -1;
+			stream.write(elem);
+		}
+	}
+}

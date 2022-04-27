@@ -31,5 +31,8 @@ void vpu_stream_read(hls_stream_t<T> &stream, img_mat_t<BPP> &mat);
 template<typename T, XF_npt_e BPP>
 void vpu_stream_write(img_mat_t<BPP> &mat, hls_stream_t<T> &stream);
 
+template<unsigned int ROWS, unsigned int COLS>
+void vpu_stream_fwrite(float data[ROWS][COLS], hls::stream<ap_axiu<32, 1, 1, 1>> &stream);
+
 #endif /* VPU_STREAM_HPP */
 

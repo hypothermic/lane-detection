@@ -15,46 +15,57 @@
 /*
  * @inheritDoc
  */
-void vpu_accel_top(hls_stream_t<VPU_IMAGE_INPUT_TYPE> &in, hls_stream_t<VPU_IMAGE_OUTPUT_TYPE> &out, int in_height, int in_width) {
+void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32, 1, 1, 1>> &out, int in_height, int in_width, short thres) {
 	// clang-format off
 	#pragma HLS interface axis register both port=in
 	#pragma HLS interface axis register both port=out
 
 	#pragma HLS interface s_axilite port=in_height
 	#pragma HLS interface s_axilite port=in_width
+	#pragma HLS interface s_axilite port=thres
 	#pragma HLS interface s_axilite port=return
 	// clang-format on
 
-	img_mat_t<VPU_IMAGE_INPUT_BPP>	input(in_height, in_width);
-	img_mat_t<VPU_IMAGE_OUTPUT_BPP>	intermediate(in_height, in_width),
-					dstmatx(in_height, in_width),
-					dstmaty(in_height, in_width),
-					output(in_height, in_width);
+	img_mat_t<XF_8UC3>		input(in_height, in_width);
+	img_mat_t<XF_8UC1>		intermediate(in_height, in_width);
+	float				rhos[8], thetas[8];	
+	ap_axiu<32, 1, 1, 1>		elem;
 
 	// clang-format off
 	#pragma HLS dataflow
 	// clang-format on
 
 //	#ifdef __VITIS_HLS_PHASE_CSIM__
-		xf::cv::AXIvideo2xfMat(in, input);
+//		xf::cv::AXIvideo2xfMat(in, input);
 //	#else
-//		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, VPU_IMAGE_INPUT_BPP>(in, input);
+		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC3>(in, input);
 //	#endif
 
-	xf::cv::bgr2gray<VPU_IMAGE_INPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, VPU_IMAGE_PPC>(input, intermediate);
+	xf::cv::rgb2gray<XF_8UC3, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, intermediate);
 	
-	xf::cv::Sobel<XF_BORDER_CONSTANT, XF_FILTER_3X3, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, VPU_IMAGE_PPC, false>(intermediate, dstmatx, dstmaty);
-	xf::cv::addWeighted<VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_OUTPUT_BPP, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, VPU_IMAGE_PPC>(dstmatx, 0.5, dstmaty, 0.5, 0.0, output);
+	xf::cv::HoughLines<1, 2, 8, 1469, 5, 175, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(intermediate, rhos, thetas, thres, 8);
+	
+l_row:	for (int i = 0; i < 2; ++i) {
+l_col:		for (int j = 0; j < 8; ++j) {
+			#pragma HLS loop_flatten off
+			#pragma HLS pipeline II=1
 
-	/*
-	 * For the hardware implementation we need to set TLAST ourselves,
-	 * so we use our own function. But for simulation we can just use
-	 * the provided function.
-	 */
-//	#ifdef __VITIS_HLS_PHASE_CSIM__
-		xf::cv::xfMat2AXIvideo(output, out);
-//	#else
-//		vpu_stream_write<VPU_IMAGE_OUTPUT_TYPE, VPU_IMAGE_OUTPUT_BPP>(output, out);
-//	#endif
+			// pixel.last = (j == cols-1) && (i == rows-1);
+			if ((j == 8-1) && (i == 2-1)) {
+				elem.last = 1;
+			} else {
+				elem.last = 0;
+			}
+
+			elem.data = 0;
+			if (i == 2-1) {
+				elem.data(32-1, 0) = (uint32_t)(rhos[j] * (1 << 16));
+			} else {
+				elem.data(32-1, 0) = (uint32_t)(thetas[j] * (1 << 16));
+			}
+			elem.keep = -1;
+			out.write(elem);
+		}
+	}
 }
 
