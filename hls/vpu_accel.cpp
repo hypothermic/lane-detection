@@ -43,7 +43,7 @@ void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32
 
 	xf::cv::rgb2gray<XF_8UC3, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, intermediate);
 	
-	xf::cv::HoughLines<1, 2, 8, 1469, 5, 175, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(intermediate, rhos, thetas, thres, 8);
+	xf::cv::HoughLines<1, 2, 8, 1469, 0, 90, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(intermediate, rhos, thetas, thres, 8);
 	
 l_row:	for (int i = 0; i < 2; ++i) {
 l_col:		for (int j = 0; j < 8; ++j) {
