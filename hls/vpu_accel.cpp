@@ -12,8 +12,8 @@
 // include the functions from other files directly into this file
 #include "vpu_stream.cpp" // bad practice btw
 
-void _swrite(hls::stream<ap_axiu<32, 1, 1, 1>> &out, float rhos[8], float thetas[8]) {
-	ap_axiu<32, 1, 1, 1>		elem;
+void _swrite(hls::stream<ap_axis<32, 1, 1, 1>> &out, float rhos[8], float thetas[8]) {
+	ap_axis<32, 1, 1, 1>		elem;
 
 l_row:	for (int i = 0; i < 2; ++i) {
 l_col:		for (int j = 0; j < 8; ++j) {
@@ -30,9 +30,9 @@ l_col:		for (int j = 0; j < 8; ++j) {
 			elem.data = 0;
 			//elem.data(32-1, 0) = (uint32_t)((1.1f * (i*8.0f + j + (0.0000000000000000000000000000001f * rhos[j] * thetas[j]))) * (1 << 16));
 			if (i == 2-1) {
-				elem.data(32-1, 0) = (uint32_t)(thetas[j] * (1 << 16));
+				elem.data(32-1, 0) = (int32_t)(thetas[j] * (1 << 16));
 			} else {
-				elem.data(32-1, 0) = (uint32_t)(rhos[j] * (1 << 16));
+				elem.data(32-1, 0) = (int32_t)(rhos[j] * (1 << 16));
 			}
 			elem.keep = -1;
 			out.write(elem);
@@ -43,7 +43,7 @@ l_col:		for (int j = 0; j < 8; ++j) {
 /*
  * @inheritDoc
  */
-void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32, 1, 1, 1>> &out, int in_height, int in_width, short thres) {
+void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axis<32, 1, 1, 1>> &out, int in_height, int in_width, short thres) {
 	// clang-format off
 	#pragma HLS interface axis register both port=in
 	#pragma HLS interface axis register both port=out
@@ -67,7 +67,7 @@ void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32
 		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC1>(in, input);
 //	#endif
 
-	xf::cv::HoughLines<1, 2, 8, 1469, 0, 90, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, rhos, thetas, thres, 8);
+	xf::cv::HoughLines<1, 3, 8, 1469, 0, 180, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, rhos, thetas, thres, 8);
 
 	_swrite(out, rhos, thetas);
 }
