@@ -154,7 +154,7 @@ set_property -dict [ list \
 #
 
 set_property -dict [ list \
-	CONFIG.M_TDATA_NUM_BYTES {1} \
+	CONFIG.M_TDATA_NUM_BYTES {3} \
 	CONFIG.S_TDATA_NUM_BYTES {4} \
 ] $axis_dwidth_converter_0
 

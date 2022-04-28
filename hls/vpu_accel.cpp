@@ -43,31 +43,50 @@ l_col:		for (int j = 0; j < 8; ++j) {
 /*
  * @inheritDoc
  */
-void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axis<32, 1, 1, 1>> &out, int in_height, int in_width, short thres) {
+void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axis<32, 1, 1, 1>> &out, int in_height, int in_width, uint8_t seg_thres, float g_sigma, short e_thres, short h_thres) {
 	// clang-format off
 	#pragma HLS interface axis register both port=in
 	#pragma HLS interface axis register both port=out
 
 	#pragma HLS interface s_axilite port=in_height
 	#pragma HLS interface s_axilite port=in_width
-	#pragma HLS interface s_axilite port=thres
+	#pragma HLS interface s_axilite port=seg_thres
+	#pragma HLS interface s_axilite port=g_sigma
+	#pragma HLS interface s_axilite port=e_thres
+	#pragma HLS interface s_axilite port=h_thres
 	#pragma HLS interface s_axilite port=return
 	// clang-format on
 
-	img_mat_t<XF_8UC1>		input(in_height, in_width);
+	img_mat_t<XF_8UC3>		img_input(in_height, in_width),
+					img_hsv(in_height, in_width);
+	img_mat_t<XF_8UC1>		img_seg(in_height, in_width),
+					img_gauss(in_height, in_width),
+					img_sobx(in_height, in_width),
+					img_soby(in_height, in_width),
+					img_sob(in_height, in_width),
+					img_edges(in_height, in_width);
 	float				rhos[8], thetas[8];	
 
 	// clang-format off
 	#pragma HLS dataflow
 	// clang-format on
+	
+	unsigned char seg_thresh_low[XF_CHANNELS(XF_8UC3, XF_NPPC1)] = {0, 0, static_cast<unsigned char>(255-seg_thres)};
+	unsigned char seg_thresh_high[XF_CHANNELS(XF_8UC3, XF_NPPC1)] = {255, static_cast<unsigned char>(seg_thres), 255};
 
 //	#ifdef __VITIS_HLS_PHASE_CSIM__
 //		xf::cv::AXIvideo2xfMat(in, input);
 //	#else
-		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC1>(in, input);
+		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC3>(in, img_input);
 //	#endif
 
-	xf::cv::HoughLines<1, 3, 8, 1469, 0, 180, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, rhos, thetas, thres, 8);
+	xf::cv::bgr2hsv<XF_8UC3, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_input, img_hsv);
+	xf::cv::inRange<XF_8UC3, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_hsv, seg_thresh_low, seg_thresh_high, img_seg);
+	xf::cv::GaussianBlur<5, XF_BORDER_CONSTANT, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_seg, img_gauss, g_sigma);
+	xf::cv::Sobel<XF_BORDER_CONSTANT, 3, XF_8UC1, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1, false>(img_gauss, img_sobx, img_soby);
+	xf::cv::addWeighted<XF_8UC1, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_sobx, 0.5, img_soby, 0.5, 0.0, img_sob);
+	xf::cv::Threshold<XF_THRESHOLD_TYPE_BINARY, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_sob, img_edges, e_thres, 255);
+	xf::cv::HoughLines<1, 4, 8, 1469, 0, 180, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(img_edges, rhos, thetas, h_thres, 8);
 
 	_swrite(out, rhos, thetas);
 }
