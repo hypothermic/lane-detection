@@ -12,6 +12,34 @@
 // include the functions from other files directly into this file
 #include "vpu_stream.cpp" // bad practice btw
 
+void _swrite(hls::stream<ap_axiu<32, 1, 1, 1>> &out, float rhos[8], float thetas[8]) {
+	ap_axiu<32, 1, 1, 1>		elem;
+
+l_row:	for (int i = 0; i < 2; ++i) {
+l_col:		for (int j = 0; j < 8; ++j) {
+			#pragma HLS loop_flatten off
+			#pragma HLS pipeline II=1
+
+			// pixel.last = (j == cols-1) && (i == rows-1);
+			if ((j == 8-1) && (i == 2-1)) {
+				elem.last = 1;
+			} else {
+				elem.last = 0;
+			}
+
+			elem.data = 0;
+			//elem.data(32-1, 0) = (uint32_t)((1.1f * (i*8.0f + j + (0.0000000000000000000000000000001f * rhos[j] * thetas[j]))) * (1 << 16));
+			if (i == 2-1) {
+				elem.data(32-1, 0) = (uint32_t)(thetas[j] * (1 << 16));
+			} else {
+				elem.data(32-1, 0) = (uint32_t)(rhos[j] * (1 << 16));
+			}
+			elem.keep = -1;
+			out.write(elem);
+		}
+	}
+}
+
 /*
  * @inheritDoc
  */
@@ -26,10 +54,8 @@ void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32
 	#pragma HLS interface s_axilite port=return
 	// clang-format on
 
-	img_mat_t<XF_8UC3>		input(in_height, in_width);
-	img_mat_t<XF_8UC1>		intermediate(in_height, in_width);
+	img_mat_t<XF_8UC1>		input(in_height, in_width);
 	float				rhos[8], thetas[8];	
-	ap_axiu<32, 1, 1, 1>		elem;
 
 	// clang-format off
 	#pragma HLS dataflow
@@ -38,34 +64,11 @@ void vpu_accel_top(hls::stream<ap_axiu<24, 1, 1, 1>> &in, hls::stream<ap_axiu<32
 //	#ifdef __VITIS_HLS_PHASE_CSIM__
 //		xf::cv::AXIvideo2xfMat(in, input);
 //	#else
-		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC3>(in, input);
+		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC1>(in, input);
 //	#endif
 
-	xf::cv::rgb2gray<XF_8UC3, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, intermediate);
-	
-	xf::cv::HoughLines<1, 2, 8, 1469, 0, 90, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(intermediate, rhos, thetas, thres, 8);
-	
-l_row:	for (int i = 0; i < 2; ++i) {
-l_col:		for (int j = 0; j < 8; ++j) {
-			#pragma HLS loop_flatten off
-			#pragma HLS pipeline II=1
+	xf::cv::HoughLines<1, 2, 8, 1469, 0, 90, XF_8UC1, VPU_IMAGE_MAX_HEIGHT, VPU_IMAGE_MAX_WIDTH, XF_NPPC1>(input, rhos, thetas, thres, 8);
 
-			// pixel.last = (j == cols-1) && (i == rows-1);
-			if ((j == 8-1) && (i == 2-1)) {
-				elem.last = 1;
-			} else {
-				elem.last = 0;
-			}
-
-			elem.data = 0;
-			if (i == 2-1) {
-				elem.data(32-1, 0) = (uint32_t)(rhos[j] * (1 << 16));
-			} else {
-				elem.data(32-1, 0) = (uint32_t)(thetas[j] * (1 << 16));
-			}
-			elem.keep = -1;
-			out.write(elem);
-		}
-	}
+	_swrite(out, rhos, thetas);
 }
 
