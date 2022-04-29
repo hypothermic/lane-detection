@@ -12,8 +12,7 @@
 set TARGET_PART		xc7z020clg400-1
 set TARGET_NAME		lane_vpu
 set TARGET_TOP		vpu_accel_top
-#set TARGET_LOCATION	"./build/${TARGET_NAME}.prj/${TARGET_NAME}/impl/ip/com_arobs_lane_detection_vpu_accel_0_1.zip"
-set TARGET_LOCATION	"./build/${TARGET_NAME}.prj/${TARGET_NAME}/impl/export.zip"
+set TARGET_LOCATION	"./build/${TARGET_NAME}.prj/${TARGET_NAME}/impl/ip/com_arobs_lane_detection_vpu_accel_0_1.zip"
 set TARGET_FILE		[file normalize $TARGET_LOCATION]
 
 # Clock period (should be 10 ns because Arty and PYNQ sys clocks both run at 100MHz)
