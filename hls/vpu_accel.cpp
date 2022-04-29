@@ -69,7 +69,7 @@ void vpu_accel_top(hls::stream<ap_axiu<VPU_IMAGE_INPUT_WIDTH, 1, 1, 1>> &in, hls
 	// Make sure to use the standard AXI<->xfMat for sim/cosim
 	// because ours doesn't set the relevant channel signals
 	#ifdef __VITIS_HLS_PHASE_CSIM__
-		xf::cv::AXIvideo2xfMat(in, input);
+		xf::cv::AXIvideo2xfMat(in, img_input);
 	#else
 		vpu_stream_read<VPU_IMAGE_INPUT_TYPE, XF_8UC3>(in, img_input);
 	#endif

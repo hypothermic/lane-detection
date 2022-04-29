@@ -32,9 +32,11 @@ void vpu_stream_read(hls_stream_t<T> &stream, img_mat_t<BPP> &mat) {
 
 	// Rebuild image row-by-row
 l_rows:	for (int i = 0; i < rows; ++i) {
+			#pragma HLS loop_tripcount min=720 max=720
 
 		// Receive each pixel in a column
 l_cols:		for (int j = 0; j < cols; ++j) {
+			#pragma HLS loop_tripcount min=1280 max=1280
 			#pragma HLS loop_flatten off
 			#pragma HLS pipeline II=1
 
@@ -116,7 +118,7 @@ l_iter:		for (int j = 0; j < N; ++j) {
 			
 			// Write the fixed point data to the stream element
 			if (i == D-1) {
-				elem.data(FP_W, 0) = (int32_t)(thetas[j] * (1 << FP_F));
+				elem.data(FP_W-1, 0) = (int32_t)(thetas[j] * (1 << FP_F));
 			} else {
 				elem.data(FP_W-1, 0) = (int32_t)(rhos[j] * (1 << FP_F));
 			}
