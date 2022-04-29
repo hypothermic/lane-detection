@@ -1,5 +1,9 @@
 ## Lane Detection Internship [![Compile Documents](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml/badge.svg?branch=master&event=push)](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml)
 
+The goal of this project is to accelerate road lane detection using an FPGA.
+
+![Preview picture](./data/preview.png)
+
 This repository contains the documentation and code for all of the deliverables.
 
 Automatically generated PDFs from the latest commit of the documents can be found on the [Actions Workflow](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml).
@@ -57,6 +61,12 @@ dataset. Make sure to extract them using `./data/extract.sh`
 
 The hardware build is separated into two parts; the VPU IP core
 and the total system implementation with AXI infra and Zynq PS.
+
+To run (co-)simulation tests for the IP core:
+
+```shell
+$ make test-hls-sim test-hls-cosim
+```
 
 To build the IP Core standalone:
 
