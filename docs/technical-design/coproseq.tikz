@@ -1,0 +1,56 @@
+\begin{tikzpicture}
+	\begin{umlseqdiag} 
+		\umlactor[no ddots, y=-1]{Host Program}
+		\umlobject[no ddots]{SDRAM}
+		\umlobject[no ddots]{VDMA}
+		\umlobject[no ddots]{Local RAM}
+		\umlobject[no ddots]{VPU}
+
+		\begin{umlcall}[op=Allocate Buffers, type=synchron, return=Address Pointers]{Host Program}{SDRAM}
+
+		\end{umlcall}
+
+		\begin{umlcall}[op=Configure Settings, type=synchron]{Host Program}{VPU}
+
+		\end{umlcall}
+		
+		\begin{umlcall}[op=Transfer Image, type=asynchron]{Host Program}{VDMA}
+
+			\begin{umlcall}[dt=5,op=Fetch Image Data, type=synchron, return=Data]{VDMA}{SDRAM}
+
+			\end{umlcall}
+
+			\begin{umlcall}[op=Write Image Data, type=synchron]{VDMA}{Local RAM}
+			\end{umlcall}
+		\end{umlcall}
+
+		\begin{umlcall}[dt=5,op=Start Processing, type=asynchron]{Host Program}{VPU}
+
+			\begin{umlfragment}[type=loop, label=while not done, inner xsep=1, inner ysep=6]
+				\begin{umlcall}[dt=-5,op=Fetch Region Data, type=synchron, return=Data]{VPU}{Local RAM}
+				\end{umlcall}
+
+				\begin{umlcallself}[op=Process Region, type=synchron]{VPU}
+				\end{umlcallself}
+
+				\begin{umlcall}[op=Write Region Data, type=synchron]{VPU}{Local RAM}
+				\end{umlcall}
+			\end{umlfragment}
+
+			\begin{umlcall}[dt=-3.75,op=Announce Transfer Complete (TLAST), type=asynchron]{VPU}{VDMA}
+
+				\begin{umlcall}[dt=4,op=Fetch Results, type=synchron, return=Results]{VDMA}{Local RAM}
+				\end{umlcall}
+
+				\begin{umlcall}[op=Write Results, type=synchron]{VDMA}{SDRAM}
+				\end{umlcall}
+			\end{umlcall}
+		\end{umlcall}
+
+		\begin{umlcall}[op=Fetch Results, type=synchron, return=Results]{Host Program}{SDRAM}
+
+		\end{umlcall}
+
+	\end{umlseqdiag}
+\end{tikzpicture}
+

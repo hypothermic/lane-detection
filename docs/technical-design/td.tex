@@ -14,6 +14,7 @@
 \usepackage{tikzscale}
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
+\usepackage{adjustbox}
 
 % Not quite ConTeXt tables but good enough
 \usepackage{colortbl}
@@ -165,7 +166,7 @@
 			These AXI interfaces are hard-IP that connect PS and PL with user-definable 32-bit wide digital connections.
 		
 			\vspace{-0.6ex}
-			\begin{figuur}{The Strategy used for implementing The System}
+			\begin{figuur}{The components used for implementing The System}
 				\singlespacing
 				\includegraphics{implementation-strategy}
 				\onehalfspacing
@@ -190,7 +191,18 @@
 			Once the VPU IP Core is done with processing the data, it pulls the TLAST wire on the output AXIS interface high.
 			This rising edge signals the VDMA that the data transfer is complete and that the receive channel should close.
 			The output image data now resides at the output buffer location in the SDRAM and can be retrieved by the Processing System.
-			\textbf{[todo: show image data flow in some sort of graphic]}
+			A more detailed illustration of this process can be seen in \verwijzingn{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
+
+			\vspace{-0.6ex}
+			\begin{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
+				\singlespacing
+				\begin{adjustbox}{width=\textwidth,center}
+					\includegraphics{coproseq}
+				\end{adjustbox}
+				\onehalfspacing
+				\vspace{-2ex}
+			\end{figuur}
+			\vspace{-0.2ex}
 
 		\end{paragraaf}
 
@@ -275,9 +287,9 @@
 
 		Having read up on case studies about high level synthesis, I was worried that we would hit the resource cap because code translation is inherently more inefficient than writing low level code yourself.
 		Without creating any timing constraints for the place and route phases, Vivado managed to implement the netlist on the FPGA in an efficient manner.
-		It only consumed about 20 percent of the available LUTs and 30 percent of the available FFs while keeping the WNS at \qty{1,2e-9}{\second}, which is 12 percent of the clock period. % 1,2 ns :shrug:
-		As I talked about in~\verwijzingb{paragraaf}{Memory Layout}, the BRAM usage is high, but not as high as I expected.
-		Presumably due to under-the-hood optimizations in the memory streaming pipeline -- remember, the AXI-Stream IP that we are using in the design is proprietary and closed-source, meaning that we cannot access it ourselves -- it has managed to cram the whole system into only 14 BRAM blocks.
+		It only consumed about 65 percent of the available LUTs and 30 percent of the available FFs while keeping the WNS at \qty{3,2e-11}{\second}, which is 0,3 percent of the clock period. % 0,032 ns :shrug:
+		As I talked about in~\verwijzingn{paragraaf}{Memory Layout}, the BRAM usage is high, but not as high as I expected.
+		Presumably due to under-the-hood optimizations in the memory streaming pipeline -- remember, the AXI-Stream IP that we are using in the design is proprietary and closed-source, meaning that we cannot access it ourselves -- it has managed to cram the whole system into only 99 BRAM blocks.
 		
 		\bigskip
 
@@ -286,17 +298,18 @@
 		This confirms that the place and route phases have been correctly executed and the latency is kept to a minimum.
 		It also signals me that I do not need to invest extra time in manually setting timing constraints.
 
-		\begin{tabel}{Post-Implementation Utilization Report}{l @{\extracolsep{\fill}} rr rr S[table-format=3.2]S[table-format=3.2]}
-					& \multicolumn{2}{c}{Utilization}	& \multicolumn{2}{c}{Available} & \multicolumn{2}{c}{Utilization \%} \tabularnewline
-			\cmidrule{2-3} \cmidrule{4-5} \cmidrule{6-7}
-			Resource	& \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total} & \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total}		    & VPU & Total \tabularnewline
+		\begin{tabel}{Post-Implementation Utilization Report}{l @{\extracolsep{\fill}} r rr S[table-format=3.1]S[table-format=3.1]}
+			\multicolumn{2}{c}{Resource} & \multicolumn{2}{c}{Utilization} & \multicolumn{2}{c}{Utilization \%} \tabularnewline
+			\cmidrule{1-2} \cmidrule{3-4} \cmidrule{5-6}
+			Type	& Available & \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total}		    & VPU & Total \tabularnewline
 			\midrule
-			LUT	& 0 & 5678	& 0 & 53200	& 0 & 10.67	\tabularnewline
-			FF	& 0 & 7559	& 0 & 106400	& 0 & 7.10	\tabularnewline
-			DSP	& 0 & 16	& 0 & 220	& 0 & 7.27	\tabularnewline
-			DRAM	& 0 & 304	& 0 & 17400	& 0 & 1.75	\tabularnewline
-			BRAM	& 0 & 14	& 0 & 140	& 0 & 10.00	\tabularnewline
-			BUFG	& 0 & 1		& 0 & 32	& 0 & 3.13	\tabularnewline
+			LUT		& 53200		& 33716 & 36746	& 63.38 & 69.07	\tabularnewline
+			FF		& 106400	& 30258 & 34453	& 28.44 & 32.38	\tabularnewline
+			DSP		& 220		& 55 & 55	& 25.00 & 25.00	\tabularnewline
+			Shift reg	& 35800		& 276 & 496	& 0.77 & 1.39	\tabularnewline
+			DRAM		& 17400		& 48 & 68	& 0.28 & 0.39	\tabularnewline
+			BRAM		& 140		& 99 & 104	& 70.72 & 74.29	\tabularnewline
+			BUFG		& 32		& 0 & 1		& 0.00 & 3.13	\tabularnewline
 
 		\end{tabel}
 
@@ -331,7 +344,7 @@
 			The problem I faced regarding the storage of the video frames had to do with the limited amount of Block RAM (BRAM) on the FPGA.
 			The camera outputs an image of 640 by 480 pixels with a configurable color channel configuration of RGB444, RGB555 or RGB565.
 			We prefer to have the highest color depth due to the image processing algorithm working better if there is more input variance.
-			The Arty A7-35T, our target FPGA board, only has \qty{1800}{\kibi\bit} of BRAM, which is not enough to store a full image frame of the lowest color configuration, as can be seen in \verwijzingb{tabel}{Required space to store images of different sizes}.
+			The Arty A7-35T, our initial target FPGA board, only had \qty{1800}{\kibi\bit} of BRAM, which was not enough to store a full image frame of the lowest color configuration, as can be seen in \verwijzingb{tabel}{Required space to store images of different sizes}.
 			One technique to fit the image into memory is to downscale it, but we would lose information on image features which would have an impact on the quality of detection.
 
 			\begin{tabel}{Required space to store images of different sizes}{l @{\extracolsep{\fill}} r r}
@@ -342,9 +355,9 @@
 				5+6+5 = 16 b & 4800 Kib & 1200 Kib  \tabularnewline
 			\end{tabel}
 			
-			The alternatives places to store an image are the \qty{16}{\mebi\byte} of Quad-SPI flash or the \qty{256}{\mega\byte} DDR3L SDRAM.
-			The QSPI flash memory has two downsides: it requires controller logic which is only available as an IP Core with a full AXI4 bus, making it difficult to use, and it is shared with the MicroBlaze flash sector, so we would have to make sure that we don't overwrite those contents.
-			The DDR3L SDRAM has one major downside: it requires the use of the proprietary Xilinx Memor Interface Generator (MIG) which Digilent does not provide any support for.
+			The alternatives places to store an image were the \qty{16}{\mebi\byte} of Quad-SPI flash or the \qty{256}{\mega\byte} DDR3L SDRAM.
+			The QSPI flash memory had two downsides: it required controller logic which is only available as an IP Core with a full AXI4 bus, making it difficult to use, and it would have been shared with the MicroBlaze flash sector, so we would have had to make sure not to overwrite those contents.
+			The DDR3L SDRAM had one major downside: it required the use of the proprietary Xilinx Memory Interface Generator (MIG) which Digilent does not provide any support for.
 			The MIG provides little to no abstraction over the raw DDR3 protocol, making it a challenge of its own to implement it.
 			Besides, it is a soft IP, which means that it is delivered in a generic way and the developer has to tailor it to the specific board.
 			What makes the SDRAM appealing is its high input clock speed of \qty{166}{\mega\hertz} and the ability to read/write \qty{128}{\bit} of information per cycle.
@@ -363,6 +376,32 @@
 			Another reason why I chose the PYNQ-Z2 is its larger BRAM capacity; it has \qty{4900}{\kibi\bit} of BRAM.
 			However, if using the PYNQ Processing System, this memory will be shared with the processor component, leaving a smaller usable space.
 			My final decision is to use the DDR3 SDRAM because it is plentyful on the Z2 board: all \qty{512}{\mega\byte} is available to the developer.
+
+			\vspace{-0.6ex}
+			\begin{figuur}{Classic hardware co-processing compared to FPGA co-processing}
+				\singlespacing
+				\includegraphics{coprocessing}
+				\onehalfspacing
+				\vspace{-2ex}
+			\end{figuur}
+			\vspace{-0.2ex}
+
+			The way the memory is used on the Zynq-7000 with VDMA reminds me of using the OpenGL and Vulkan graphics APIs.
+			With OpenGL, you would allocate 'textures' and other data the GPU needs in the host memory and then pass a reference to the data to the shader program that would run on the GPU.
+			With Vulkan, this process would be a bit more detailed and you would have to manually specify how you would stream the textures/data to the VRAM before being able to access this data from the shader.
+			And now, with Zynq, we would allocate the data in host memory, stream the data to the BRAM/DRAM using the VDMA and then run the kernel by setting the register.
+			After the data is processed, the VDMA feeds the results back into the buffer in host memory that we allocated.
+			I did a lot of graphics programming a few years back, so I was able to see the similarities between these practices and adapt them to FPGA co-processing.
+
+			\bigskip
+
+			The final memory optimization I want to talk about is the use of buffering inside the VPU.
+			For many image operations (especially those that use convolution, like a simple median filter or the Sobel filter) only a small region of the image is needed for computation at a time.
+			Let's think of a simple 3x3 median filter: for each pixel it needs the eight neighbouring pixels to determine the resulting color value.
+			To process a row of an image, we would only need to load the pixels of the rows above and below the target row.
+			Such a row of pixels is frequently called a "line buffer" or a "sliding window."
+			By using this technique of only loading the pixels that we need to do a regional computation, we do not have to load the entire image into memory and thus we can make way with a smaller amount of memory.
+			Unfortunately this cannot be applied to computations such as the Hough Transform because this operation needs to have computed all the votes in the accumulator of an image before it can proceed.
 
 		\end{paragraaf}
 

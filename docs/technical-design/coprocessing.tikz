@@ -1,0 +1,51 @@
+\begin{tikzpicture}
+
+	\node (vk bg) [draw=none, fill=black!7, rounded corners=2ex, minimum width=.475\textwidth, minimum height=42ex] at (0,0) {};
+	\node (vk label) [anchor=south, inner sep=1.5ex, align=center] at (vk bg.south) {Classic GPU Compute Model \\ (OpenGL/Vulkan/etc)};
+
+	\node (vk cpu bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=14ex, anchor=north, below left=2ex and 2ex of vk bg.north] {};
+	\node (vk cpu label) [anchor=south, inner sep=1.5ex, align=center] at (vk cpu bg.south) {CPU};
+	\node (vk cpu) [inner sep=0, yshift=1ex] at (vk cpu bg.center) {
+		\includegraphics[width=10.5ex]{arm-cortex-a9.png}
+	};
+	\node (vk cpu mem) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=7ex, anchor=north, below=4ex of vk cpu bg, align=center] {Host Memory \\ (SDRAM)};
+	
+	\node (vk gpu bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=14ex, anchor=north, below right=2ex and 2ex of vk bg.north] {};
+	\node (vk gpu label) [anchor=south, inner sep=1.5ex, align=center] at (vk gpu bg.south) {GPU};
+	\node (vk gpu) [inner sep=0, yshift=1ex] at (vk gpu bg.center) {
+		\includegraphics[width=10.5ex]{nvidia-gtx-980ti.png}
+	};
+	\node (vk gpu mem) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=7ex, anchor=west, below=4ex of vk gpu bg, align=center] {GPU Memory \\ (VRAM)};
+	\coordinate [below=4ex of vk cpu mem] (vk cpu mem under);
+	\coordinate [below=4ex of vk gpu mem] (vk gpu mem under);
+	\draw [draw, thick] (vk cpu mem under) -- (vk gpu mem under) node[inner sep=0.6ex, midway, fill=black!7] {PCIe};
+	\draw [draw, latex-, thick] (vk cpu mem.south) -- (vk cpu mem under);
+	\draw [draw, -latex, thick] (vk gpu mem under) -- (vk gpu mem.south);
+	\draw [draw, latex-latex, thick] (vk cpu bg.south) -- (vk cpu mem.north);
+	\draw [draw, latex-latex, thick] (vk gpu bg.south) -- (vk gpu mem.north);
+
+	\node (zy bg) [draw=none, fill=black!7, rounded corners=2ex, minimum width=.475\textwidth, minimum height=42ex, right=0.05\textwidth of vk bg] {};
+	\node (zy label) [anchor=south, inner sep=1.5ex, align=center] at (zy bg.south) {Zynq FPGA Co-processing};
+
+	\node (zy cpu bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=14ex, anchor=north, below left=2ex and 2ex of zy bg.north] {};
+	\node (zy cpu label) [anchor=south, inner sep=1.5ex, align=center] at (zy cpu bg.south) {CPU};
+	\node (zy cpu) [inner sep=0, yshift=1ex] at (zy cpu bg.center) {
+		\includegraphics[width=10.5ex]{arm-cortex-a9.png}
+	};
+	\node (zy cpu mem) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=7ex, anchor=north, below=4ex of zy cpu bg, align=center] {Host Memory \\ (SDRAM)};
+	
+	\node (zy gpu bg) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=14ex, anchor=north, below right=2ex and 2ex of zy bg.north] {};
+	\node (zy gpu label) [anchor=south, inner sep=1.5ex, align=center] at (zy gpu bg.south) {VPU};
+	\node (zy gpu) [inner sep=0, yshift=1ex] at (zy gpu bg.center) {
+		\includegraphics[width=10.5ex]{artix-7.png}
+	};
+	\node (zy gpu mem) [draw=none, fill=black!15, rounded corners=2ex, minimum width=14ex, minimum height=7ex, anchor=west, below=4ex of zy gpu bg, align=center] {BRAM + DRAM};
+	\coordinate [below=4ex of zy cpu mem] (zy cpu mem under);
+	\coordinate [below=4ex of zy gpu mem] (zy gpu mem under);
+	\draw [draw, thick] (zy cpu mem under) -- (zy gpu mem under) node[inner sep=0.6ex, midway, fill=black!7] {AXI VDMA};
+	\draw [draw, latex-, thick] (zy cpu mem.south) -- (zy cpu mem under);
+	\draw [draw, -latex, thick] (zy gpu mem under) -- (zy gpu mem.south);
+	\draw [draw, latex-latex, thick] (zy cpu bg.south) -- (zy cpu mem.north);
+	\draw [draw, latex-latex, thick] (zy gpu bg.south) -- (zy gpu mem.north);
+\end{tikzpicture}
+
