@@ -1,6 +1,14 @@
-% !TEX program = xelatex
+% !TEX program = lualatex
 \documentclass{matthijs}
 \graphicspath{{../assets/}{../images/}{./docs/assets/}{./docs/images}{./docs/research-paper/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Research Paper}
+	\Subject{Research into lane detection algorithmes}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{research\sep paper}
+\end{filecontents*}
 
 \input{preamble.tex}
 \usepackage{titlepage}

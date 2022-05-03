@@ -11,7 +11,7 @@ all: clean compile test
 #
 
 LATEXMK_OUT		?= ./build/
-LATEXMK_OPTS		?= -emulate-aux-dir -auxdir=./docs/ -xelatex -output-directory=$(LATEXMK_OUT)
+LATEXMK_OPTS		?= -emulate-aux-dir -auxdir=./docs/ -output-directory=$(LATEXMK_OUT)
 export TEXINPUTS	:= $(CURDIR)/docs//:$(TEXINPUTS):
 export BIBINPUTS	:= $(CURDIR)/docs//:
 

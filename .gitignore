@@ -23,6 +23,9 @@ data/**.ppm
 *.xdv
 *.snm
 *.nav
+*.xmpdata
+*.xmpi
+*.lua
 
 # Ignore the image assets for documents
 !**/asset_*.pdf

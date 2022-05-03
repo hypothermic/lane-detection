@@ -1,7 +1,15 @@
-% !TEX program = xelatex
+% !TEX program = lualatex
 \PassOptionsToPackage{table}{xcolor}
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/functional-design/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Functional Design}
+	\Subject{Description of the product}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{functional\sep design}
+\end{filecontents*}
 
 \input{preamble.tex}
 \usepackage{titlepage}

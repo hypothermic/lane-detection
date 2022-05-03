@@ -1,6 +1,14 @@
-% !TEX program = xelatex
+% !TEX program = lualatex
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/technical-design/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Technical Design}
+	\Subject{Implementation description of the lane detection system}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{technical\sep design}
+\end{filecontents*}
 
 \input{preamble.tex}
 \usepackage{titlepage}

@@ -1,6 +1,14 @@
-% !TEX program = xelatex
+% !TEX program = lualatex
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}{./docs/plan-of-action/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Plan of Action}
+	\Subject{Project description and agreements}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{project\sep plan \sep action}
+\end{filecontents*}
 
 \input{preamble.tex}
 \usepackage{titlepage}

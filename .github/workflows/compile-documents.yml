@@ -43,7 +43,7 @@ jobs:
             docs/functional-design/fd.tex
             docs/technical-design/td.tex
           work_in_root_file_dir: false
-          latexmk_use_xelatex: true
+          latexmk_use_lualatex: true
           working_directory: "."
         env:
           TEXINPUTS: "../../dotfiles/latex/texmf/tex/latex/local//:../../docs//:"

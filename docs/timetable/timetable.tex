@@ -1,6 +1,14 @@
-% !TEX program = xelatex
+% !TEX program = lualatex
 \documentclass{matthijs}
 \graphicspath{{../assets/}{./docs/assets/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Timetable}
+	\Subject{Hour log}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{timetable\sep time\sep table\sep hour}
+\end{filecontents*}
 
 \input{preamble.tex}
 \usepackage{titlepage}
