@@ -4,13 +4,13 @@
 		\umlobject[no ddots]{SDRAM}
 		\umlobject[no ddots]{VDMA}
 		\umlobject[no ddots]{Local RAM}
-		\umlobject[no ddots]{VPU}
+		\umlactor[no ddots, y=-1]{VPU}
 
 		\begin{umlcall}[op=Allocate Buffers, type=synchron, return=Address Pointers]{Host Program}{SDRAM}
 
 		\end{umlcall}
 
-		\begin{umlcall}[op=Configure Settings, type=synchron]{Host Program}{VPU}
+		\begin{umlcall}[op=Configure Settings, type=asynchron]{Host Program}{VPU}
 
 		\end{umlcall}
 		

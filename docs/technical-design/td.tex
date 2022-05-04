@@ -191,15 +191,8 @@
 
 			The important concept to understand is that the images which need to be processed are fetched by the Processing System from the capture source.
 			I have done this because the connection of a camera is outside the scope of my project and it will be easier to connect the camera to the embedded Linux system because it already has drivers for it.
-			The Xilinx Runtime (XRT) framework allocates a space in the DDR3 SDRAM using its proprietary magic and gives us a pointer to this space.
-			We then copy the image data into that space so that it can be accessed by the Programmable Logic.
-			Subsequently, we send the address pointer to the VDMA IP Core in the Programmable Logic over the general-purpose AXI-Lite bus so that it knows where the image is located.
-			This VDMA component is connected to our VPU IP Core using an AXI Stream, and the VDMA will provide the image data over this stream as soon as it is available.
-			Then, we send a command to the VPU IP Core over it's AXI-Lite interface that it can start processing the data.
-			Once the VPU IP Core is done with processing the data, it pulls the TLAST wire on the output AXIS interface high.
-			This rising edge signals the VDMA that the data transfer is complete and that the receive channel should close.
-			The output image data now resides at the output buffer location in the SDRAM and can be retrieved by the Processing System.
-			A more detailed illustration of this process can be seen in \verwijzingn{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
+			The results will be delivered back to the PS because it is easier to do business logic like decision making in software.
+			This approach also has the benefit of flexibility: software can be modified more quickly than hardware.
 
 			\vspace{-0.6ex}
 			\begin{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
@@ -211,6 +204,17 @@
 				\vspace{-2ex}
 			\end{figuur}
 			\vspace{-0.2ex}
+
+			The Xilinx Runtime (XRT) framework allocates a space in the DDR3 SDRAM using its proprietary magic and gives us a pointer to this space.
+			We then copy the image data into that space so that it can be accessed by the Programmable Logic.
+			Subsequently, we send the address pointer to the VDMA IP Core in the Programmable Logic over the general-purpose AXI-Lite bus so that it knows where the image is located.
+			This VDMA component is connected to our VPU IP Core using an AXI Stream, and the VDMA will provide the image data over this stream as soon as it is available.
+			Then, we send a command to the VPU IP Core over it's AXI-Lite interface that it can start processing the data.
+			Once the VPU IP Core is done with processing the data, it pulls the TLAST wire on the output AXIS interface high.
+			This rising edge signals the VDMA that the data transfer is complete and that the receive channel should close.
+			The output image data now resides at the output buffer location in the SDRAM and can be retrieved by the Processing System.
+			A more detailed illustration of this process can be seen in \verwijzingn{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
+
 
 		\end{paragraaf}
 
