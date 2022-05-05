@@ -181,39 +181,11 @@
 			\end{figuur}
 			\vspace{-0.2ex}
 
-			What makes the Zynq SoC appealing is that is has a hard memory controller that is directly connected to the SDRAM.
-			Therefore, the developer does not need to implement the DDR3 memory interface themselves.
-			I used this benefit to my advantage; my strategy is to place the images into memory using the CPU and then access them using VDMA in the digital logic.
-			This leaves the BRAM/DRAM available for the image processing logic.
-			The VDMA IP Cores with the driving logic for the memory interface are supplied by Xilinx, requiring little work on my part to fetch the images in PL.
-			
-			\bigskip
-
 			The important concept to understand is that the images which need to be processed are fetched by the Processing System from the capture source.
 			I have done this because the connection of a camera is outside the scope of my project and it will be easier to connect the camera to the embedded Linux system because it already has drivers for it.
+			Hardware is good at one job, and one job only: the repetetive task it is designed to do, like video processing.
 			The results will be delivered back to the PS because it is easier to do business logic like decision making in software.
 			This approach also has the benefit of flexibility: software can be modified more quickly than hardware.
-
-			\vspace{-0.6ex}
-			\begin{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
-				\singlespacing
-				\begin{adjustbox}{width=\textwidth,center}
-					\includegraphics{coproseq}
-				\end{adjustbox}
-				\onehalfspacing
-				\vspace{-2ex}
-			\end{figuur}
-			\vspace{-0.2ex}
-
-			The Xilinx Runtime (XRT) framework allocates a space in the DDR3 SDRAM using its proprietary magic and gives us a pointer to this space.
-			We then copy the image data into that space so that it can be accessed by the Programmable Logic.
-			Subsequently, we send the address pointer to the VDMA IP Core in the Programmable Logic over the general-purpose AXI-Lite bus so that it knows where the image is located.
-			This VDMA component is connected to our VPU IP Core using an AXI Stream, and the VDMA will provide the image data over this stream as soon as it is available.
-			Then, we send a command to the VPU IP Core over it's AXI-Lite interface that it can start processing the data.
-			Once the VPU IP Core is done with processing the data, it pulls the TLAST wire on the output AXIS interface high.
-			This rising edge signals the VDMA that the data transfer is complete and that the receive channel should close.
-			The output image data now resides at the output buffer location in the SDRAM and can be retrieved by the Processing System.
-			A more detailed illustration of this process can be seen in \verwijzingn{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
 
 
 		\end{paragraaf}
@@ -389,6 +361,12 @@
 			However, if using the PYNQ Processing System, this memory will be shared with the processor component, leaving a smaller usable space.
 			My final decision is to use the DDR3 SDRAM because it is plentyful on the Z2 board: all \qty{512}{\mega\byte} is available to the developer.
 
+			What makes the Zynq SoC appealing is that is has a hard memory controller that is directly connected to the SDRAM.
+			Therefore, the developer does not need to implement the DDR3 memory interface themselves.
+			I used this benefit to my advantage; my strategy is to place the images into memory using the CPU and then access them using VDMA in the digital logic.
+			This leaves the BRAM/DRAM available for the image processing logic.
+			The VDMA IP Cores with the driving logic for the memory interface are supplied by Xilinx, requiring little work on my part to fetch the images in PL.
+
 			\vspace{-0.6ex}
 			\begin{figuur}{Classic hardware co-processing compared to FPGA co-processing}
 				\singlespacing
@@ -411,9 +389,50 @@
 			For many image operations (especially those that use convolution, like a simple median filter or the Sobel filter) only a small region of the image is needed for computation at a time.
 			Let's think of a simple 3x3 median filter: for each pixel it needs the eight neighbouring pixels to determine the resulting color value.
 			To process a row of an image, we would only need to load the pixels of the rows above and below the target row.
-			Such a row of pixels is frequently called a "line buffer" or a "sliding window."
-			By using this technique of only loading the pixels that we need to do a regional computation, we do not have to load the entire image into memory and thus we can make way with a smaller amount of memory.
-			Unfortunately this cannot be applied to computations such as the Hough Transform because this operation needs to have computed all the votes in the accumulator of an image before it can proceed.
+			Such a row of pixels is frequently called a "line buffer."
+			By using this technique of only loading the pixels that we need to do a regional computation, we do not have to load the entire image into memory and thus we can make way with a smaller amount of memory \cite{hoorick2019convolution}.
+			The region that the median kernel operates upon is called a "window."
+			In \verwijzingb{figuur}{Line buffering and sliding windows} we can see how the line buffers are used for the image operation.
+			
+			\begin{figuur}{Line buffering and sliding windows}
+				\includegraphics[width=0.8\textwidth]{hoorick2019-convolutions.png}
+				\cite{hoorick2019convolution}
+			\end{figuur}
+
+			Another advantage of using these line buffers is that we can run the next operation upon the image once the previous operation is done with the lines.
+			This is called pipelining, and it enables us to do multiple operations on an image at once with just a small interval between the operations.
+			I have used pipelining in the VPU core wherever possible, because it is my goal to reduce image processing latency as much as possible.
+			It is my goal to prove that FPGAs are viable for this purpose, so I want to illustrate it with good benchmarks.
+			I managed to pipeline all the AXI stream operations, the image color operations, the Gaussian and Sobel filters and the thresholding.
+			Unfortunately, I could not apply pipelining to the Hough Transform because this operation needs to have computed all the votes in the accumulator of an image before it can proceed.
+			This results in the Hough transform taking up a lot of memory.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Communication Workflow between PS and PL}
+			
+			The transaction between software and hardware starts by allocating memory in the host's SDRAM by using the Xilinx Runtime (XRT) framework.
+			This space will be accessible by the Programmable Logic via the VDMA.
+			First, we copy the image into this memory space in the driver software.
+			Subsequently, we send the address pointer to the VDMA IP Core in the Programmable Logic over the general-purpose AXI-Lite bus so that it knows where the image is located.
+			This VDMA component is connected to our VPU IP Core using an AXI Stream, and the VDMA will provide the image data over this stream as soon as it is available.
+			Then, we send a command to the VPU IP Core over it's AXI-Lite interface that it can start processing the data.
+
+			\vspace{-0.6ex}
+			\begin{figuur}{Communication between Host and Accelerator in Co-processing Methodology}
+				\singlespacing
+				\begin{adjustbox}{width=\textwidth,center}
+					\includegraphics{coproseq}
+				\end{adjustbox}
+				\onehalfspacing
+				\vspace{-2ex}
+			\end{figuur}
+			\vspace{-0.2ex}
+
+			Once the VPU IP Core is done with processing the data, it pulls the TLAST wire on the output AXIS interface high.
+			This rising edge signals the VDMA that the data transfer is complete and that the receive channel should close.
+			The output image data now resides at the output buffer location in the SDRAM and can be retrieved by the driver software running on the Processing System.
+			A more detailed illustration of this process can be seen in \verwijzingb{figuur}{Communication between Host and Accelerator in Co-processing Methodology}.
 
 		\end{paragraaf}
 
