@@ -287,13 +287,13 @@
 			\cmidrule{1-2} \cmidrule{3-4} \cmidrule{5-6}
 			Type	& Available & \multicolumn{1}{c}{VPU} & \multicolumn{1}{c}{Total}		    & VPU & Total \tabularnewline
 			\midrule
-			LUT		& 53200		& 33716 & 36746	& 63.38 & 69.07	\tabularnewline
-			FF		& 106400	& 30258 & 34453	& 28.44 & 32.38	\tabularnewline
-			DSP		& 220		& 55 & 55	& 25.00 & 25.00	\tabularnewline
-			Shift reg	& 35800		& 276 & 496	& 0.77 & 1.39	\tabularnewline
-			DRAM		& 17400		& 48 & 68	& 0.28 & 0.39	\tabularnewline
-			BRAM		& 140		& 99 & 104	& 70.72 & 74.29	\tabularnewline
-			BUFG		& 32		& 0 & 1		& 0.00 & 3.13	\tabularnewline
+			LUT (generic)		& 53200		& 33716 & 36746	& 63.38 & 69.07	\tabularnewline
+			LUT (as shift reg)	& 35800		& 276 & 496	& 0.77 & 1.39	\tabularnewline
+			LUT (as DRAM)		& 17400		& 48 & 68	& 0.28 & 0.39	\tabularnewline
+			FF			& 106400	& 30258 & 34453	& 28.44 & 32.38	\tabularnewline
+			DSP			& 220		& 55 & 55	& 25.00 & 25.00	\tabularnewline
+			BRAM			& 140		& 99 & 104	& 70.72 & 74.29	\tabularnewline
+			BUFG			& 32		& 0 & 1		& 0.00 & 3.13	\tabularnewline
 
 		\end{tabel}
 
@@ -551,6 +551,58 @@
 	\begin{hoofdstuk}{Software Layer}
 
 		\textbf{[todo:]}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Benchmarks}
+
+		The reason of doing the heavy processing in hardware is to gain a speed advantage over software implementations.
+		I have set up benchmarks in which I have compared the performance of the test program that I created as part of the research phase to OpenCV and finally to the FPGA implementation.
+		Besides processing speed, I will also compare the power draw and efficiency of the different solutions.
+
+		\begin{paragraaf}{Power Efficiency}
+
+			Using hardware cosimulation in Vitis, it is possible to estimate the power draw of the FPGA chip.
+			However, these metrics only take into account the FPGA fabric and not the ARM Cortex processor that is also embedded in the Zynq package.
+			In Vivado, the power estimation report tool \textit{does} try to take into account the power draw of the processing system.
+			This is marked in~\verwijzingb{figuur}{Total SoC Power Estimation}~with the PS7 label.
+			However, since it does not know the code that will run on the processor and thus cannot estimate the processor load, it presumes a constant load of 50 percent.
+			This is confirmed to be the case in~\verwijzingb{figuur}{CPU Power Estimation}.
+			I think it gives more insight to compare only the metrics of the actual video processing logic between solutions because the driver code is unpredictable.
+			Therefore, I will only compare the power consumption of the accelerator chips (GPU, FPGA) with each other.
+
+			\vspace{1.5ex}
+			\begin{figuur}{Total SoC Power Estimation}
+				\includegraphics[width=0.85\textwidth]{vivado-power.png}
+			\end{figuur}
+			\begin{figuur}{CPU Power Estimation}
+				\includegraphics[width=\textwidth]{vivado-power-ps.png}
+			\end{figuur}
+
+			To benchmark the OpenCV reference code from my HLS testbenches, I used the AMD ROCm SMI library.
+			This library could read the power draw as reported by my iGPU.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Execution Speed}
+
+			It is possible to calculate the precise execution speed of the video processing logic by looking at the number of clock cycles needed for the pipelines to finish.
+			The time in seconds can be calculated by dividing the number of clock cycles with the system clock speed of \qty{100}{\mega\hertz}.
+			However, we have to take into account that, due to pipelining, the top left pixel of an image is transmitted (but also received) earlier than the bottom right pixel.
+			The \textit{minimum latency} is the time between the transmission and return of the first pixel.
+			The \textit{maximum latency} is the time spent between the transmission of the first pixel and the receiving of the last pixel.
+			Thus, the maximum latency is a good metric to use for measuring the processing time of a single frame.
+
+			\bigskip
+
+			To measure the reference OpenCV execution speed, I used their \textit{getTickCount()} and \textit{getTickFrequency()} functions because these are part of the OpenCV core.
+			I figured it would be better to use standardized methods than to roll my own.
+
+			\bigskip
+
+			\textbf{[todo: table with benchmarks WITH +/- uS !!!]}
+
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
