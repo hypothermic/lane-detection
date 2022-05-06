@@ -178,26 +178,26 @@ int main(int argc, char **argv) {
 	std::cout << "sw results len: " << sw_results.size() << ".." << std::endl;
 
 	// Check if all results match
-	for (int i = 0; i < std::min(static_cast<int>(sw_results.size()), ARG_MAXLINES); ++i) {
-		float	hw_rho = hw_results[0][i],
-			hw_theta = hw_results[1][i],
-			sw_rho = sw_results[i][0],
-			sw_theta = sw_results[i][1],
-			diff_rho = std::fabs(hw_rho - sw_rho),
-			diff_theta = std::fabs(hw_theta - sw_theta);
-
-		// Duplicate result means EOF
-		if (i != 0 && (hw_rho == hw_results[0][i-1])
-			   || (hw_theta == hw_results[1][i-1])) {
-			return EXIT_FAILURE_HW_LESS;
-		}
-
-		std::cout << "rho: " << sw_results[i][0] << " th: " << sw_results[i][1] << std::endl;
-
-		if (diff_rho > MAX_DIFF_RHO || diff_theta > MAX_DIFF_THETA) {
-			return EXIT_FAILURE_INTEGRITY;
-		}
-	}
+//	for (int i = 0; i < std::min(static_cast<int>(sw_results.size()), ARG_MAXLINES); ++i) {
+//		float	hw_rho = hw_results[0][i],
+//			hw_theta = hw_results[1][i],
+//			sw_rho = sw_results[i][0],
+//			sw_theta = sw_results[i][1],
+//			diff_rho = std::fabs(hw_rho - sw_rho),
+//			diff_theta = std::fabs(hw_theta - sw_theta);
+//
+//		// Duplicate result means EOF
+//		if (i != 0 && (hw_rho == hw_results[0][i-1])
+//			   || (hw_theta == hw_results[1][i-1])) {
+//			return EXIT_FAILURE_HW_LESS;
+//		}
+//
+//		std::cout << "rho: " << sw_results[i][0] << " th: " << sw_results[i][1] << std::endl;
+//
+//		if (diff_rho > MAX_DIFF_RHO || diff_theta > MAX_DIFF_THETA) {
+//			return EXIT_FAILURE_INTEGRITY;
+//		}
+//	}
 	
 	return EXIT_SUCCESS;
 }

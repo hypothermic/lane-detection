@@ -592,6 +592,19 @@
 			The \textit{minimum latency} is the time between the transmission and return of the first pixel.
 			The \textit{maximum latency} is the time spent between the transmission of the first pixel and the receiving of the last pixel.
 			Thus, the maximum latency is a good metric to use for measuring the processing time of a single frame.
+			For the whole video processing pipeline, including writing/reading image data to/from the local memory, the required cycles per operation is 1119344, which translates to \qty{11.19}{\milli\second}.
+
+			\begin{figuur}{Vitis Timing Report for the VPU Logic}
+				\includegraphics[width=0.75\textwidth]{vitis-timing-bad-quality.png}
+			\end{figuur}
+
+			However, we also have to take into account the run time of the driver logic.
+			I wrote the simple driver code using the PYNQ framework as it came preinstalled on the development board.
+			The PYNQ framework is meant for rapid prototyping and is not meant for high performance situations.
+			Instead of writing a barebones low-level application to run directly on the ARM Cortex core, PYNQ offers a Linux-based OS with a Python interpreter that can access the XRT and can interface with the FPGA hardware.
+			When measuring the run time of the Python driver code, it took \qty{26}{\milli\second} ± \qty{443}{\micro\second} (mean std. dev. over 700 iterations) for the complete handling and processing of an image.
+			As this is more than twice the total latency of the image processing alone, I suspect that the framework handles the memory operations inefficiently.
+			Nevertheless, the frames per second that the code is able to process is still higher than that of a studio movie, so I'm quite happy with the speed of execution.
 
 			\bigskip
 
