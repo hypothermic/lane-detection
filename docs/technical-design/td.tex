@@ -603,7 +603,7 @@
 			I wrote the simple driver code using the PYNQ framework as it came preinstalled on the development board.
 			The PYNQ framework is meant for rapid prototyping and is not meant for high performance situations.
 			Instead of writing a barebones low-level application to run directly on the ARM Cortex core, PYNQ offers a Linux-based OS with a Python interpreter that can access the XRT and can interface with the FPGA hardware.
-			When measuring the run time of the Python driver code, it took \qty{26}{\milli\second} ± \qty{443}{\micro\second} (mean std. dev. over 700 iterations) for the complete handling and processing of an image.
+			When measuring the run time of the Python driver code, it took \qty{26.6}{\milli\second} ± \qty{443}{\micro\second} (mean std. dev. over 500 iterations) for the complete handling and processing of an image.
 			As this is more than twice the total latency of the image processing alone, I suspect that the framework handles the memory operations inefficiently.
 			Nevertheless, the frames per second that the code is able to process is still higher than that of a studio movie, so I'm quite happy with the speed of execution.
 
@@ -630,44 +630,80 @@
 				\midrule
 
 				FPGA (raw)		& 11.2		& {-} 		\tabularnewline
-				FPGA (coprocessing)	& 26.6		& 0.443		\tabularnewline
+				FPGA (co-processing)	& 26.6		& 0.443		\tabularnewline
 				Reference OpenCV (CPU)	& 72.2		& 1.801		\tabularnewline
 				Reference OpenCV (GPU)	& 14.2		& 0.794		\tabularnewline
-				Reference Lane Program	& 382.7		& 24.16		\tabularnewline
+				Reference Lane Program	& 382.7		& 13.81		\tabularnewline
 
 			\end{tabel}
 
-			\begin{figuur}{Performance comparison per platform in a bar chart}
-				\begin{tikzpicture}
+			\begin{figuur}{Bar chart performance comparison per platform}
+				\centerline{
+					\begin{tikzpicture}[trim axis left, trim axis right]
 					\begin{axis}[
 						width=\textwidth,
-						height=48ex,
+						height=49.5ex,
 						ybar,
 						ymin=0,
 						bar width=2.5ex,
-						ylabel={milliseconds per execution},
+						ylabel={
+							milliseconds per execution \\
+							\textit{(less is better)}
+						},
+						ylabel style={
+							align=center,
+							yshift=1ex
+						},
 						/tikz/every pin/.style={align=center},
 						symbolic x coords={
-							FPGA (raw),
-							FPGA (coprocessing),
-							OpenCV (GPU),
+							Lane Program,
 							OpenCV (CPU),
+							OpenCV (GPU),
+							FPGA (coprocessing),
+							FPGA (raw)
+						},
+						xtick=data,
+						ytick=      {0, 10, 20, 30, 40, 50, 75, 125, 150},
+						yticklabels={0, 10, 20, 30, 40, 50, 75, 350, 375, 400},
+						x tick label style={align=center, font=\small},
+						xticklabels={
+							FPGA\\(raw),
+							FPGA\\(co-processing),
+							OpenCV\\(GPU),
+							OpenCV\\(CPU),
 							Lane Program
 						},
-						xtick=data
+						grid style={dotted, gray},
+						ymajorgrids=true,
+						nodes near coords,
+						every node near coord/.append style={
+							font=\small,
+							align=left,
+							rotate=45,
+							anchor=south west,
+							xshift=1.25ex,
+							yshift=-1.5ex
+						}
 					]
 						\addplot+[
+							%restrict y to domain=0:100,
 							error bars/error bar style={red},
 							error bars/.cd, y dir=both, y explicit
 						] coordinates {
 							(FPGA (raw),		11.2) +- (0, 0)
 							(FPGA (coprocessing),	26.6) +- (0, 0.443)
-							(OpenCV (GPU),		72.2) +- (0, 1.801)
-							(OpenCV (CPU),		14.2) +- (0, 0.794)
-							(Lane Program,		382.7) +- (0, 24.16)
+							(OpenCV (GPU),		14.2) +- (0, 0.794)
+							(OpenCV (CPU),		72.2) +- (0, 1.801)
+							(Lane Program,		132.7) +- (0, 13.81)
 						};
+					\coordinate (V) at (axis cs:Lane Program,100);
+					\coordinate (H1) at (rel axis cs:0,0);
+					\coordinate (H2) at (rel axis cs:1,0);
+					\draw[black] decorate [decoration={zigzag}] {(V -| H1) -- (V -| H2)};
 					\end{axis}
 				\end{tikzpicture}
+				}
+				\vspace{-1ex}
 			\end{figuur}
 
 		\end{paragraaf}
