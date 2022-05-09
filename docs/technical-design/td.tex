@@ -23,6 +23,7 @@
 \usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
 \usepackage{adjustbox}
+\usepackage{pgfplots}
 
 % Not quite ConTeXt tables but good enough
 \usepackage{colortbl}
@@ -608,12 +609,66 @@
 
 			\bigskip
 
-			To measure the reference OpenCV execution speed, I used their \textit{getTickCount()} and \textit{getTickFrequency()} functions because these are part of the OpenCV core.
+			To measure the reference OpenCV execution speed, I used the \textit{TickMeter} class because it is part of the OpenCV core.
 			I figured it would be better to use standardized methods than to roll my own.
+			By using the TAPI introduced in OpenCV 3, I only had to make one change to my existing host code to run it on my iGPU: change the \textit{Mat} data type to \textit{UMat}.
+			This data type is a generic one that can hold the data in the VRAM behind abstraction.
+			I ran the reference programs on my laptop with a Ryzen 5 2500U with integrated graphics.
 
 			\bigskip
 
-			\textbf{[todo: table with benchmarks WITH +/- uS !!!]}
+			For running the OpenCV reference program, I isolated four CPU cores from the OS scheduler and dedicated them to the program.
+			I also measured the performance of the test implementation (aka "Lane Program", I didn't have much inspiration for its name) that I made during the research phase of the project.
+			This program is executed on the CPU and is only capable of using a single thread.
+			For running the Lane Program, I dedicated one of the isolated cores to it.
+			Except for the raw FPGA implementation, for which we can calculate the latency exactly, I ran all tests 500 times and calculated the average run time and standard deviation between run times.
+
+			\bigskip
+
+			\begin{tabel}{Performance comparison per platform}{l @{\extracolsep{\fill}} S[table-format=3.1]S[table-format=3.1]}
+				Platform & {Average (ms)} & {Standard Deviation (ms)} \tabularnewline
+				\midrule
+
+				FPGA (raw)		& 11.2		& {-} 		\tabularnewline
+				FPGA (coprocessing)	& 26.6		& 0.443		\tabularnewline
+				Reference OpenCV (CPU)	& 72.2		& 1.801		\tabularnewline
+				Reference OpenCV (GPU)	& 14.2		& 0.794		\tabularnewline
+				Reference Lane Program	& 382.7		& 24.16		\tabularnewline
+
+			\end{tabel}
+
+			\begin{figuur}{Performance comparison per platform in a bar chart}
+				\begin{tikzpicture}
+					\begin{axis}[
+						width=\textwidth,
+						height=48ex,
+						ybar,
+						ymin=0,
+						bar width=2.5ex,
+						ylabel={milliseconds per execution},
+						/tikz/every pin/.style={align=center},
+						symbolic x coords={
+							FPGA (raw),
+							FPGA (coprocessing),
+							OpenCV (GPU),
+							OpenCV (CPU),
+							Lane Program
+						},
+						xtick=data
+					]
+						\addplot+[
+							error bars/error bar style={red},
+							error bars/.cd, y dir=both, y explicit
+						] coordinates {
+							(FPGA (raw),		11.2) +- (0, 0)
+							(FPGA (coprocessing),	26.6) +- (0, 0.443)
+							(OpenCV (GPU),		72.2) +- (0, 1.801)
+							(OpenCV (CPU),		14.2) +- (0, 0.794)
+							(Lane Program,		382.7) +- (0, 24.16)
+						};
+					\end{axis}
+				\end{tikzpicture}
+			\end{figuur}
 
 		\end{paragraaf}
 
