@@ -27,7 +27,7 @@ else
 LANE_OPTS		?= -Wno-error=unknown-pragmas
 endif
 
-RC_DEPS			?= `pkg-config gtkmm-4.0 --cflags --libs`
+RC_DEPS			?= `pkg-config sigc++-3.0 gtkmm-4.0 --cflags --libs`
 RC_OUT			?= ./build/rc
 
 DOXYGEN_CONF		?= ./Doxyfile
