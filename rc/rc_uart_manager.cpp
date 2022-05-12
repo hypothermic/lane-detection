@@ -9,10 +9,11 @@
 #include <unistd.h>
 
 #include "rc_log.hpp"
+#include "rc_uart_packet.hpp"
 
 UartManager::UartManager()
 	: mutex(),
-	  data_available(false),
+	  data(),
 	  stop_requested(false),
 	  tty_error(false) {}
 
@@ -23,7 +24,6 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 
 	{
 		std::lock_guard<std::mutex> lock(this->mutex);
-		this->data_available = false;
 		this->stop_requested = false;
 		this->connection_state = ConnectionState::CONNECTED;
 		file = this->connection_target.tty_port.c_str();
@@ -67,8 +67,9 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 
 	// Loop until user disconnects or port disconnects
 	while (true) {
-		char buffer[64] = {0};
-		int num_read = 0;
+		char buffer[1024] = {0};
+		int num_read = 0,
+		    current = 0;
 
 		num_read = read(fd, &buffer, sizeof(buffer));
 
@@ -84,8 +85,13 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 			break;
 		}
 
-		if (num_read > 0) {
-			std::cerr << buffer << std::endl;
+		while (current < num_read) {
+			std::lock_guard<std::mutex> lock(this->mutex);
+			UartPacket *packet = 0;
+
+			current = UartPacket::read(buffer, current, &packet);
+
+			data.push(packet);
 		}
 
 		{
@@ -95,6 +101,10 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 				rc_log_info("Stop requested, exiting read loop");
 				break;
 			}
+		}
+
+		if (!this->data.empty()) {
+			parent_application->on_thread_sync();
 		}
 	}
 
@@ -123,5 +133,17 @@ ConnectionState UartManager::get_connection_state() {
 	std::lock_guard<std::mutex> lock(this->mutex);
 
 	return this->connection_state;
+}
+
+std::vector<UartPacket *> UartManager::get_new_packets() {
+	std::lock_guard<std::mutex> lock(this->mutex);
+	std::vector<UartPacket *> result;
+
+	while (!this->data.empty()) {
+		result.push_back(this->data.front());
+		this->data.pop();
+	}
+
+	return result;
 }
 

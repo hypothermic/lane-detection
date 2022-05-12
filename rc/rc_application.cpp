@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "rc_uart_packet.hpp"
+
 RemoteControlApplication::RemoteControlApplication()
 	: Gtk::Application("com.arobs.lane.RemoteControl"),
 	  synchronizer(),
@@ -45,6 +47,13 @@ void RemoteControlApplication::on_disconnect() {
 void RemoteControlApplication::on_thread_data_renew() {
 	std::cerr << "state update " << std::endl;
 	this->info_window->on_connection_state_update(this->uart_manager->get_connection_state());
+	std::vector<UartPacket *> packets = this->uart_manager->get_new_packets();
+
+	for (UartPacket *packet : packets) {
+		this->info_window->on_data_update(packet);
+
+		delete packet;
+	}
 }
 
 void RemoteControlApplication::on_thread_sync() {

@@ -8,8 +8,9 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 
-#include "rc_uart_manager.hpp"
 #include "rc_connection.hpp"
+#include "rc_uart_manager.hpp"
+#include "rc_uart_packet.hpp"
 
 class UartManager;
 enum class ConnectionState;
@@ -29,6 +30,11 @@ class InformationWindow : public Gtk::ApplicationWindow {
 		Gtk::Entry port_entry;
 		Gtk::Button connect_button;
 
+		// Status info and algorithm parameter info
+		Gtk::Frame status_frame;
+		Gtk::Box status_container;
+		Gtk::Label seg_thres_label;
+
 	public:
 		sigc::signal<void(Glib::ustring)> connect_request_signal;
 		sigc::signal<void()> disconnect_request_signal;
@@ -37,6 +43,7 @@ class InformationWindow : public Gtk::ApplicationWindow {
 
 		// Application callbacks
 		void on_connection_state_update(ConnectionState state);
+		void on_data_update(UartPacket *packet);
 
 		// UI callbacks
 		void on_connect_request();
