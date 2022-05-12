@@ -3,11 +3,11 @@
 \graphicspath{{../assets/}{./docs/assets/}{./docs/technical-design/}}
 
 \begin{filecontents*}[overwrite]{\jobname.xmpdata}
-	\Title{Technical Design}
-	\Subject{Implementation description of the lane detection system}
-	\Author{Matthijs Bakker}
-	\Language{en-US}
-	\Keywords{technical\sep design}
+\Title{Technical Design}
+\Subject{Implementation description of the lane detection system}
+\Author{Matthijs Bakker}
+\Language{en-US}
+\Keywords{technical\sep design}
 \end{filecontents*}
 
 \input{preamble.tex}
@@ -283,6 +283,7 @@
 		This confirms that the place and route phases have been correctly executed and the latency is kept to a minimum.
 		It also signals me that I do not need to invest extra time in manually setting timing constraints.
 
+		\vspace{1ex}
 		\begin{tabel}{Post-Implementation Utilization Report}{l @{\extracolsep{\fill}} r rr S[table-format=3.1]S[table-format=3.1]}
 			\multicolumn{2}{c}{Resource} & \multicolumn{2}{c}{Utilization} & \multicolumn{2}{c}{Utilization \%} \tabularnewline
 			\cmidrule{1-2} \cmidrule{3-4} \cmidrule{5-6}
@@ -317,8 +318,6 @@
 			\end{tabular}
 
 		\end{figuur}
-		
-		\textbf{[todo:]}
 
 	\end{hoofdstuk}
 
@@ -580,8 +579,10 @@
 				\includegraphics[width=\textwidth]{vivado-power-ps.png}
 			\end{figuur}
 
-			To benchmark the OpenCV reference code from my HLS testbenches, I used the AMD ROCm SMI library.
+			To benchmark the power consumption OpenCV reference code from my HLS testbenches, I used the AMD ROCm SMI tools.
 			This library could read the power draw as reported by my iGPU.
+			Note that my iGPU was not dedicated to the CV code alone; it was also used by other programs like my desktop environment.
+			For this reason, the power draw is an estimation and should not be interpreted as being accurate.
 
 		\end{paragraaf}
 

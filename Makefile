@@ -27,6 +27,9 @@ else
 LANE_OPTS		?= -Wno-error=unknown-pragmas
 endif
 
+RC_DEPS			?= `pkg-config gtkmm-4.0 --cflags --libs`
+RC_OUT			?= ./build/rc
+
 DOXYGEN_CONF		?= ./Doxyfile
 VALGRIND_OPTS		?= --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1
 
@@ -58,6 +61,7 @@ endif
 
 LATEXMK_EXEC		?= /usr/bin/latexmk
 GCC_EXEC		?= /usr/bin/gcc
+GXX_EXEC		?= /usr/bin/g++
 VALGRIND_EXEC		?= /usr/bin/valgrind
 GHDL_EXEC		?= /usr/bin/ghdl
 DOXYGEN_EXEC		?= /usr/bin/doxygen
@@ -112,6 +116,9 @@ compile-docs: make-out-dir compile-docs-project compile-docs-timetable compile-d
 
 compile-lane: make-out-dir
 	$(GCC_EXEC) $(LANE_OPTS) src/lane_*.c -o $(LANE_OUT) $(LANE_DEPS)
+
+compile-rc: make-out-dir
+	$(GXX_EXEC) $(RC_OPTS) rc/rc_*.cpp -o $(RC_OUT) $(RC_DEPS)
 
 test-rtl: make-out-dir
 	# GHDL uses current directory as output, so cd into build dir first
@@ -172,6 +179,9 @@ clean: clean-docs clean-lane clean-rtl clean-hls clean-hw
 
 run-lane:
 	$(LANE_OUT) data/0a0a0b1a-7c39d841.ppm data/0a0a0b1a-7c39d841.out.ppm
+
+run-rc:
+	$(RC_OUT)
 
 run: run-lane
 
