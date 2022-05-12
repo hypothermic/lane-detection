@@ -14,12 +14,15 @@ class UartManager {
 		ConnectionTarget connection_target;
 		bool data_available;
 		bool stop_requested;
+		bool tty_error;
+
 	public:
 		UartManager();
 
 		void main_loop(RemoteControlApplication *parent_application);
 		void request_stop();
 
+		void set_connection_target(Glib::ustring target);
 		ConnectionState get_connection_state();
 };
 

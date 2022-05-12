@@ -28,6 +28,7 @@ LANE_OPTS		?= -Wno-error=unknown-pragmas
 endif
 
 RC_DEPS			?= `pkg-config sigc++-3.0 gtkmm-4.0 --cflags --libs`
+RC_OPTS			?= -std=c++20 -Wall
 RC_OUT			?= ./build/rc
 
 DOXYGEN_CONF		?= ./Doxyfile

@@ -30,6 +30,8 @@ void RemoteControlApplication::on_destroy() {
 void RemoteControlApplication::on_connect(Glib::ustring tty_name) {
 	std::cerr << "connecting: " << tty_name << std::endl;
 
+	uart_manager->set_connection_target(tty_name);
+
 	this->tty_thread = new std::thread([this] {
 		uart_manager->main_loop(this);
 	});
