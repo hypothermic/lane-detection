@@ -33,7 +33,11 @@ class InformationWindow : public Gtk::ApplicationWindow {
 		// Status info and algorithm parameter info
 		Gtk::Frame status_frame;
 		Gtk::Box status_container;
-		Gtk::Label seg_thres_label;
+		Gtk::Label is_processing_label,
+			   seg_thres_label,
+			   g_sigma_label,
+			   e_thres_label,
+			   h_thres_label;
 
 	public:
 		sigc::signal<void(Glib::ustring)> connect_request_signal;

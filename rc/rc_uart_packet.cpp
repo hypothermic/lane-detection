@@ -33,6 +33,10 @@ size_t UartPacket::read(char *buffer, size_t offset) {
 	return offset + 1;
 }
 
+uint8_t UartPacket::get_type() {
+	return this->type;
+}
+
 size_t UartPacket::get_length() {
 	return 1;
 }
@@ -57,7 +61,23 @@ size_t StatusUpdatePacket::get_length() {
 	return 5 + UartPacket::get_length();
 }
 
+bool StatusUpdatePacket::get_is_processing() {
+	return this->is_processing;
+}
+
 uint8_t StatusUpdatePacket::get_seg_thres() {
 	return this->seg_thres;
+}
+
+uint8_t StatusUpdatePacket::get_g_sigma() {
+	return this->g_sigma;
+}
+
+uint8_t StatusUpdatePacket::get_e_thres() {
+	return this->e_thres;
+}
+
+uint8_t StatusUpdatePacket::get_h_thres() {
+	return this->h_thres;
 }
 

@@ -20,6 +20,7 @@ class UartPacket {
 		static size_t read(char *buffer, size_t offset, UartPacket **packet);
 
 		virtual size_t read(char *buffer, size_t offset);
+		virtual uint8_t get_type();
 		virtual size_t get_length();
 };
 
@@ -38,6 +39,10 @@ class StatusUpdatePacket : public UartPacket {
 		size_t read(char *buffer, size_t offset) override;
 		size_t get_length() override;
 
+		bool get_is_processing();
 		uint8_t get_seg_thres();
+		uint8_t get_g_sigma();
+		uint8_t get_e_thres();
+		uint8_t get_h_thres();
 };
 

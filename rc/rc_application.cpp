@@ -44,6 +44,10 @@ void RemoteControlApplication::on_disconnect() {
 	this->uart_manager->request_stop();
 }
 
+void RemoteControlApplication::on_thread_sync() {
+	this->synchronizer.emit();
+}
+
 void RemoteControlApplication::on_thread_data_renew() {
 	std::cerr << "state update " << std::endl;
 	this->info_window->on_connection_state_update(this->uart_manager->get_connection_state());
@@ -54,9 +58,5 @@ void RemoteControlApplication::on_thread_data_renew() {
 
 		delete packet;
 	}
-}
-
-void RemoteControlApplication::on_thread_sync() {
-	this->synchronizer.emit();
 }
 

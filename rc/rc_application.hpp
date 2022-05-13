@@ -34,7 +34,7 @@ class RemoteControlApplication : public Gtk::Application {
 		void on_disconnect();
 
 		// UART thread callbacks
-		void on_thread_data_renew();
 		void on_thread_sync();
+		void on_thread_data_renew();
 };
 
