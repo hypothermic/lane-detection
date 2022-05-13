@@ -2,11 +2,12 @@
 
 // Needed for serial port communication
 #include <cstdio>
-#include <iostream>
 #include <errno.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+
+#include <iostream>
 
 #include "rc_log.hpp"
 #include "rc_uart_packet.hpp"
@@ -29,7 +30,6 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 		file = this->connection_target.tty_port.c_str();
 	}
 
-	rc_log_info("Connection thread start");
 	parent_application->on_thread_sync();
 
 	// Try opening the port, get a file descriptor
@@ -42,7 +42,7 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 			this->tty_error = true;
 			this->connection_state = ConnectionState::DISCONNECTED;
 		}
-		std::cerr << "ERR " << file << " - " << errno << strerror(errno) << std::endl;
+
 		rc_log_error("Unable to open the serial port");
 		parent_application->on_thread_sync();
 		return;
@@ -87,18 +87,19 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 
 		while (current < num_read) {
 			std::lock_guard<std::mutex> lock(this->mutex);
-			UartPacket *packet = 0;
+			UartPacket *packet = nullptr;
 
 			current = UartPacket::read(buffer, current, &packet);
 
-			data.push(packet);
+			if (packet) {
+				data.push(packet);
+			}
 		}
 
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 
 			if (this->stop_requested) {
-				rc_log_info("Stop requested, exiting read loop");
 				break;
 			}
 		}
@@ -115,7 +116,6 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 		this->connection_state = ConnectionState::DISCONNECTED;
 	}
 
-	rc_log_info("Connection thread stopping");
 	parent_application->on_thread_sync();
 }
 

@@ -30,8 +30,6 @@ void RemoteControlApplication::on_destroy() {
 }
 
 void RemoteControlApplication::on_connect(Glib::ustring tty_name) {
-	std::cerr << "connecting: " << tty_name << std::endl;
-
 	uart_manager->set_connection_target(tty_name);
 
 	this->tty_thread = new std::thread([this] {
@@ -40,7 +38,6 @@ void RemoteControlApplication::on_connect(Glib::ustring tty_name) {
 }
 
 void RemoteControlApplication::on_disconnect() {
-	std::cerr << "TODO disconnect " << std::endl;
 	this->uart_manager->request_stop();
 }
 
@@ -49,9 +46,9 @@ void RemoteControlApplication::on_thread_sync() {
 }
 
 void RemoteControlApplication::on_thread_data_renew() {
-	std::cerr << "state update " << std::endl;
-	this->info_window->on_connection_state_update(this->uart_manager->get_connection_state());
 	std::vector<UartPacket *> packets = this->uart_manager->get_new_packets();
+	
+	this->info_window->on_connection_state_update(this->uart_manager->get_connection_state());
 
 	for (UartPacket *packet : packets) {
 		this->info_window->on_data_update(packet);

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 
 class UartPacket {
 	public:
@@ -24,13 +25,12 @@ class UartPacket {
 		virtual size_t get_length();
 };
 
-
 class StatusUpdatePacket : public UartPacket {
 	private:
 		bool is_processing;
-		uint8_t seg_thres,
-			g_sigma,
-			e_thres,
+		uint8_t seg_thres;
+		float	g_sigma;
+		uint8_t	e_thres,
 			h_thres;
 	public:
 		StatusUpdatePacket();
@@ -41,8 +41,24 @@ class StatusUpdatePacket : public UartPacket {
 
 		bool get_is_processing();
 		uint8_t get_seg_thres();
-		uint8_t get_g_sigma();
+		float get_g_sigma();
 		uint8_t get_e_thres();
 		uint8_t get_h_thres();
+};
+
+class FrameProcessedPacket : public UartPacket {
+	public:
+		using line_vector = std::vector<std::pair<float, float>>;
+	private:
+		line_vector lines;
+
+	public:
+		FrameProcessedPacket();
+		~FrameProcessedPacket();
+
+		size_t read(char *buffer, size_t offset) override;
+		size_t get_length() override;
+
+		line_vector get_lines();
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gtkmm/applicationwindow.h>
+#include <gtkmm/aspectframe.h>
 #include <gtkmm/box.h>
 #include <gtkmm/boxlayout.h>
 #include <gtkmm/button.h>
@@ -9,6 +10,7 @@
 #include <gtkmm/label.h>
 
 #include "rc_connection.hpp"
+#include "rc_preview_area.hpp"
 #include "rc_uart_manager.hpp"
 #include "rc_uart_packet.hpp"
 
@@ -16,11 +18,15 @@ class UartManager;
 enum class ConnectionState;
 
 class InformationWindow : public Gtk::ApplicationWindow {
+
+	// How much pixels around the containers should be free
 	const int CONTAINER_MARGIN = 4;
 
 	private:
+		// The UART connection manager
 		UartManager *uart_manager;
 
+		// The container that holds all of the frames
 		Gtk::Box main_container;
 
 		// The frame with connection info and
@@ -38,6 +44,11 @@ class InformationWindow : public Gtk::ApplicationWindow {
 			   g_sigma_label,
 			   e_thres_label,
 			   h_thres_label;
+
+		// Preview lines etc
+		Gtk::Frame preview_frame;
+		Gtk::AspectFrame preview_aspect;
+		PreviewArea preview_area;
 
 	public:
 		sigc::signal<void(Glib::ustring)> connect_request_signal;
