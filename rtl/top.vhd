@@ -34,7 +34,10 @@ entity top is
 		FIXED_IO_mio : inout std_logic_vector(54-1 downto 0);
 		FIXED_IO_ps_clk : inout std_logic;
 		FIXED_IO_ps_porb : inout std_logic;
-		FIXED_IO_ps_srstb : inout std_logic
+		FIXED_IO_ps_srstb : inout std_logic;
+		gpio_rtl_0_tri_o : inout std_logic;
+		uart_rtl_0_rxd : in std_logic;
+		uart_rtl_0_txd : out std_logic
 	);
 end top;
 
@@ -64,6 +67,9 @@ architecture structural of top is
 			FIXED_IO_ps_clk : inout std_logic;
 			FIXED_IO_ps_porb : inout std_logic;
 			FIXED_IO_ps_srstb : inout std_logic
+			gpio_rtl_0_tri_o : inout std_logic;
+			uart_rtl_0_rxd : in std_logic;
+			uart_rtl_0_txd : out std_logic
 		);
 	end component bd_wrapper;
 begin
@@ -89,7 +95,10 @@ begin
 			FIXED_IO_mio(54-1 downto 0) => FIXED_IO_mio(54-1 downto 0),
 			FIXED_IO_ps_clk => FIXED_IO_ps_clk,
 			FIXED_IO_ps_porb => FIXED_IO_ps_porb,
-			FIXED_IO_ps_srstb => FIXED_IO_ps_srstb
+			FIXED_IO_ps_srstb => FIXED_IO_ps_srstb,
+			gpio_rtl_0_tri_o => gpio_rtl_0_tri_o,
+			uart_rtl_0_rxd => uart_rtl_0_rxd,
+			uart_rtl_0_txd => uart_rtl_0_txd
 		);
 end structural;
 

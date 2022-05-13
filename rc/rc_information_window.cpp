@@ -67,6 +67,7 @@ InformationWindow::InformationWindow(UartManager *uart_manager) :
 	this->main_container.append(this->status_frame);
 	this->main_container.append(this->preview_frame);
 
+	this->set_title("Remote Control");
 	this->set_layout_manager(Gtk::BoxLayout::create(Gtk::Orientation::VERTICAL));
 	this->set_child(this->main_container);
 }
