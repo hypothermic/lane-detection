@@ -2,4 +2,4 @@
 *.tex linguist-generated=false
 *.tex linguist-detectable=true
 *.ipynb filter=clear-notebooks
-
+*.ipynb linguist-vendored
