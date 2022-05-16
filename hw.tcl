@@ -25,7 +25,7 @@ set SRC_DIR		${ROOT_DIR}/rtl
 set IP_DIR		[file normalize ${BUILD_DIR}/lane_vpu.prj/lane_vpu/impl/ip]
 
 # Hardware definitions, relative paths to SRC_DIR, could use regex/glob...
-set CONSTRAINTS_FILE	a7-35.xdc
+set CONSTRAINTS_FILE	constraints.xdc
 set SOURCE_FILES	[list top.vhd]
 set IPI_BD_FILE		ibd.tcl
 set IPI_SRC_FILE	[file normalize ${IP_DIR}/com_arobs_lane_detection_vpu_accel_0_1.zip]
@@ -57,7 +57,7 @@ if {[file exists ${BUILD_DIR}/${TARGET_NAME}.xpr] == 0} {
 
 	# Add the constraints file to it's separate fileset
 	common::send_gid_msg -ssname BD::TCL -id 2002 -severity "INFO" "Adding constraints file ${CONSTRAINTS_FILE} to ${TARGET_NAME}"
-	#add_files -fileset constrs_1 ${SRC_DIR}/${CONSTRAINTS_FILE}
+	add_files -fileset constrs_1 ${SRC_DIR}/${CONSTRAINTS_FILE}
 
 	# Import the VPU IP core into the IP repositories
 	# For some odd reason we have to update the IP catalog twice, else vivado won't catch it
