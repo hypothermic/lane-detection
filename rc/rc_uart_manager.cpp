@@ -1,3 +1,13 @@
+/**
+ * @file rc_uart_manager.cpp
+ * @author Matthijs Bakker
+ * @brief A background thread that reads from UART using termios
+ *
+ * The UartManager class provides a method that can read a serial port on
+ * a background thread and communicates back the results using shared data
+ * and a mutex lock.
+ */
+
 #include "rc_uart_manager.hpp"
 
 // Needed for serial port communication
@@ -7,7 +17,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <iostream>
+#include <iomanip>
 
 #include "rc_log.hpp"
 #include "rc_uart_packet.hpp"
@@ -88,6 +98,12 @@ void UartManager::main_loop(RemoteControlApplication *parent_application) {
 		while (current < num_read) {
 			std::lock_guard<std::mutex> lock(this->mutex);
 			UartPacket *packet = nullptr;
+
+			//std::cerr << "Current: " << current << " Total: " << num_read << " Of buffer: ";
+			//for (int i = 0; i < num_read; ++i) {
+			//	std::cerr << std::to_string((uint8_t) buffer[i]) << " ";
+			//}
+			//std::cerr << std::endl;
 
 			current = UartPacket::read(buffer, current, &packet);
 

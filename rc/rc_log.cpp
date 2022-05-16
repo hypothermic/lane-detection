@@ -1,3 +1,9 @@
+/**
+ * @file rc_log.cpp
+ * @author Matthijs Bakker
+ * @brief Logging utility functions
+ */
+
 #include "rc_log.hpp"
 
 #include <iostream>

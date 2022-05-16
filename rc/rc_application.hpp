@@ -1,3 +1,12 @@
+/**
+ * @file rc_application.hpp
+ * @author Matthijs Bakker
+ * @brief Subclass of <i>Gtk::Application</i> which handles app events
+ *
+ * This unit handles sychronization between the serial reader thread
+ * and the information window
+ */
+
 #pragma once
 
 #include <thread>
@@ -20,7 +29,7 @@ class RemoteControlApplication : public Gtk::Application {
 		Glib::Dispatcher synchronizer;
 		std::thread *tty_thread;
 		UartManager *uart_manager;
-	// Class interface
+
 	public:
 		RemoteControlApplication();
 

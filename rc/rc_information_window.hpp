@@ -1,3 +1,16 @@
+/**
+ * @file rc_information_window.hpp
+ * @author Matthijs Bakker
+ * @brief The GUI window which displays received information
+ *
+ * This window has three parts:
+ *   - the connection settings with the connect button
+ *   - the algorithm parameters of the lane detector
+ *   - a simulated Hough lines preview
+ *
+ * All data is provided to the window by the application class
+ */
+
 #pragma once
 
 #include <gtkmm/applicationwindow.h>
@@ -23,8 +36,8 @@ class InformationWindow : public Gtk::ApplicationWindow {
 	const int CONTAINER_MARGIN = 4;
 
 	private:
-		// The UART connection manager
-		UartManager *uart_manager;
+		// A reference to the app's UART connection manager
+		const UartManager *uart_manager;
 
 		// The container that holds all of the frames
 		Gtk::Box main_container;
@@ -43,7 +56,8 @@ class InformationWindow : public Gtk::ApplicationWindow {
 			   seg_thres_label,
 			   g_sigma_label,
 			   e_thres_label,
-			   h_thres_label;
+			   h_thres_label,
+			   departure_label;
 
 		// Preview lines etc
 		Gtk::Frame preview_frame;

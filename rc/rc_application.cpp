@@ -1,6 +1,13 @@
-#include "rc_application.hpp"
+/**
+ * @file rc_application.cpp
+ * @author Matthijs Bakker
+ * @brief Subclass of <i>Gtk::Application</i> which handles app events
+ *
+ * This unit handles sychronization between the serial reader thread
+ * and the information window
+ */
 
-#include <iostream>
+#include "rc_application.hpp"
 
 #include "rc_uart_packet.hpp"
 

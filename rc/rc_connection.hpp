@@ -1,3 +1,9 @@
+/**
+ * @file rc_connection.hpp
+ * @author Matthijs Bakker
+ * @brief Data types for passing connection parameters
+ */
+
 #pragma once
 
 #include <glibmm/ustring.h>

@@ -1,3 +1,11 @@
+/**
+ * @file rc_log.hpp
+ * @author Matthijs Bakker
+ * @brief Logging utility functions
+ */
+
+#pragma once
+
 #include <source_location>
 
 #include <glibmm/ustring.h>

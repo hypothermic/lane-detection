@@ -1,9 +1,19 @@
+/**
+ * @file rc_preview_area.cpp
+ * @author Matthijs Bakker
+ * @brief Subclass of <i>Gtk::PreviewArea</i> which draws Hough lines
+ *
+ * This class overrides the <i>on_draw</i> method of the preview area
+ * and draws the detected lines on the widget using a Cairo context
+ */
+
 #include "rc_preview_area.hpp"
 
 #include <cmath>
 
 PreviewArea::PreviewArea() {
 	this->set_draw_func(sigc::mem_fun(*this, &PreviewArea::on_draw));
+	this->set_line_color(LINE_COLOR_BLUE);
 }
 
 PreviewArea::~PreviewArea() {}
@@ -27,6 +37,12 @@ static inline void draw_line(const Cairo::RefPtr<Cairo::Context> &context, const
 	context->line_to(x2, y2);
 }
 
+void PreviewArea::set_line_color(float r, float g, float b) {
+	this->r = r;
+	this->g = g;
+	this->b = b;
+}
+
 void PreviewArea::on_frame_update(FrameProcessedPacket *packet) {
 	this->lines = packet->get_lines();
 
@@ -44,7 +60,7 @@ void PreviewArea::on_draw(const Cairo::RefPtr<Cairo::Context> &context, int widt
 	context->save();
 	context->translate(0.5f, 0.0f);
 	context->set_line_width(5.0f);
-	context->set_source_rgba(1.0, 0.0, 0.0, 1.0);
+	context->set_source_rgba(r, g, b, 1.0);
 
 	for (auto line : this->lines) {
 		draw_line(context, line, width, height);

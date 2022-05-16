@@ -1,6 +1,14 @@
+/**
+ * @file rc_uart_packet.cpp
+ * @author Matthijs Bakker
+ * @brief Abstraction of the different packet types
+ *
+ * The UartPacket class and its subclasses provide an abstraction layer
+ * over the reading of data messages over the serial port
+ */
+
 #include "rc_uart_packet.hpp"
 
-#include <iostream>
 #include <type_traits>
 
 #include "rc_log.hpp"
@@ -26,6 +34,8 @@ UartPacket::~UartPacket() {}
 size_t UartPacket::read(char *buffer, size_t offset, UartPacket **packet) {
 	UartPacket *result = nullptr;
 
+	// Instantiate the packet class depending on which kind of packet this is
+	// There must be some better way to do this in cpp but whatever...
 	switch (buffer[offset]) {
 		case static_cast<uint8_t>(UartPacket::Type::STATUS_UPDATE):
 			result = new StatusUpdatePacket();
@@ -33,13 +43,18 @@ size_t UartPacket::read(char *buffer, size_t offset, UartPacket **packet) {
 		case static_cast<uint8_t>(UartPacket::Type::FRAME_PROCESSED):
 			result = new FrameProcessedPacket();
 			break;
+		case static_cast<uint8_t>(UartPacket::Type::DEPARTURE_WARNING):
+			result = new DepartureWarningPacket();
+			break;
 		default:
-			rc_log_error("No packet type");
+			rc_log_error("Unknown packet type");
 			return offset + 1;
 	}
 
+	// Read the packet data
 	offset = result->read(buffer, offset);
 
+	// Return it to the caller function by assigning the dest pointer
 	(*packet) = result;
 
 	return offset;
@@ -66,6 +81,8 @@ StatusUpdatePacket::~StatusUpdatePacket() {};
 size_t StatusUpdatePacket::read(char *buffer, size_t offset) {
 	offset = UartPacket::read(buffer, offset);
 
+	// TODO check for buffer overflow
+	
 	is_processing = buffer[offset] != 0;
 	seg_thres = buffer[offset + 1];
 	g_sigma = fixed_to_float<6>(buffer[offset + 2]);
@@ -112,6 +129,7 @@ size_t FrameProcessedPacket::read(char *buffer, size_t offset) {
 	lines_amount = buffer[offset];
 
 	// Every line has 2 bytes: rho and theta
+	// TODO check for buffer overflow
 	for (i = 1; i <= (lines_amount * 2); i += 2) {
 		this->lines.push_back({
 			fixed_to_float<1>(buffer[offset + i]),
@@ -119,7 +137,7 @@ size_t FrameProcessedPacket::read(char *buffer, size_t offset) {
 		});
 	}
 
-	return offset + i + (lines_amount * 2);
+	return offset + i;
 }
 
 size_t FrameProcessedPacket::get_length() {
@@ -128,5 +146,25 @@ size_t FrameProcessedPacket::get_length() {
 
 FrameProcessedPacket::line_vector FrameProcessedPacket::get_lines() {
 	return lines;
+}
+
+DepartureWarningPacket::DepartureWarningPacket() : UartPacket() {}
+
+DepartureWarningPacket::~DepartureWarningPacket() {}
+
+size_t DepartureWarningPacket::read(char *buffer, size_t offset) {
+	offset = UartPacket::read(buffer, offset);
+
+	is_departing = buffer[offset] != 0;
+
+	return offset + 1;
+}
+
+size_t DepartureWarningPacket::get_length() {
+	return 1 + UartPacket::get_length();
+}
+
+bool DepartureWarningPacket::get_is_departing() {
+	return is_departing;
 }
 
