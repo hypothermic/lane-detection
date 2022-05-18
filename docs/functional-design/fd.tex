@@ -206,7 +206,65 @@
 
 	\begin{hoofdstuk}{User Interface Design}
 
-		\textbf{[todo: screen model of debugging program (uad: uart debugger?)]}
+		The troubleshooting application for automobile technicians will have a simple GUI frontend which will display a read-out of the algorithm values.
+		It will also have a preview screen where detected lane lines are plotted.
+		A lane departure warning status must be shown to indicate if an upcoming lane departure is predicted.
+
+		\bigskip
+
+		The following elements must be visible on the user interface in order to satisfy technicians:
+
+		\begin{enumerate}
+
+			\item The values of the parameters used in the video processing lane detection algoritm
+			\item A simulated preview of the lane lines which were detected
+			\item Whether or not a departure is currently detected based on the results of the plotted lines
+
+		\end{enumerate}
+
+		\bigskip
+
+		\centerline{\begin{tikzpicture}
+
+			% This looks so freaking good...
+			% I don't like Apple but they do have god tier designers
+
+			\definecolor{osx-red}{HTML}{ff6159}
+			\definecolor{osx-yellow}{HTML}{ffc12e}
+			\definecolor{osx-green}{HTML}{28ca42}
+
+			\node (bg) [draw=none, fill=black!8, rounded corners=2ex, minimum width=.95\textwidth, minimum height=73.5ex] at (0,0) {};
+
+			% top bar
+			\node (top bar) [draw=none, fill=black!12, rounded corners=2ex, minimum width=.95\textwidth, minimum height=6ex, anchor=north] at (bg.north) {};
+			\node (top bar nocornerssouth) [draw=none, fill=black!12, minimum width=.95\textwidth, minimum height=2ex, anchor=south] at (top bar.south) {};
+			\node (btn exit) [fill=osx-red, circle, inner sep=0pt, outer sep=0pt, anchor=center, minimum size=1.75ex, below left=2.55ex and 2.85ex of top bar.north east] {};
+			\node (btn min) [fill=osx-yellow, circle, inner sep=0pt, outer sep=0pt, anchor=center, minimum size=1.75ex, below left=2.55ex and 6.025ex of top bar.north east] {};
+			\node (btn max) [fill=osx-green, circle, inner sep=0pt, outer sep=0pt, anchor=center, minimum size=1.75ex, below left=2.55ex and 9.2ex of top bar.north east] {};
+
+
+			\node (details) [fill=none, minimum width=.85\textwidth, minimum height=20ex, anchor=north, below=3.5ex of top bar.south, align=center, text depth=20ex, inner sep=0, outer sep=0] {
+				Successfully connected to the lane detection unit over serial port X \\
+				\\
+				\begin{tabularx}{0.755\linewidth}{X r}
+					\textbf{Preprocessing} & \tabularnewline
+					% yes, 3 space tabs,,,,,,,,,
+					\hspace{3ex} Algorithm parameter 1: & 210.5 \tabularnewline
+					\hspace{3ex} Parameter 2: & 4.0 \tabularnewline
+					& \tabularnewline
+					\textbf{Detection} & \tabularnewline
+					\hspace{3ex} Another parameter: & 90.3 \tabularnewline
+					\hspace{3ex} Departure detected: & false \tabularnewline
+				\end{tabularx}
+			};
+
+			% I love tikz so much
+			\node (preview) [draw=black!20, fill=black!16, minimum width=.85\textwidth, minimum height=32ex, anchor=south, above=3.5ex of bg.south, path picture={
+				\draw[blue] ([xshift=23ex]path picture bounding box.north west) -- ([xshift=-19ex]path picture bounding box.south east);
+				\draw[blue] ([xshift=-19ex]path picture bounding box.north east) -- ([xshift=15ex]path picture bounding box.south west);
+			}] {};
+
+		\end{tikzpicture}}
 
 	\end{hoofdstuk}
 
