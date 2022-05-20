@@ -21,13 +21,14 @@
 \usepackage{tikz}
 \usepackage{tikzscale}
 \usepackage{tikz-uml}
-\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta, matrix}
 \usepackage{adjustbox}
 \usepackage{pgfplots}
 
 % Not quite ConTeXt tables but good enough
 \usepackage{colortbl}
 \usepackage{multirow}
+\usepackage{tabularx}
 
 % IEC/ISO units
 \usepackage{amsmath}
@@ -493,44 +494,131 @@
 
 	\begin{hoofdstuk}{Programmable Logic Layer}
 
-		\begin{paragraaf}{Lane Detection IP}
+		\begin{paragraaf}{Video Processing Unit}
 
 			% ----- Introductie; wat is HLS en Vitis Vision?
 			I chose to implement the image processing stages using High Level Synthesis because Xilinx provides a well-designed OpenCV port that is tested and formally proven.
-			This port was formerly called xfOpenCV prior to it being integrated into the Vitis standard libraries and renamed to Vitis Vision.
+			This port was formerly called xfOpenCV prior to it being integrated into the Vitis standard libraries and being renamed to Vitis Vision.
 			It is a clean-room implementation of OpenCV functions that includes instruction pragmas which tell the compiler how certain code should be synthesized to RTL.
 			These pragmas include information on how certain loops should be unrolled and how variables can be synthesized to registers.
 			The developer can write C++ code which specifies which AXI interfaces have to be created and which vision functions have to be applied.
 			This code can be simulated on the developer's system using the official OpenCV library to verify the working of the code.
-			Once verified, the code can be synthesized to HDL and can be co-simulated to verify that the automatically generated HDL performs exactly like the original code.
+			Once verified, the code can be synthesized to a HDL and can be co-simulated to verify that the automatically generated HDL performs exactly like the original code.
 			Finally, Vivado can synthesize the HDL to a netlist and implement it into an IP Core, which can be used in other projects.
+
+			\vspace{1ex}
+			\begin{figuur}{The IP core as seen in the block design}
+				\centerline{
+					\includegraphics[width=0.76\textwidth, clip, trim=6.5cm 0.16cm 6.5cm 6.9cm]{hw-block-diagram-crop-asset.pdf}
+				}
+
+				\vspace{3ex}
+
+				{
+				\small
+				\begin{tabular}{l l l}
+					\toprule
+					Signal(s) & Width & Description \\
+					\midrule
+					s\_axi\_control & \qty{32}{\bit} data + \qty{6}{\bit} addr & Used to control and adjust detection parameters \\
+					in\_r & \qty{24}{\bit} & Image input stream (RGB-888 = 24bpp) \\
+					ap\_clk & - & Clock signal of 125 MHz \\
+					ap\_rst\_n & - & Reset signal for reverting internal state \\
+					out\_r & \qty{32}{\bit} & Detected lines output (Q10.22 pairs until TLAST) \\
+					ap\_local\_block & - & Remains low as long as no deadlock occurs \\
+					interrupt & - & Goes high when image has been processed \\
+					\bottomrule
+				\end{tabular}
+				}
+			\end{figuur}
+
+			The video processing code that I wrote declares two AXI streams that are used to access the data and are implemented by Vitis as line-buffers.
+			The first stream is configured as input and takes RGB888 pixels from the source image in row-major order.
+			This data is fed into a sequence of Vitis Vision functions that make up the video processing pipeline as described in the research paper.
+			The Houghlines function, which is the last function of this sequence, returns the detected lines in the image in floating point format.
+			These lines are then converted to a \qty{32}{\bit} wide fixed point format and sent to the DMA.
+			I chose to convert the values to fixed point because they are always in a predictable range.
+			For example, the theta values which represent the line angles are always in radians between zero and $ \pi $ (not inclusive).
+			This means that the integer part can only have a maximum value of three, while the decimal is very important and should be stored in higher resolution.
+			For the $ \rho $ value of the line a similar concept is of use; the integer part of the value fits within the range of $ [-\delta, \delta) $ where $ \delta $ is the image diameter.
+			I chose to use a Q10.22 fixed point value for outputting the line values from the video processing code because of multiple reasons.
+			Firstly, it can hold a sign bit, which is important for the $ \rho $ value of the lines because it can be negative.
+			Secondly, it has enough resolution for the integer part of the $ \rho $ values for images with our desired image resolution of 1280 by 720.
+			And finally, it has enough resolution to accurately convey the decimal part of the $ \theta $ value of the lines.
+			As described earlier, I halved the theta resolution of the Hough Transform, which reduces the number of possible values to well within the $ 2^{22} $ range.
+			Alongside these two AXI streams, I declared an AXI-Lite interface with control registers.
+			These control registers contain the parameters of the video processing functions, like the thresholds and a start/stop bit.
+			The values can be adjusted by the software at runtime by writing new values to them.
+			The main control register resides at offset 0x00 and can be used to start/stop the processing of the video by modifying the values seen in\verwijzingb{tabel}{Control register description}.
+			The full list of registers available over the AXI-Lite bus is in\verwijzingb{tabel}{IP core register index}.
+
+			\begin{table}[h]
+				\centering
+				\begin{tabularx}{0.9\textwidth}{p{8ex} c X c c c c} 
+					Field &
+					\makebox[2ex][l]{\rotatebox{60}{\small AUTO\_RESTART}} &
+					&
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_READY}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_IDLE}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_DONE}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_START}} \\
+					\noalign{\vskip 0.8ex}\cline{2-7}
+					Bit &
+					\multicolumn{1}{|c|}{7} &
+					6 \hfill ... \hfill 4 &
+					\multicolumn{1}{|c}{3} &
+					\multicolumn{1}{|c}{2} &
+					\multicolumn{1}{|c}{1} &
+					\multicolumn{1}{|c|}{0} \\
+					\cline{2-7}\noalign{\vskip 0.8ex}  
+					Access &
+					\small R/W &
+					\small &
+					\small R &
+					\small R &
+					\small R &
+					\small W \\\noalign{\vskip 0.8ex}
+					Reset &
+					\small 0 &
+					&
+					\small 1 &
+					\small 1 &
+					\small 0 &
+					\small 0 \\
+				\end{tabularx}
+				\caption{Control register description}
+				\label{tabel:Control register description}
+			\end{table}
+
+			\begin{tabel}{IP core register index}{l l r c l}
+				Register & Offset & Width & Access & Description \\
+				\midrule
+				CTRL & 0x00 & 8 & R/W & Signals to control the operation \\
+				IINH & 0x10 & 32 & W & Input image height in pixels (max. 720) \\
+				IINW & 0x14 & 32 & W & Input image width in pixels (max. 1280) \\
+				THRS & 0x20 & 8 & W & Threshold value for the HSV image segmentation \\
+				GASZ & 0x21 & 8 & W & Sigma value of the Gaussian blur function \\
+				THRE & 0x22 & 8 & W & Threshold value of the Sobel filter output \\
+				THRH & 0x23 & 16 & W & Threshold value of the Hough votes \\
+
+			\end{tabel}
 			
-
 			\bigskip
 
-			% ----- Hoe heb ik de vision libs gebruikt?
-			\textbf{[todo: leg uit, een AXI stream voor input en voor output]}
-
-			\bigskip
-
-			\textbf{[todo: plaatje van regio dichtbij de VPU core]}
-
-			% ----- Hoe heb ik de IP Core geintegreerd in het systeem?
-			I incorporated this IP Core into the block design using the IPI and connected it to the DMA component with Xilinx AXI Stream Data Width Converters on the input and output streams.
-			These converters are necessary because the AXI HP ports are fixed to a \qty{32}{\bit} width.
+			Using the Vitis HLS application I synthesized the high level code to RTL and packaged it into an IP core.
+			I incorporated this IP core into the block design using the Vivado IPI and connected it to the DMA component.
+			The DMA component has a bus data width of \qty{32}{\bit} to match that of the Zynq PS/PL AXI HP port.
+			Because the video processing logic image input stream is only \qty{24}{\bit} wide, I used an AXI data width converter to cut off the top bits.
 			The software driver is configured to pad the output stream with zeroes up to this \qty{32}{\bit} width.
-			From the software, we send the memory location of a RGB888 video frame that is stored in the SDRAM to the DMA via its AXI-Lite port, which will initiate the transfer via the \qty{32}{\bit} wide bus to the converter, which, in turn, will ignore the padding by only transferring the first \qty{24}{\bit}.
+			From the software, we send the memory location of a RGB-888 video frame that is stored in the SDRAM to the DMA via its AXI-Lite port, which will initiate the transfer via the \qty{32}{\bit} wide bus to the converter, which, in turn, will ignore the padding by only transferring the first \qty{24}{\bit}.
 			This step causes the data to become available on the input interface of the VPU core.
 			Next, we set the \textit{AP\_START} and \textit{AP\_AUTOSTART} bits of the memory-mapped control register of the VPU core via its AXI-Lite interface.
 			This will toggle the VPU core into a mode where it automatically processes the data available on the input stream.
 			The start/stop/etc control logic is implemented with the "return" pragma in the VPU code and is generated by Vitis, ensuring that it is correct.
 			To express this in FPGA terminology, we can think of 'inference' of this control interface.
-			Upon completion of the processing of the entire video frame, the VPU core autonomously writes the resulting data to the output stream.
-			The output is a 8-bit-per-pixel grayscale image which helps technicians debug the system, as described in the user stories of the Functional Design.
-			Although four pixels would theoretically fit in one data transfer, the output currently only sends one pixel per transfer, resulting in a total output width of eight bits.
-			The outbound data width converter adds \qty{24}{\bit} of padding to make up for the AXI-HP port's fixed width.
 			Both the input and output stream interfaces have FIFO queues implemented as underlying buffers.
 			I did this to deal with the backpressure of the data width converters; the VPU IP core can take multiple clock cycles to read/write to/from the streams, while the AXI infrastructure components always transfer one pixel per clock cycle.
+
 
 			\textbf{[todo: tabel met memory mapping van de VPU IP core registers]}
 
@@ -597,7 +685,7 @@
 			For the whole video processing pipeline, including writing/reading image data to/from the local memory, the required cycles per operation is 1119344, which translates to \qty{11.19}{\milli\second}.
 
 			\begin{figuur}{Vitis Timing Report for the VPU Logic}
-				\includegraphics[width=0.75\textwidth]{vitis-timing-bad-quality.png}
+				\includegraphics[width=0.7075\textwidth]{vitis-timing-bad-quality.png}
 			\end{figuur}
 
 			However, we also have to take into account the run time of the driver logic.
@@ -617,6 +705,7 @@
 			I ran the reference programs on my laptop with a Ryzen 5 2500U with integrated graphics.
 
 			\bigskip
+			\vspace{-0.5ex}
 
 			For running the OpenCV reference program, I isolated four CPU cores from the OS scheduler and dedicated them to the program.
 			I also measured the performance of the test implementation (aka "Lane Program", I didn't have much inspiration for its name) that I made during the research phase of the project.
@@ -625,6 +714,7 @@
 			Except for the raw FPGA implementation, for which we can calculate the latency exactly, I ran all tests 500 times and calculated the average run time and standard deviation between run times.
 
 			\bigskip
+			\vspace{-1.5ex}
 
 			\begin{tabel}{Performance comparison per platform}{l @{\extracolsep{\fill}} S[table-format=3.1]S[table-format=3.1]}
 				Platform & {Average (ms)} & {Standard Deviation (ms)} \tabularnewline
@@ -638,7 +728,7 @@
 
 			\end{tabel}
 
-			\begin{figuur}{Bar chart performance comparison per platform}
+			\begin{figuur}{Bar chart visualization of Table \getrefnumber{tabel:Performance comparison per platform}}
 				\centerline{
 					\begin{tikzpicture}[trim axis left, trim axis right]
 					\begin{axis}[
