@@ -24,6 +24,7 @@
 \usetikzlibrary{positioning, arrows.meta, matrix}
 \usepackage{adjustbox}
 \usepackage{pgfplots}
+\usepackage{wrapfig}
 
 % Not quite ConTeXt tables but good enough
 \usepackage{colortbl}
@@ -324,6 +325,39 @@
 
 	\begin{hoofdstuk}{Hardware Layer}
 
+		In this chapter I will describe how and why different hardware components are used in the system.
+		The goal is to give a clear picture of the behaviour of the external hardware and which effects it has on the system.
+
+		\begin{paragraaf}{Electrical Schematic}
+
+			The external hardware parts are connected to \textit{board pins} which are exposed on the development board.
+			They, in turn, are connected to the FPGA package via so-called \textit{package pins}.
+			These package pin names are translated by Vivado to \textit{logical pins} with the use of a constraints file \cite{xilinxug865}.
+			In the schematic as seen in \verwijzingb{figuur}{Logical Schematic} I've marked the package pins of the FPGA in red text and the logical pins of my VHDL module in blue text.
+
+			\begin{figuur}{Logical Schematic}
+				\centerline{
+					\includegraphics[width=1\textwidth, clip, trim=2.0cm 13.9cm 17.4cm 2.3cm]{hw/hw.pdf/hw.pdf}
+				}
+				\vspace{-2ex}
+			\end{figuur}
+			\vspace{-0.8ex}
+
+			The logical output pins of the FPGA are driven at 3.3V to conform with my serial adapter board.
+			This voltage is also OK to power the LEDs as noted in the board reference manual~\cite{tul2018pynq}.
+			I chose to use the PMOD-B header to place the UART pins because it is mounted on the edge of the board and allows for easy access.
+			
+			\vspace{0.4ex}
+			\begin{figuur}{Setup Picture}
+				\centerline{
+					\includegraphics[width=0.61\textwidth, clip, trim=7cm 13cm 0cm 22.5cm]{pics/PXL_20220523_101414974.MP.jpg}
+				}
+			\end{figuur}
+
+		\end{paragraaf}
+
+		\clearpage
+
 		\begin{paragraaf}{Memory Configuration}
 
 			With the initial development board, the Arty A7-35T, I faced a problem regarding the storage of the video frames.
@@ -450,7 +484,7 @@
 				\singlespacing
 				\includegraphics{coprocessing}
 				\onehalfspacing
-				\vspace{-2ex}
+				\vspace{-2.3ex}
 			\end{figuur}
 			\vspace{-0.2ex}
 
@@ -477,7 +511,7 @@
 					\includegraphics{coproseq}
 				\end{adjustbox}
 				\onehalfspacing
-				\vspace{-2ex}
+				\vspace{-3.9ex}
 			\end{figuur}
 			\vspace{-0.2ex}
 
@@ -488,8 +522,35 @@
 
 		\end{paragraaf}
 
-		\textbf{[todo:]}
+		\begin{paragraaf}{Status Indicator LEDs}
 
+			The TUL Z2 development board has two user-controllable tri-color LEDs.
+			I used these to display the status of the video processing driver.
+			By default, the LEDs are set to shine red, like when the device is in standby mode.
+			While processing a video frame, they are set to shine green.
+			I used an AXI GPIO module in the programmable logic and connected it to board pins of the LEDS.
+			This GPIO module can be accessed by the processor system and six bits (RGBRGB) can be written to it to update the light color.
+			The names of the specific package pins that were used to drive these LEDs can be \verwijzingb{figuur}{Logical Schematic}.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{UART Peripheral}
+
+			To give insight into the workings of the unit, it communicates its settings and results over a serial interface.
+			The UART protocol was chosen for its simplicity and the availibility of existing solutions which can use it.
+
+			\bigskip
+
+			In the initial state, the TX line is pulled high by the peripheral.
+			Once a data frame is to be sent, the TX line goes low, indicating a \textit{start bit}.
+			After a time unit has passed, eight data bits are transmitted.
+			Subsequently a parity bit is sent which is a logical 1 when the count of all bits that were 1 was even.
+			Finally, the transmit line is pulled back into its initial high state, indicating a stop bit.
+			The speed at which data is transferred, also referred to as the \textit{baud rate} is configured to be 230400 baud to allow for fast data transfer.
+			At a processing speed of 40 video frames per second, approx. 3200 bits per second will be send over the serial connection, so we need the baud rate to be this high.
+			The peripheral is configured to use 8 data bits, an even parity bit and one stop bit.
+
+		\end{paragraaf}
 	\end{hoofdstuk}
 
 	\begin{hoofdstuk}{Programmable Logic Layer}
@@ -612,21 +673,82 @@
 			The software driver is configured to pad the output stream with zeroes up to this \qty{32}{\bit} width.
 			From the software, we send the memory location of a RGB-888 video frame that is stored in the SDRAM to the DMA via its AXI-Lite port, which will initiate the transfer via the \qty{32}{\bit} wide bus to the converter, which, in turn, will ignore the padding by only transferring the first \qty{24}{\bit}.
 			This step causes the data to become available on the input interface of the VPU core.
-			Next, we set the \textit{AP\_START} and \textit{AP\_AUTOSTART} bits of the memory-mapped control register of the VPU core via its AXI-Lite interface.
+			Next, we set the \textit{AP\_START} and \textit{AUTO\_RESTART} bits of the memory-mapped control register of the VPU core via its AXI-Lite interface.
 			This will toggle the VPU core into a mode where it automatically processes the data available on the input stream.
 			The start/stop/etc control logic is implemented with the "return" pragma in the VPU code and is generated by Vitis, ensuring that it is correct.
 			To express this in FPGA terminology, we can think of 'inference' of this control interface.
 			Both the input and output stream interfaces have FIFO queues implemented as underlying buffers.
 			I did this to deal with the backpressure of the data width converters; the VPU IP core can take multiple clock cycles to read/write to/from the streams, while the AXI infrastructure components always transfer one pixel per clock cycle.
 
-
-			\textbf{[todo: tabel met memory mapping van de VPU IP core registers]}
-
-			\textbf{[todo:]}
-
 		\end{paragraaf}
 
-		\textbf{[todo:]}
+		\clearpage
+
+		\begin{paragraaf}{Lane Detection Pipeline}
+
+			In the research paper I went into detail about the different video processing techniques I wanted to use.
+			I did have to reflect back on my choices because the proposed pipeline did
+			\begin{wrapfigure}{r}{0.4\textwidth}
+				\centering
+				%\begin{center}
+					\vspace{-1ex}
+					\begin{tikzpicture}
+
+						% \tikzstyle exists, btw............
+
+						\node (fig bg) [draw=none, fill=black!6, rounded corners=2ex, minimum width=0.4\textwidth, minimum height=87ex, inner sep=0, outer sep=0] at (0,0) {};
+						\node (fig step 1) [draw=none, fill=black!14, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=2ex of fig bg.north] {Image input stream};
+						\node (fig step 2) [draw=none, fill=black!14, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 1.south] {Reconstruct image region};
+						\node (fig step 3) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 2.south] {BGR to HSV};
+						\node (fig step 4) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 3.south] {Range Thresholding};
+						\node (fig step 5) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 4.south] {Gaussian blur};
+						\node (fig step 6) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 5.south] {Sobel filter};
+						\node (fig step 7) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 6.south] {Edge threshold};
+						\node (fig step 8) [draw=none, fill=blue!19, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 7.south] {Hough transform};
+						\node (fig step 9) [draw=none, fill=black!14, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 8.south] {Float to fixed};
+						\node (fig step 10) [draw=none, fill=black!14, rounded corners=1ex, minimum width=0.32\textwidth, inner sep=1ex, anchor=north, below=5ex of fig step 9.south] {Line output stream};
+
+						\draw [draw, -latex, thick] (fig step 1.south) -- (fig step 2.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 24bpp stream};
+						\draw [draw, -latex, thick] (fig step 2.south) -- (fig step 3.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 8bpc 3ch bitmap};
+						\draw [draw, -latex, thick] (fig step 3.south) -- (fig step 4.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 8bpc 3ch bitmap};
+						\draw [draw, -latex, thick] (fig step 4.south) -- (fig step 5.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 8bpc 1ch bitmap};
+						\draw [draw, -latex, thick] (fig step 5.south) -- (fig step 6.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 8bpc 1ch bitmap};
+						\draw [draw, -latex, thick] (fig step 6.south) -- (fig step 7.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 8bpc 1ch bitmap};
+						\draw [draw, -latex, thick] (fig step 7.south) -- (fig step 8.north) node[inner sep=0.3ex, pos=0.425, fill=black!7] {\footnotesize 1bpp bitmap};
+						\draw [draw, -latex, thick] (fig step 8.south) -- (fig step 9.north) node[inner sep=0.3ex, pos=0.45, fill=black!7] {\footnotesize 32 bit float ($ \times $ 64)};
+						\draw [draw, -latex, thick] (fig step 9.south) -- (fig step 10.north) node[inner sep=0.3ex, pos=0.45, fill=black!7] {\footnotesize Q10.22 FP ($ \times $ 64)};
+					\end{tikzpicture}
+				%\end{center}
+				\vspace{-2.5ex}
+				\caption{Detection Pipeline}
+				\label{figuur:Detection Pipeline}
+			\end{wrapfigure}
+			not work as well as intended.
+			Instead of $ k $-means image segmentation, I ended up segmenting the image using luminance thresholding, because this gave better results.
+			White lane markings have low saturation and high luminance compared to the rest of the environment, which makes HSV segmentation an effective technique.
+			The luminance thresholding is implemented by limiting the saturation and value parameters of an image in the HSV colorspace.
+			To accomodate for this, I had to add a conversion step from the source colorspace, BGR, to HSV.
+			The thresholding itself is done by the \textit{xf::cv::inRange} function, which sets all pixels outside of a certain threshold to black.
+
+			\bigskip
+
+			The complete sequence of image operations is visualized in \verwijzingb{figuur}{Detection Pipeline}.
+			In this figure, the steps that I implemented myself are marked in black and the steps I used Vitis Vision functions for are marked in blue.
+			The interim data types that were used for buffering data between operations are typed onto the arrows.
+			An interesting thing to note is that the data types gradually get smaller up until the Hough transform; starting out with 24 bpp and ending on 1 bpp.
+			This is indicative of what we are trying to accomplish: we are trying to minimize a full video frame to just edge pixels.
+			
+			\bigskip
+
+			The final resulting data is a list of 32 lines that were detected in the image.
+			Each line is expressed as a ($ \rho, \theta $) pair, which means that the logic will output 64 values per frame.
+			The amount of lines that are output is fixed, because it is implemented in digital logic.
+			Changing this amount requires resynthesizing digital logic.
+			For now, 32 lines are more than enough.
+
+			In software we are able to smooth and stabilize these lines to find the average lane marking lines.
+
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 
