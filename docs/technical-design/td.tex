@@ -217,7 +217,7 @@
 		\vspace{-0.35ex} % micro-adjustments to the max
 
 		I've made the decision to only use one global clock net which connects to all components, because I want to prevent components from running off-sync and causing data integrity problems.
-		This clock net is derived from the 100MHz system clock.
+		This clock net is derived from the \qty{125}{\mega\hertz} system clock.
 		As for the reset signal, I had to create different signals for the interconnects and peripherals because those systems cannot be reset at the same time.
 		I used the Processor System Reset component to create these reset signals and I connected the interconnect to the reset ports of the interconnects and data width converters.
 		The DMA interface and our Image Processor are connected to the peripheral reset net because these need to be reset after the interconnects are up.
@@ -573,7 +573,8 @@
 			\vspace{1ex}
 			\begin{figuur}{The IP core as seen in the block design}
 				\centerline{
-					\includegraphics[width=0.76\textwidth, clip, trim=6.5cm 0.16cm 6.5cm 6.9cm]{hw-block-diagram-crop-asset.pdf}
+					%\includegraphics[width=0.76\textwidth, clip, trim=6.5cm 0.16cm 6.5cm 6.9cm]{hw-block-diagram-crop-asset.pdf}
+					\includegraphics[width=0.76\textwidth, clip, trim=8.75cm 0.16cm 11.5cm 12.2cm]{hw-block-diagram-v2-crop-asset.pdf}
 				}
 
 				\vspace{3ex}
@@ -584,11 +585,11 @@
 					\toprule
 					Signal(s) & Width & Description \\
 					\midrule
-					s\_axi\_control & \qty{32}{\bit} data + \qty{6}{\bit} addr & Used to control and adjust detection parameters \\
 					in\_r & \qty{24}{\bit} & Image input stream (RGB-888 = 24bpp) \\
+					out\_r & \qty{32}{\bit} & Detected lines output (Q10.22 pairs until TLAST) \\
 					ap\_clk & - & Clock signal of 125 MHz \\
 					ap\_rst\_n & - & Reset signal for reverting internal state \\
-					out\_r & \qty{32}{\bit} & Detected lines output (Q10.22 pairs until TLAST) \\
+					s\_axi\_control & \qty{32}{\bit} data + \qty{6}{\bit} addr & Used to control and adjust detection parameters \\
 					ap\_local\_block & - & Remains low as long as no deadlock occurs \\
 					interrupt & - & Goes high when image has been processed \\
 					\bottomrule
@@ -749,7 +750,7 @@
 			Changing this amount requires resynthesizing digital logic.
 			For now, 32 lines are more than enough.
 
-			In software we are able to smooth and stabilize these lines to find the average lane marking lines.
+			In software we will be able to smooth and stabilize these lines to find the average lane marking lines.
 
 		\end{paragraaf}
 
@@ -757,11 +758,208 @@
 
 	\begin{hoofdstuk}{Processing System Layer}
 
-		\textbf{[todo:]}
+		By default, a jumper is connected on the Z2 board that enables the Cortex-A9 to boot from the firmware on an SD card.
+		I flashed a PetaLinux image with the PYNQ framework onto an SD card because this is the recommended software by the board manufacturer.
+		The PYNQ framework (an abbreviation of "Python for Zynq") lets the developer use Python scripts to quickly prototype software that interacts with the programmable logic components.
+		I used this framework to create a driver script that loads the design bitstream on to the FPGA and communicates with the components in digital logic.
+		Another advantage of running the driver code on an embedded Linux system is that it comes with device drivers for external peripherals like webcams.
+		This meant that I could attach a dashcam (a Logitech C270) and grab road images from it. For additional sample material, I wrote dashcam video to the SD card.
+
+		\begin{paragraaf}{Driver}
+
+			This Python script is responsible for setting up the components on the FPGA and offloading the video frames.
+			It has a main loop that runs as long as the device is powered on and no error has occured.
+
+			\begin{figuur}{Driver Activity Diagram}
+				\singlespacing
+				\centerline{
+					\includegraphics{activity-diagram} 
+				}
+				\onehalfspacing
+			\end{figuur}
+			
+			The main workflow of the driver script is illustrated in \verwijzingb{figuur}{Driver Activity Diagram}.
+			The status update message and the result message are messages that are sent over the UART connection for debugging purposes.
+			As can be seen, the light color of the LEDs is changed depending on whether a lane departure warning is emitted.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Determining The Car Position}
+
+			The last step of the video processing pipeline that is implemented in hardware is the Hough transform.
+			This operation gives us up to 32 lines that were detected within the image.
+			They are returned in ($ \rho , \theta $) format, where these two parameters represent a point on the sinusoidal plane.
+			It is possible to quantize these coordinates to a line on the Cartesian plane in $y = \alpha x + \beta$ format, but I came up with a simple algorithm that does not require this.
+			The algorithm can determine whether or not the car is about to leave the lane by taking into account the angles of both lines.
+
+			\bigskip
+
+			First, we categorize the 32 detected lines into two buckets; one for the left lane line and one for the right lane line.
+			If the angle in radians of the detected line is higher than $\frac{\pi}{2}$ it is put into the left bucket, otherwise into the right bucket.
+
+			\bigskip
+
+			Then, we average the values from each bucket to one $\theta$ value.
+			This is a precise lane line of the current video frame.
+			To prevent inconsistencies and stabilize the readings over an extended period of time, a moving average is kept over the last five video frames.
+
+			\bigskip
+
+			Now that we have stable readings of the angles of the left and right lane lines, there's only one step left: detecting a lane departure.
+			This is done by comparing the distance of each line to the center of the frame.
+			If the distance between one of these lines and the center of the frame is double that of the other, we can say that a lane departure is about to happen.
+			Tests on sample footage have confirmed that this technique is effective enough to meet requirements.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Transmitting Results Over UART}
+
+			For troubleshooting purposes, some internal values are transmitted over the UART connection.
+			A technician can debug the device to view the algorithm settings and the results of a processed video frame.
+			As mentioned in \verwijzingn{paragraaf}{UART Peripheral}, the UART connection is configured to send eight data bits per data frame.
+			Because we need to send larger amounts of information than that, I have created an abstraction on top of this protocol which serializes \textit{packets} to data frames.
+			These packets contain multiple fields with related information and are sent sequentially.
+			Every type of packet has an identifier (\textit{opcode}) that is sent as an \qty{8}{\bit} integer before the data fields are sent.
+			All data is little-endian.
+
+			\begin{tabel}{Packet types}{l l l}
+				Opcode & Name & Description \tabularnewline
+				\midrule
+				0x02 & Status Update & The device goes online/offline or a setting has changed \tabularnewline
+				0x04 & Frame Processed & A frame has been processed, the detected lines are sent \tabularnewline
+				0x08 & Departure Warning & The car is nearing the edge of the lane, a warning is sent \tabularnewline
+			\end{tabel}
+
+			In the packet descriptions below, the data fields of the packet are illustrated.
+			The \textit{value} row indicates if the field has a fixed value.
+			If a packet does not have a fixed length, the variable length is indicated by a field so that the total length can be calculated.
+
+			The first packet is the Status Update packet.
+			It is issued by the system whenever the video processing loop starts or stops, or whenever the algorithm settings change.
+			The packet has a total length of 41 bits which are aligned in 6 bytes.
+			The first value after the fixed opcode field is a boolean which indicates whether the video processing is currently active or not.
+			Subsequent values are the settings that the lane detection pipeline is configured to use, including the certain thresholds that were used in stages of the algorithm.
+			The Gaussian blur sigma value is the standard deviation of the Gaussian function that is used to generate the convolution kernel for the blur operation.
+			It is a decimal value encoded in Q2.6 fixed point format and can range from zero to five.
+			The rest of the values can be treated as signed integers.
+
+			\begin{table}[htbp!]
+				\centering
+				\begin{tabularx}{0.9\textwidth}{p{8ex} X X X X X X} 
+					Field &
+					\makebox[2ex][l]{\rotatebox{60}{\small Hough Threshold}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Edge Threshold}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Gaussian Sigma}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small HSV Threshold}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Is Processing?}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Opcode}} \\
+					\noalign{\vskip 0.8ex}\cline{2-7}
+					Bit &
+					\multicolumn{1}{|c}{40 \hfill ... \hfill 33} &
+					\multicolumn{1}{|c}{32 \hfill ... \hfill 25} &
+					\multicolumn{1}{|c}{24 \hfill ... \hfill 17} &
+					\multicolumn{1}{|c}{16 \hfill ... \hfill 9} &
+					\multicolumn{1}{|c}{8} &
+					\multicolumn{1}{|c|}{7 \hfill ... \hfill 0} \\
+					\cline{2-7}\noalign{\vskip 0.8ex}  
+					Value &
+					&
+					&
+					&
+					&
+					&
+					\multicolumn{1}{c}{\small 0x02} \\
+				\end{tabularx}
+				\caption{Status update packet description}
+				\label{tabel:Status update packet description}
+			\end{table}
+			
+			Detection results are sent over UART in the Frame Processed packet.
+			This packet has a variable length depending on how many lines were detected, indicated by the \textit{Size} field.
+			The total packet length in bytes is twice the \textit{Size} plus two.
+			After the \textit{Size} field, an array of 16 bit wide integers is transmitted.
+			The lower eight bits of this integer represent the $\rho$ value of the line in Q7.1 format and the upper eight bits are the $\theta$ value of the line in Q2.6 format.
+			The rationale behind the resolutions of the fixed point integers is explained in \verwijzingn{paragraaf}{Video Processing Unit}.
+
+			\begin{table}[htbp!]
+				\centering
+				\begin{tabularx}{0.9\textwidth}{p{8ex} X X X} 
+					Field &
+					\makebox[2ex][l]{\rotatebox{60}{\small Line\textsubscript{n} }} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Size}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small Opcode}} \\
+					\noalign{\vskip 0.8ex}\cline{2-4}
+					Bit &
+					\multicolumn{1}{|c}{$15 + 16_n$ \hfill ... \hfill 16} &
+					\multicolumn{1}{|c}{15 \hfill ... \hfill 8} &
+					\multicolumn{1}{|c|}{7 \hfill ... \hfill 0} \\
+					\cline{2-4}\noalign{\vskip 0.8ex}  
+					Value &
+					&
+					&
+					\multicolumn{1}{c}{\small 0x04} \\
+				\end{tabularx}
+				\caption{Frame processed packet description}
+				\label{tabel:Frame processed packet description}
+			\end{table}
+
+			When the car is about to depart the lane, a Departure Warning packet is sent.
+			Except for the opcode, this packet only contains one bit that indicates whether a warning has been issues or not.
+			Therefore, the packet has a fixed length of 9 bits that is aligned into 2 bytes.
+
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Software Layer}
+
+		This chapter describes the working of the Remote Control application.
+		It is meant for troubleshooting the system from an external workstation like a laptop/desktop computer.
+		After the system is connected to this workstation via its serial port, the mechanic can start this application to read information in real-time.
+		On its main GUI window, the application displays the algorithm settings and the live detection results.
+		\begin{figuur}{Class Diagram of the Remote Control Application}
+			\singlespacing
+			\centerline{
+				\includegraphics{class-diagram}
+			}
+			\onehalfspacing
+		\end{figuur}
+
+		\begin{paragraaf}{User Interface}
+
+			The user interface was coded in the C++ language using the \textit{gtkmm} library, because I think that an object oriented language lends itself better to GUI programming than an imperative language like C does.
+			Another reason why I used object oriented programming paradigms was to simplify the reading of the different packet types; abstraction comes in handy when representing the packet inheritances.
+			As can be seen in \verwijzingb{figuur}{Class Diagram of the Remote Control Application}, the different packet types override the abstract \textit{UartPacket} base class.
+
+			\bigskip
+
+			The InformationWindow class has many fields like input fields and labels that I did not include in the class diagram to prevent cluttering it.
+			These fields are created when the window is created, and they are filled with values when data is received via the \textit{on\_*\_update(\textellipsis)} methods.
+
+			\vspace{-0.5ex}
+			\begin{figuur}{Information Window of the Remote Control Application}
+				\singlespacing
+				\centerline{
+					\includegraphics[width=0.9\textwidth]{rc-gui.png}
+				}
+				\onehalfspacing
+			\end{figuur}
+
+			When a status update packet is passed to the \textit{on\_state\_update(\textellipsis)} method, the fields under the \textit{Device status} section are updated to reflect the latest settings of the device.
+			A frame processed packet has no effect on the window itself, but is passed on to the PreviewArea element.
+			The preview area is a rectangle interface element with a gray background and a fixed aspect ratio based on the resolution of the video.
+			Upon receiving a \textit{FrameProcessedPacket}, it quantizes the sinusoid lines from the packet back to Cartesian line parameters.
+			For each of these Cartesian lines, the intersections of the line with the rectangle element borders get calculated.
+			Finally, lines are drawn on the screen between these intersections.
+			If a departure is detected, the lines are drawn in red.
+			Otherwise, they are drawn in blue.
+			In \verwijzingb{figuur}{Information Window of the Remote Control Application} a normal situation is depicted wherein the car is driving within a lane.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Serial Interface}
+
+		\end{paragraaf}
 
 		\textbf{[todo:]}
 
@@ -802,7 +1000,7 @@
 		\begin{paragraaf}{Execution Speed}
 
 			It is possible to calculate the precise execution speed of the video processing logic by looking at the number of clock cycles needed for the pipelines to finish.
-			The time in seconds can be calculated by dividing the number of clock cycles with the system clock speed of \qty{100}{\mega\hertz}.
+			The time in seconds can be calculated by dividing the number of clock cycles with the system clock speed of \qty{125}{\mega\hertz}.
 			However, we have to take into account that, due to pipelining, the top left pixel of an image is transmitted (but also received) earlier than the bottom right pixel.
 			The \textit{minimum latency} is the time between the transmission and return of the first pixel.
 			The \textit{maximum latency} is the time spent between the transmission of the first pixel and the receiving of the last pixel.

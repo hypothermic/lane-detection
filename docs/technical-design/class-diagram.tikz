@@ -1,0 +1,100 @@
+\begin{tikzpicture}
+	\begin{umlpackage}{Remote Control}
+		\tikzumlset{font=\scriptsize\sffamily}
+		\umlclass[x=0, y=0.4]{Application}{
+			- tty\_thread : std::thread
+		}{
+			+ on\_connect(tty\_port : std::string) : void
+		}
+
+		\umlclass[x=8, y=0, type=enumeration]{ConnectionState}{
+			DISCONNECTED \\
+			CONNECTING \\
+			CONNECTED
+		}{}
+
+		\umlclass[x=0, y=-2.3]{InformationWindow}{
+			+ connect\_request\_signal : sigc::signal<void(glib::ustring)> \\	
+			+ disconnect\_request\_signal : sigc::signal<void> \\	
+		}{
+			+ on\_data\_update(packet : UartPacket *) : void \\
+			+ on\_connection\_state\_update(state : ConnectionState) : void
+		}
+
+		\umlclass[x=0, y=-5.3]{PreviewArea}{
+			- lines : std::vector<std::pair<float, float> > \\
+			- color : float
+		}{
+			+ on\_frame\_update(packet : FrameProcessedPacket *) \\
+			+ set\_color(color : float) : void
+		}
+
+		\umlclass[x=8, y=-4.2]{UartManager}{
+			- mutex : std::mutex \\
+			- state : ConnectionState \\
+			- target : glib::ustring \\
+			- incoming : std::queue<UartPacket *> \\
+			- stop\_requested : bool \\
+			- tty\_error : bool
+		}{
+			+ run(parent : glib::refptr<Application>) : void \\
+			+ request\_stop() : void \\
+			+ set\_target(target : glib::ustring) : void \\
+			+ get\_state() : ConnectionState \\
+			+ get\_new\_packets : std::vector<UartPacket *>
+		}
+		
+		\umlclass[x=8, y=-9.8, type=abstract]{UartPacket}{
+			- opcode : uint8\_t
+		}{
+			\umlvirt{+ ~UartPacket()} \\
+			\umlstatic{+ read(buffer : char *, offset : size\_t, out : UartPacket **) : size\_t} \\
+			\umlvirt{+ read(buffer : char *, offset : size\_t) : size\_t} \\
+			+ get\_opcode() : uint8\_t \\
+			\umlvirt{+ get\_length() : size\_t}
+		}
+
+		
+		\umlclass[x=0, y=-9.8]{StatusUpdatePacket}{
+			- is\_processing : bool \\
+			- seg\_thres : uint8\_t \\
+			- g\_sigma : float \\
+			- e\_thres : uint8\_t \\
+			- h\_thres : uint8\_t
+		}{
+			+ read(buffer : char *, offset : size\_t) : size\_t \\
+			+ get\_length() : size\_t \\
+			+ get\_is\_processing() : bool \\
+			+ get\_seg\_thres() : uint8\_t \\
+			+ get\_g\_sigma() : float \\
+			+ get\_e\_thres() : uint8\_t \\
+			+ get\_h\_thres() : uint8\_t
+		}
+
+		\umlclass[x=0, y=-14.2]{DepartureWarningPacket}{
+			- is\_departing : bool
+		}{
+			+ read(buffer : char *, offset : size\_t) : size\_t \\
+			+ get\_length() : size\_t \\
+			+ get\_is\_departing() : bool
+		}
+
+		\umlclass[x=8, y=-14.2]{FrameProcessedPacket}{
+			- lines : std::vector<std::pair<float, float> >
+		}{
+			+ read(buffer : char *, offset : size\_t) : size\_t \\
+			+ get\_length() : size\_t \\
+			+ get\_lines() : std::vector<std::pair<float, float>>
+		}
+		\umlassoc[geometry=-|-]{Application}{InformationWindow}
+		\umlassoc[geometry=-|-]{UartManager}{ConnectionState}
+		\umlassoc[geometry=-|-]{InformationWindow}{ConnectionState}
+		\umlassoc[geometry=-|-]{InformationWindow}{UartManager}
+		\umlassoc[geometry=-|-]{InformationWindow}{PreviewArea}
+		\umluniaggreg[mult2=0..*]{UartManager}{UartPacket}
+		\umlinherit{UartPacket}{StatusUpdatePacket}
+		\umlinherit[anchor2=21]{UartPacket}{DepartureWarningPacket}
+		\umlinherit{UartPacket}{FrameProcessedPacket}
+
+	\end{umlpackage}
+\end{tikzpicture}

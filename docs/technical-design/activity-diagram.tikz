@@ -1,0 +1,66 @@
+\begin{tikzpicture}
+
+	\tikzstyle{ad block}=[rectangle, rounded corners=0.75ex, fill=black!15, align=center, outer sep=0, inner sep=1ex];
+	\tikzstyle{ad frame}=[draw, rectangle, rounded corners=0.75ex, outer sep=0, inner sep=0ex];
+
+	\node (ad start) [circle, draw, fill=black] at (0, 0) {};
+	\node (ad node 1) [ad block, below=0.75cm of ad start] {\footnotesize Initialize};
+	\node (ad node 2) [ad block, below=1.5cm of ad node 1] {\footnotesize Open the dashcam capture};
+	\node (ad node 3) [ad block, below=0.75cm of ad node 2] {\footnotesize Send status OK message};
+	\node (ad node 4) [ad block, below=0.75cm of ad node 3] {\footnotesize Set RGB LEDs to green};
+	\node (ad node 5) [ad block, below=1cm of ad node 4] {\footnotesize Main loop iteration};
+
+	\node (ad frame 1) [ad frame, minimum width=30ex, minimum height=8.8cm, below left=0.75cm and 3cm of ad start] {};
+	\node (ad frame 1 title) [draw, fill=white, inner sep=0.75ex, left=5.5ex of ad frame 1.north] {\footnotesize\textbf{act:} init()};
+	\node (ad frame 1 start) [circle, draw, fill=black, anchor=north, below=0.75cm of ad frame 1.north] {};
+	\node (ad frame 1 node 1) [ad block, below=0.75cm of ad frame 1 start] {\footnotesize Setup FPGA};
+	\node (ad frame 1 node 2) [ad block, below=0.75cm of ad frame 1 node 1] {\footnotesize Setup shared memory};
+	\node (ad frame 1 node 3) [ad block, below=0.75cm of ad frame 1 node 2] {\footnotesize Configure UART peripheral};
+	\node (ad frame 1 node 4) [ad block, below=0.75cm of ad frame 1 node 3] {\footnotesize Configure VPU peripheral};
+	\node (ad frame 1 end a) [circle, fill=black, below=0.75cm of ad frame 1 node 4] {};
+	\node (ad frame 1 end b) [circle, draw, inner sep=0.175cm, below=0.68cm of ad frame 1 node 4] {};
+
+	\node (ad frame 2) [ad frame, minimum width=30ex, minimum height=8.8cm, below right=0.75cm and 3cm of ad start] {};
+	\node (ad frame 2 title) [draw, fill=white, inner sep=0.75ex, left=4.1ex of ad frame 2.north] {\footnotesize\textbf{act:} loop()};
+	\node (ad frame 2 start) [circle, draw, fill=black, anchor=north, below=0.34cm of ad frame 2.north] {};
+	\node (ad frame 2 node 1) [ad block, below=0.35cm of ad frame 2 start] {\footnotesize Read video frame into shared mem};
+	\node (ad frame 2 node 3) [ad block, below=0.34cm of ad frame 2 node 1] {\footnotesize Start DMA transfer};
+	\node (ad frame 2 node 4) [ad block, below=0.34cm of ad frame 2 node 3] {\footnotesize Receive raw line data};
+	\node (ad frame 2 node 5) [ad block, below=0.34cm of ad frame 2 node 4] {\footnotesize Find average lane lines};
+	\node (ad frame 2 node 6) [ad block, below=0.34cm of ad frame 2 node 5] {\footnotesize Determine car position};
+	\node (ad frame 2 node 7) [ad block, below=0.34cm of ad frame 2 node 6] {\footnotesize Send results over UART};
+	\node (ad frame 2 node 8) [ad block, below=0.34cm of ad frame 2 node 7] {\footnotesize Display warning on LEDs};
+	\node (ad frame 2 end a) [circle, fill=black, below=0.34cm of ad frame 2 node 8] {};
+	\node (ad frame 2 end b) [circle, draw, inner sep=0.175cm, below=0.27cm of ad frame 2 node 8] {};
+
+	\draw[-latex] (ad start) -- (ad node 1);
+	\draw[-latex] (ad node 1) -- (ad node 2);
+	\draw[-latex] (ad node 2) -- (ad node 3);
+	\draw[-latex] (ad node 3) -- (ad node 4);
+	\draw[-latex] (ad node 4) -- (ad node 5);
+	\draw[-latex] ([xshift=-0.3cm]ad node 5.-90) arc (135:135+270:0.5cm);
+
+	\draw[-latex] (ad frame 1 start) -- (ad frame 1 node 1);
+	\draw[-latex] (ad frame 1 node 1) -- (ad frame 1 node 2);
+	\draw[-latex] (ad frame 1 node 2) -- (ad frame 1 node 3);
+	\draw[-latex] (ad frame 1 node 3) -- (ad frame 1 node 4);
+	\draw[-latex] (ad frame 1 node 4) -- (ad frame 1 end b);
+	
+	\draw[-latex] (ad frame 2 start) -- (ad frame 2 node 1);
+	\draw[-latex] (ad frame 2 node 1) -- (ad frame 2 node 3);
+	\draw[-latex] (ad frame 2 node 3) -- (ad frame 2 node 4);
+	\draw[-latex] (ad frame 2 node 4) -- (ad frame 2 node 5);
+	\draw[-latex] (ad frame 2 node 5) -- (ad frame 2 node 6);
+	\draw[-latex] (ad frame 2 node 6) -- (ad frame 2 node 7);
+	\draw[-latex] (ad frame 2 node 7) -- (ad frame 2 node 8);
+	\draw[-latex] (ad frame 2 node 8) -- (ad frame 2 end b);
+
+	\draw[-] (ad node 1) -- ([yshift=-0.75cm] ad frame 1.north east);
+	\draw[-] (ad node 1) -- ([yshift=7cm] ad frame 1.south east);
+	\draw[white, -] ([yshift=-0.75cm] ad frame 1.north east) -- ([yshift=7.01cm] ad frame 1.south east);
+
+	\draw[-] ([yshift=0.5em] ad node 5.east) -- ([yshift=-6.2cm] ad frame 2.north west);
+	\draw[-] ([yshift=-0.5em] ad node 5.east) -- ([yshift=0.75cm] ad frame 2.south west);
+	\draw[white, -] ([yshift=-6.21cm] ad frame 2.north west) -- ([yshift=0.75cm] ad frame 2.south west);
+\end{tikzpicture}
+
