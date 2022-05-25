@@ -1,6 +1,6 @@
 \begin{tikzpicture}
 
-	\tikzstyle{sysml block}=[draw,rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
+	\tikzstyle{sysml block}=[draw=black!24,rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
 
 	\newcommand{\sysmlstereo}[1]{\textcolor{darkgray}{\guillemotleft \small{#1}\guillemotright}}
 	%\newcommand{\sysmlrect}[2]{
