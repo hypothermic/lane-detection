@@ -1,0 +1,80 @@
+\begin{tikzpicture}
+	\begin{umlseqdiag}
+		\umlactor[no ddots]{GUI Thread}
+		\umldatabase[no ddots]{Packet FIFO}
+		\umlcreatecall[stereo=actor, no ddots, dt=8]{GUI Thread}{Serial Thread}
+		\umlboundary[no ddots]{Virtual Serial Device}
+	
+		\begin{umlcall}[op={run()}, type=asynchron]{GUI Thread}{Serial Thread}
+		\end{umlcall}
+
+		\begin{umlcallself}[dt=-3]{Serial Thread}
+
+		\begin{umlcall}[op={open(tty\_name)}, return={dev\_handle}, type=synchron]{Serial Thread}{Virtual Serial Device}
+
+		\end{umlcall}
+
+		\begin{umlfragment}[type=loop, label={\small while connected}, inner xsep=6.75, inner ysep=1]
+
+			\begin{umlcall}[op={read(dev\_handle)}, return={received bytes}, type=synchron, fill=red!12]{Serial Thread}{Virtual Serial Device}
+
+			\end{umlcall}
+
+			\begin{umlcallself}[op={parse\_packets(bytes)}, dt=4]{Serial Thread}
+
+			\end{umlcallself}
+
+			\begin{umlcall}[op={add\_packets(pkts)}, dt=0, type=synchron]{Serial Thread}{Packet FIFO}
+			\end{umlcall}
+
+			\begin{umlcall}[op={notify\_new\_data()}, dt=6, type=asynchron]{Serial Thread}{GUI Thread}
+		
+		\begin{umlcall}[op={get\_packets()}, type=synchron, return={packets}, dt=4]{GUI Thread}{Packet FIFO}
+
+		\end{umlcall}
+			\end{umlcall}
+
+		\end{umlfragment}
+		\end{umlcallself}
+
+	\end{umlseqdiag}
+
+	\begin{umlseqdiag}
+		\umlobject[no ddots, scale=0.7, draw=white, text=white, fill=white, y=-13.5]{GUI Thread}
+		\umlobject[no ddots, scale=0.7, draw=white, text=white, fill=white, y=-13.5]{Packet FIFO}
+		\umlobject[no ddots, scale=0.7, draw=white, text=white, fill=white, y=-13.5]{Serial Thread}
+		\umlobject[no ddots, scale=0.8, draw=white, text=white, fill=white, y=-13.5]{Virtual Serial Device}
+
+		\begin{umlfragment}[type=break, label={disconnect exception}, inner ysep=6]
+
+			\begin{umlfragment}[type=alt, label={user request}, inner ysep=2]
+
+				\begin{umlcall}[op={request\_stop()}, type=asynchron]{GUI Thread}{Serial Thread}
+
+				\end{umlcall}
+
+				\umlfpart[read error]
+				
+				\begin{umlcall}[op={read(dev\_handle)}, return={error}, fill=red!12, type=synchron]{Serial Thread}{Virtual Serial Device}
+
+				\end{umlcall}
+
+			\end{umlfragment}
+
+			\begin{umlcall}[op={close(dev\_handle)}, type=synchron, dt=2]{Serial Thread}{Virtual Serial Device}
+
+			\end{umlcall}
+
+			\begin{umlcall}[op={notify\_stop()}, type=asynchron, dt=-3]{Serial Thread}{GUI Thread}
+
+			\end{umlcall}
+
+		\end{umlfragment}
+
+	\end{umlseqdiag}
+	
+	\node [rectangle, draw=black, minimum width=2.1ex, minimum height=40ex, fill=white, xshift=39.68ex, yshift=-16.45cm] at (0,0) {};
+	\node [rectangle, draw=none, fill=white, minimum width=2.04ex, minimum height=40ex, fill=white, xshift=39.68ex, yshift=-16.4cm] at (0,0) {};
+
+\end{tikzpicture}
+

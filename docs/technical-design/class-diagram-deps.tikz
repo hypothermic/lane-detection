@@ -1,0 +1,49 @@
+\begin{tikzpicture}
+	\begin{umlpackage}[x=-3.5, y=0]{Remote Control}
+		\umlclass{Application}{
+			\textellipsis
+		}{
+			on\_activate() : void \\
+			\textellipsis
+		}
+		
+		\umlclass[y=-2.9]{InformationWindow}{
+			\textellipsis
+		}{
+			\textellipsis
+		}
+
+		\umlclass[y=-5.8]{PreviewArea}{
+			\textellipsis
+		}{
+			on\_draw(\textellipsis) : void \\
+			\textellipsis
+		}
+	\end{umlpackage}
+
+	\begin{umlpackage}[x=3.5, y=0, type=external]{Gtkmm}
+		\umlclass{Gtk::Application}{
+			\textellipsis
+		}{
+			\umlvirt{on\_activate() : void} \\
+			\textellipsis
+		}
+
+		\umlclass[y=-2.9]{Gtk::Window}{
+			\textellipsis
+		}{
+			\textellipsis
+		}
+		
+		\umlclass[y=-5.8]{Gtk::DrawingArea}{
+			\textellipsis
+		}{
+			\umlvirt{on\_draw(\textellipsis) : void} \\ 
+			\textellipsis
+		}
+	\end{umlpackage}
+
+	\umlinherit{Application}{Gtk::Application}
+	\umlinherit{InformationWindow}{Gtk::Window}
+	\umlinherit{PreviewArea}{Gtk::DrawingArea}
+\end{tikzpicture}

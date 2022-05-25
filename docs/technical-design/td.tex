@@ -928,6 +928,19 @@
 		\begin{paragraaf}{User Interface}
 
 			The user interface was coded in the C++ language using the \textit{gtkmm} library, because I think that an object oriented language lends itself better to GUI programming than an imperative language like C does.
+			Widgets of the user interface are represented as objects and can share code through inheritance.
+			An example of this is the \textit{PreviewArea} widget I created; it overrides \textit{Gtk::DrawingArea} but it overrides some functions to add new functionality for drawing our own data to the screen.
+			I left out the dependencies on \textit{gtkmm} in the previous class diagram and specified them in \verwijzingb{figuur}{Dependencies on Gtkmm}.
+			
+			\vspace{-1.5ex}
+			\begin{figuur}{Dependencies on Gtkmm}
+				\singlespacing
+				\centerline{
+					\includegraphics{class-diagram-deps}
+				}
+				\onehalfspacing
+			\end{figuur}
+
 			Another reason why I used object oriented programming paradigms was to simplify the reading of the different packet types; abstraction comes in handy when representing the packet inheritances.
 			As can be seen in \verwijzingb{figuur}{Class Diagram of the Remote Control Application}, the different packet types override the abstract \textit{UartPacket} base class.
 
@@ -936,6 +949,12 @@
 			The InformationWindow class has many fields like input fields and labels that I did not include in the class diagram to prevent cluttering it.
 			These fields are created when the window is created, and they are filled with values when data is received via the \textit{on\_*\_update(\textellipsis)} methods.
 
+			\clearpage
+
+			When a status update packet is passed to the \textit{on\_state\_update(\textellipsis)} method, the fields under the \textit{Device status} section are updated to reflect the latest settings of the device.
+			A frame processed packet has no effect on the window itself, but is passed on to the PreviewArea element.
+			The preview area is a rectangle interface element with a gray background and a fixed aspect ratio based on the resolution of the video.
+			
 			\vspace{-0.5ex}
 			\begin{figuur}{Information Window of the Remote Control Application}
 				\singlespacing
@@ -945,10 +964,7 @@
 				\onehalfspacing
 			\end{figuur}
 
-			When a status update packet is passed to the \textit{on\_state\_update(\textellipsis)} method, the fields under the \textit{Device status} section are updated to reflect the latest settings of the device.
-			A frame processed packet has no effect on the window itself, but is passed on to the PreviewArea element.
-			The preview area is a rectangle interface element with a gray background and a fixed aspect ratio based on the resolution of the video.
-			Upon receiving a \textit{FrameProcessedPacket}, it quantizes the sinusoid lines from the packet back to Cartesian line parameters.
+			Upon receiving a \textit{FrameProcessedPacket}, the preview area quantizes the sinusoidal lines from the packet back to lines in the Cartesian space.
 			For each of these Cartesian lines, the intersections of the line with the rectangle element borders get calculated.
 			Finally, lines are drawn on the screen between these intersections.
 			If a departure is detected, the lines are drawn in red.
@@ -959,9 +975,49 @@
 
 		\begin{paragraaf}{Serial Interface}
 
-		\end{paragraaf}
+			The UART output from the system can be connected to a serial port of the workstation.
+			In userspace, this serial port is usually available as a virtual device.
+			On POSIX compliant operating systems it is available as \textrm{/dev/tty\textsubscript{N}} and on Windows NT and later as \textrm{COM\textsubscript{N}}.
+			I added a text input field to the information window where the path to the virtual device can be specifed.
+			Once the address has been entered, the \textit{Connect} button next to the input field can be clicked to instantiate the connection.
+			A background thread is created to prevent the GUI from freezing while I/O operations are being executed.
+			In this background thread, the virtual serial device is opened and the thread enters a loop that keeps reading incoming data until the connection is closed.
+			The opening of the serial connection is done using the Unix \textit{termios} API.
+			I used \textit{termios} because it allows easy configuration of the data bit amount and the parity bit setting.
+			The reading of the serial device is done using the standard Unix system call \textit{read} in blocking fashion to give the thread a chance to idle when no data is available.
+			This blocking call is indicated in \verwijzingb{figuur}{Serial Connection Activity Diagram} in red color.
+			\verwijzingb{figuur}{Serial Drivers in Unix-based Systems} gives an overview of the layers behind the drivers.
+			In the remote control application, I configure the TTY layer settings and use the user space layer for reading/writing.
+			I do not use the line discipline layer because the bytes need to be transferred raw, no control codes or characters need to be parsed.
 
-		\textbf{[todo:]}
+			\bigskip
+			\begin{figuur}{Serial Drivers in Unix-based Systems}
+				\vspace{-5ex}
+				\singlespacing
+				\centerline{
+					\includegraphics[width=0.8\textwidth, clip, trim=0cm 1cm 0cm 0.1cm]{rubini2006-img1.pdf}
+				}\vspace{-1.2ex}\cite{rubini2006serial}\vspace{-0.7ex}
+				\onehalfspacing
+			\end{figuur}
+			
+			After the data has been read into a buffer, a derived \textit{UartPacket} object is created depending on the opcode of the packet.
+			The fields of this object are set to the received values.
+			Then, the packet gets added to a single-ended FIFO queue that is shared with the GUI thread.
+			A mutex makes sure that this queue is only accessed by one thread at a time.
+			After parsing all received data from the buffer into packet objects and adding them to the queue, the serial thread dispatches a signal to the GUI thread that new data is available.
+			The data received callback in the GUI thread reads and removes all data packets from the queue and passes them to the information window, where they are handled as previously described.
+
+			\clearpage
+
+			\begin{figuur}{Serial Connection Activity Diagram}
+				\vspace{-5ex}
+				\singlespacing
+				\centerline{
+					\includegraphics{activity-diagram-serial}
+				}
+				\onehalfspacing
+			\end{figuur}
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 
