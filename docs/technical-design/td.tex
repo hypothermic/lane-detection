@@ -132,8 +132,8 @@
 	\begin{hoofdstuk}{System Overview}
 
 		The goal of this paragraph is to describe the problem that the product will solve in different layers of complexity.
-		Each layer will dissect the problem into more complexity than the previous.
-		This approach gives context to readers who might not be familiar with the fine technical concepts and who wish to grasp the knowledge at a higher level.
+		Each layer will dissect the problem into a finer detailed view than the previous.
+		This approach gives context to readers who might not be familiar with the fine technical concepts and who wish to grasp the methodology that was used to design the system at a higher level.
 
 		\begin{paragraaf}{Problem Domain}
 
@@ -142,25 +142,54 @@
 
 			\begin{figuur}{Operational Problem Domain}
 				\singlespacing
-				\includegraphics[width=\textwidth]{problem-domain}
+				\scalebox{0.9}{
+					\includegraphics[width=\textwidth]{problem-domain}
+				}
 				\onehalfspacing
 			\end{figuur}
+
+			The system is mainly affected by external forces such as the weather conditions and road quality, which influence the effectiveness of the detection algorithm.
+			One such weather condition is water on the road surface.
+			It causes refraction of sunlight into the camera lens, which causes the camera to become insensitive to light and the contrast between the road surface and the lane markings to lower.
+			The driver of the car influences the detection results by steering the car within the road lane and switching lanes.
 
 		\end{paragraaf}
 
 		\begin{paragraaf}{Information Context}
 
+			The system is connected to different pieces of hardware which all need to communicate with the system to produce an information flow.
+			With the diagram in \verwijzingb{figuur}{Information Context Diagram} I want to paint a picture of the general setup of the system.
+
+			\bigskip
+			
+			The devices are modelled as black boxes because the system does not have access to their internals.
+			The only thing known about these devices is that they exchange data via a certain protocol, which the system uses to communicate with them.
+			In the later paragraphes of this document, it will be described how the system communicates with these devices.
+
+			\begin{figuur}{Information Context Diagram}
+				\singlespacing
+				\scalebox{0.9}{
+					\includegraphics{information-context-diagram}
+				}
+				\onehalfspacing
+			\end{figuur}
+			\vspace{-2ex}
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{Component Definition}
 
-			In order to describe which components make up the total system, I have modeled two SysML block diagrams; a Block Definition Diagram (BDD) and an Internal Block Diagram (IBD).
-			The BDD shows the components that the system consists of and the Internal Block Diagram shows the relations and interfaces between these components.
-			The BDD can be thought of as a black box view that does not represent the inner workings of the system but rather the specifications of it, while the IBD shows exactly how the system is internally composed.
+			In order to describe which components make up the total system, I have modeled a SysML Block Definition Diagram.
+			This type of diagram shows a black box view of the components that the system consists of.
+			It does not represent the inner workings of the system, but rather how it is composed.
 
-			\begin{figuur}{The System as a SysML Block Definition Diagram}
+			\begin{figuur}{SysML Block Definition Diagram}
 				\singlespacing
-				%\includegraphics[width=\textwidth]{block-definition-diagram}
+				\centerline{
+					\scalebox{0.75}{
+						\includegraphics{block-definition-diagram}
+					}
+				}
 				\onehalfspacing
 			\end{figuur}
 
@@ -178,7 +207,7 @@
 			These AXI interfaces are hard-IP that connect PS and PL with user-definable 32-bit wide digital connections.
 		
 			\vspace{-0.6ex}
-			\begin{figuur}{The components used for implementing The System}
+			\begin{figuur}{The Components used for implementing The System}
 				\singlespacing
 				\includegraphics{implementation-strategy}
 				\onehalfspacing

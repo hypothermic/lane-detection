@@ -1,0 +1,115 @@
+\begin{tikzpicture}
+
+	\tikzstyle{sysml block}=[draw,rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
+
+	\tikzstyle{sysml aggreg}=[{Diamond[open, scale=1.2]}-{Straight Barb[scale=1.25, scale length=1.375]}, thick];
+	\newcommand{\sysmlstereo}[1]{\textcolor{darkgray}{\guillemotleft \small{#1}\guillemotright}}
+
+	\node (system) [sysml block] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		\sysmlstereo{system} \\
+		Lane Detector
+	};
+	
+	\coordinate [below=1.75cm of system] (mid);
+	
+	\node (part dl) [sysml block, left=1cm of mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		\sysmlstereo{subsystem} \\
+		Digital Logic
+	};
+
+	\coordinate [below=1.75cm of part dl] (part dl mid);
+	\node (part dl axi) [sysml block, left=1cm of part dl mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		AXI Bus
+	};
+	\node (part dl dma) [sysml block, right=1cm of part dl mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		DMA Control
+	};
+	\node (part dl vpu) [sysml block, below=1.75cm of part dl mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		Video Processing Unit
+	};
+
+	\node (part hw) [sysml block, left=2cm of part dl] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		\sysmlstereo{external} \\
+		Hardware
+	};
+
+	\coordinate [below=1.75cm of part hw] (part hw mid);
+	\node (part hw cam) [sysml block, left=1cm of part hw mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		Dashcam
+	};
+	\node (part hw adas) [sysml block, below=1.75cm of part hw mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		ADAS
+	};
+
+	\node (part ps) [sysml block, right=1cm of mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		\sysmlstereo{subsystem} \\
+		Processing System
+	};
+	
+	\node (part ps driver) [sysml block, below=3.5cm of part ps] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		Driver
+	};
+
+	\node (part sw) [sysml block, right=2cm of part ps] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{physical} \\
+		\sysmlstereo{subsystem} \\
+		Software
+	};
+
+	\coordinate [below=1.75cm of part sw] (part sw mid);
+	\node (part sw gui) [sysml block, right=1cm of part sw mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		GUI
+	};
+	
+	\node (part sw serial) [sysml block, left=0.9cm of part sw mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		UART
+	};
+	
+	\node (part sw idk) [sysml block, below=1.75cm of part sw mid] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{component} \\
+		Live Preview
+	};
+
+	\draw [sysml aggreg] (system) to [bend right=12] (part hw.north);
+	\draw [sysml aggreg] (system) -- (part dl.north);
+	\draw [sysml aggreg] (system) -- (part ps.north);
+	\draw [sysml aggreg] (system) to [bend left=8] (part sw.north);
+	\draw [sysml aggreg] (part dl) -- (part dl axi.north);
+	\draw [sysml aggreg] (part dl) -- (part dl vpu.north);
+	\draw [sysml aggreg] (part dl) -- (part dl dma.north);
+	\draw [sysml aggreg] (part hw) -- (part hw cam.north);
+	\draw [sysml aggreg] (part hw) -- (part hw adas.north);
+	\draw [sysml aggreg] (part ps) -- (part ps driver.north);
+	\draw [sysml aggreg] (part ps) -- ([xshift=-0.5cm]part sw serial.north);
+	\draw [sysml aggreg] (part sw) -- ([xshift=0.5cm]part sw serial.north);
+	\draw [sysml aggreg] (part sw) -- (part sw gui.north);
+	\draw [sysml aggreg] (part sw) -- (part sw idk.north);
+
+\end{tikzpicture}
+

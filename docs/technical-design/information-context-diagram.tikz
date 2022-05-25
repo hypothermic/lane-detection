@@ -1,0 +1,72 @@
+\begin{tikzpicture}
+
+	\tikzstyle{sysml block}=[draw,rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
+
+	\newcommand{\sysmlstereo}[1]{\textcolor{darkgray}{\guillemotleft \small{#1}\guillemotright}}
+	%\newcommand{\sysmlrect}[2]{
+	%	\node[sysml block] {
+	%		%\foreach \stereo in {#1} {\sysmlstereo{\stereo}}
+	%		\sysmlstereo{block} \\
+	%		#2
+	%	}
+	%}
+	%\newcommand{\sysmlblock}[1]{
+	%	\sysmlrect{{block}}{#1}
+	%}
+	%\sysmlblock{Lane Detector};
+
+	\node (embedded) [sysml block] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{embedded system} \\
+		Lane Detector
+	};
+	
+	\node (dashcam) [sysml block, above left=1.25cm and 2.5cm of embedded] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{input device} \\
+		Dashcam
+	};
+
+	\node (ldws) [sysml block, below=1.25cm of dashcam] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{output device} \\
+		LDWS
+	};
+
+	\node (uart) [sysml block, below=1.25cm of ldws] {
+		\sysmlstereo{block} \\
+		\sysmlstereo{output device} \\
+		Serial
+	};
+
+	\node (environment) [left=2.5cm of dashcam, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (environment) {
+		\sysmlstereo{external} \\
+		Environment
+	};
+
+	\node (adas) [left=2.5cm of ldws, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (adas) {
+		ADAS
+	};
+
+	\node (mechanic) [left=2.5cm of uart, tikzuml actor style] {
+		\picturedactor{scale=1, fill=white,draw=black,thick}
+	};
+	\node[text=black,below=20pt, align=center] at (mechanic) {
+		Mechanic
+	};
+
+	\draw [-latex, thick] (environment) -- (dashcam) node [midway,sloped,above] {\small influences};
+	\draw [-latex, thick] (dashcam.east) -- (embedded) node [midway,sloped,above] {\small inputs to};
+	\draw [-latex, thick] (embedded) -- (ldws) node [midway,sloped,above] {\small outputs to};
+	\draw [-latex, thick] (embedded) -- (uart.east) node [midway,sloped,above] {\small outputs to};
+	\draw [-latex, thick] (ldws) -- (adas) node [midway,sloped,above] {\small outputs to};
+	\draw [-latex, thick] (mechanic) -- (uart) node [midway,sloped,above] {\small observes};
+
+\end{tikzpicture}
+
