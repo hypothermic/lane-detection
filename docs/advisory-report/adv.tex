@@ -1,0 +1,233 @@
+% !TEX program = lualatex
+\PassOptionsToPackage{table}{xcolor}
+\documentclass{matthijs}
+\graphicspath{{../assets/}{./docs/assets/}{./docs/advisory-report/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Advisory Report}
+	\Subject{Reflection on the project results and the way forward}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{advisory\sep advise\sep report}
+\end{filecontents*}
+
+\input{preamble.tex}
+\usepackage{titlepage}
+
+\addbibresource{adv.bib}
+
+%\usepackage{tikz}
+%\usepackage{tikz-uml}
+%\usetikzlibrary{positioning, arrows.meta}
+
+%\usepackage{tabularx}
+
+\begin{document}
+
+	% Set language to English
+	\taal{en}
+
+	\maketitlepage{Advisory Report}{1.0}
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+	
+	\begin{inhoudspagina}
+
+	\end{inhoudspagina}
+
+	\pagenumbering{arabic}
+
+	\begin{hoofdstuk}{Preface}
+
+		The project started out with the goal to lower the production cost and complexity of existing road lane detection systems by using FPGA technology.
+		Unlike traditional computer architectures, Field Programmable Gate Arrays can be designed to do massively scaled parallel computations.
+		This can be beneficial for implementing image processing algorithms because they are computation heavy; they carry out a large amount of mathematical operations and memory read/write operations.
+		The high data throughput of FPGAs does not compromise on their power efficiency, making them suitable for embedded fields.
+
+		\bigskip
+
+		In this document, I will reflect upon the choices made during the project and the results of the proof-of-concept system.
+		The first paragraph is about the different hardware peripherals that were used to create the system.
+		A new development board was purchased halfway the project and confirmation is needed that this choice paid off.
+		The next paragraph is about the effectiveness of the lane marking detection algorithm.
+		Test results are drawn to rate if it meets the requirements.
+		In the last paragraph, the future vision of the lane detector product is discussed.
+		Suggestions for improving the product are given, which can be taken into account for potential future projects.
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Hardware Choices}
+	
+		\begin{paragraaf}{FPGA Technology}
+
+			To answer the question of whether using FPGA technology is worth it or not, we have to compare the positives and the drawbacks of this technology.
+			I will illustrate each point by comparing the system with a similar platform like the Nvidia Jetson nano, or by giving a scenario from the development process of this project.
+
+			\begin{subparagraaf}{Processing Latency}
+
+				Speed measurements of digital logic applications can be taken very precisely because they require a set amount of clock cycles to complete.
+				The Vitis HLS tool gave me the required amount of clock cycles for one video frame to be processed.
+				I divided this by the system clock of 125 MHz to get the exact time required to process one frame.
+				The prototyping framework that I used added a variable amount of latency on top of this.
+				I measured the extra latency that the framework added by using its timing tools.
+				As described in the \textit{Benchmarks} paragraph of the technical design, the raw processing latency of the digital logic is 11.2 milliseconds.
+				The total time including the latency that the prototyping framework added is 26.6 ms with a standard deviation of 0.44 ms.
+
+				\bigskip
+
+				As a reference to compare the speed of the FPGA implementation to, I recreated th pipeline using OpenCV with the OpenCL backend.
+				This allowed me to run the calculations on my laptop GPU.
+				It should give us a rough estimate of how platforms like Nvidia Jetsons should perform.
+				The average frame latency of the reference implementation is 14.2 milliseconds with a standard deviation of 0.8 ms.
+
+				\bigskip
+
+				The conclusion is that the FPGA implementation performed faster than a low-end GPU running the reference application.
+				However, it should be taken into account that the FPGA implementation needs to be further developed without the prototyping framework to drive the total latency down.
+				Nonetheless, the FPGA implementation was able to process at a rate of more than 30 frames per second, making it suitable for dashcams of this caliber.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Power Efficiency}
+
+				I was able to estimate the power consumption of the FPGA using the Vitis hardware cosimulation tool.
+				The estimation was a constant power draw of 0.728 Watt.
+				This number does not take into account the power draw by the ARM Cortex processor system.
+				By using the power analysis tool in Vivado, I measured the total SoC power draw to be 2.246 Watt.
+				Circa 0.715 Watt was reported to be drawn by the digital logic, while the majority of 1.538 Watt was estimated to be drawn by the processor system.
+				Depending on how much load is put on the CPUs cores, this figure can fluctuate by $\pm$0.160W.
+				I estimate that the power consumption of the processor system will be reduced without using the PYNQ prototyping framework, leaving much headroom for improvement.
+
+				\bigskip
+
+				Comparing the power consumption to the Nvidia Jetson Nano, the Zynq chip comes out on top.
+				The Jetson Nano easily hits its default limit of 10 Watt when processing at constant load.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Unit Cost}
+
+				The SoC that the system runs on is 7 euros on Farnell.
+				It can be paired with 128 megabytes of cheap LPDDR memory and integrated into existing systems.
+				The cost per unit is well under EUR 10 and can be lowered to half when purchasing the components in bulk.
+
+				\bigskip
+
+				The XC7Z020 chip that was used can also be purchased in different qualifications.
+				The qualification determines the speed grade and the operating temperature range of the chip.
+				On the development board, a chip with 2L speed grade and a temperature range of $-40^\circ$C to $+100^\circ$C was installed.
+				If the use case does not require these qualifications, a cheaper variant of the chip can be purchased.
+
+				\bigskip
+
+				If desired, the cost per unit can be lowered even further by creating ASICs of thedigital logic, making them very inexpensive to produce in bulk.
+				It should be noted that this only pays off when ordering large amounts of these chips as there are high costs associated with creating the initial molds and designs for these ASICs.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Development Cost}
+
+				The complexity of developing for FPGAs is higher than for traditional GPU-accelerated platforms because the developer is working at a lower level.
+				Although I coded the largest part of the digital logic in the C++ language and synthesized it to hardware using high level synthesis, the paradigms of the code still related to the low level workings of the digital logic.
+				If we compare this to GPU programming with the OpenCL shader lanaugage, the latter is substantially higher level because it uses abstraction layers.
+				More complex projects require more developers working on them and more rigorous testing, increasing the cost.
+
+				\bigskip
+
+				In the FPGA world, the two main manufacturers have over ninety percent of the marketshare.
+				Xilinx and Altera both have their own ecosystem and proprietary development tools which are not interchangeable with each other.
+				I used the Vivado and Vitis design tools using my free student license, but the regular price is over 3000 USD.
+				These costs have to be factored in when deciding on whether or not the development cost outweighs the benefits.
+
+			\end{subparagraaf}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Development Boards}
+
+			Initially, we planned to develop the system on the Digilent Arty A7 development board because it was immediately availabile and I was familiar with it.
+			While making initial designs for the hardware, I realized that the FPGA chip on this board did not have enough memory to store the video frames and/or the Hough voting accumulator.
+			Another downside of this development board was that it was not officially supported by the Vitis Vision library.
+			I looked at other development boards and considered the TUL PYNQ-Z2 board, which met the memory requirements and was officially supported by the vision library.
+			I proposed this board to my company mentor and received confirmation to purchase it.
+
+			\bigskip
+
+			Another advantage of the Z2 board turned out to be one that I had not read about up front: it had a dedicated processor system on-board.
+			The board's user guide convinced me to look into this processor system and found that it had an option to use a prototyping framework.
+			This prototyping framework can run Python-based Jupyter Notebook scripts that are able to interact with peripherals in the FPGA logic.
+			Developing the video processing logic with the quick prototyping scripts alongside gave me easier debugging and more insight into the hardware.
+			I was also able to transfer sample videos to the device, load them into memory, and pump them through the video processing logic.
+			This greatly sped up the development of the system.
+			My experience with this new board was overwhelmingly positive and I do recommend this board for video processing applications.
+
+		\end{paragraaf}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Detection Algorithms}
+
+		\begin{paragraaf}{Environmental Conditions}
+
+			Initially, while writing the research paper, I was positive about the lane marking detection pipeline as it was quite effective on sample images from the Berkeley DeepDrive dataset.
+			However, after implementing it in a system and testing it with real-world videos, I am disappointed by the overall effectiveness of the pipeline.
+			It works well on footage where the contrast between the road and the lane markings is high, such as footage that was recorded in night time and footage that was recorded on fresh asphalt roads.
+			If the sun shines into the camera or if the road surface is overly reflective, the contrast can be too low, causing the preprocessing of the video frame to be inable to properly segment the lane markings.
+			This, in turn, causes no edge pixels to be found once the preprocessing stage is over, meaning that the Hough transform does not have data to work with.
+			More effective preprocessing methods for these scenarios should be investigated.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{False Edge Detection}
+
+			Objects with straight horizontal edges like guardrails, poles and buildings can be picked up as valid edges by the Hough transform.
+			In the research paper, I discussed several methods of classifying and ignoring edges, such as based on their gradient angle.
+			I did not implement this classification in the system due to it not being part of the proposed pipeline.
+			Another technique of minimizing roadside artifacts which I discussed in the research paper is the use of regions of interest.
+			I chose not to implement this technique because it requires manual definition of the region, making it a less flexible technique when using it in production.
+			This region would also need to be adjusted based on the position of the camera and the size of the vehicle, making it inflexible.
+			It should be reevaluated if edge classification and region of interest definition are worthwhile methods to improve the effectiveness of the detection pipeline.
+
+		\end{paragraaf}
+
+	\end{hoofdstuk}
+
+	\begin{hoofdstuk}{Conclusion}
+
+		Compared to systems that are used in similar scenarios, like the Nvidia Jetson Nano, the Zynq FPGA used in this project can process at a lower latency and at a higher power efficency.
+		However, it is more complex to program and requires an expensive proprietary development toolsuite.
+		In general, the unit costs for FPGA-centered systems are lower than the competition because they are produced without being tailored to one purpose, making them widely available.
+		To lower the unit costs even more, ASIC designs can be created from the digital logic.
+		However, this does bring a high up front cost.
+		The design of an ASIC needs to be formally verified and proven to make sure that it meets the requirements, because it cannot be modified after production.
+
+		\bigskip
+
+		The lane marking detection algorithm leaves a lot to be desired, and needs to be reevaluated.
+		In its current state, the algorithm is only effective in environments where the contrast between the road and the lane markings is high, due to a lack of image preprocessing.
+		Video samples with high amounts of roadside artifacts have shown that objects with straight horizontal edges like poles and guardrails can be falsely classified and can cause invalid results.
+		I suggest that the lane marking detection can be improved in future projects by using other edge classification techniques, like Canny edge detection and gradient angle filtering.
+		One could also evaluate whether the use of region of interest cropping is a worthwhile technique to use, as it has significant upsides and downsides.
+
+
+		\bigskip
+
+		In my eyes, FPGA technology has a lot of potential in the world of image processing.
+		Some upsides of this technology have already come to light after evaluating the proof-of-concept system.
+		The biggest upside is the high power efficiency compared to GPU-oriented systems.
+		In a rough comparison with a reference Jetson Nano, the PoC system is five times as power efficient while performing at 1.25x the speed.
+		Another positive thing is that the cost per unit is seven times lower than the Jetson Nano 2GB variant.
+		The biggest downsides of the technology are its complexity and its high up front development cost.
+
+	\end{hoofdstuk}
+
+	% Bibliography page
+%	\begin{hoofdstuk}{References}
+%
+%		\printbibliography[heading=none]
+%
+%	\end{hoofdstuk}
+
+	\makelastpage
+
+\end{document}
