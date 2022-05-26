@@ -43,6 +43,7 @@ jobs:
             docs/functional-design/fd.tex
             docs/technical-design/td.tex
             docs/advisory-report/adv.tex
+            docs/internship-report/ir.tex
           work_in_root_file_dir: false
           latexmk_use_lualatex: true
           working_directory: "."
@@ -63,6 +64,7 @@ jobs:
             docs/functional-design/fd.pdf
             docs/technical-design/td.pdf
             docs/advisory-report/adv.pdf
+            docs/internship-report/ir.pdf
       - name: Compile code doc
         run: make compile-docs-code
       - name: Upload code documentation as artifact
