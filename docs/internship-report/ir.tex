@@ -1,0 +1,155 @@
+% !TEX program = lualatex
+\PassOptionsToPackage{table}{xcolor}
+%\PassOptionsToPackage{draft}{graphicx}
+\documentclass{matthijs}
+\graphicspath{{../assets/}{./docs/assets/}{./docs/advisory-report/}}
+
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+	\Title{Internship Report}
+	\Subject{Reflection on the project results}
+	\Author{Matthijs Bakker}
+	\Language{en-US}
+	\Keywords{internship\sep final\sep written\sep report}
+\end{filecontents*}
+
+\input{preamble.tex}
+\usepackage{titlepage}
+
+\addbibresource{ir.bib}
+
+% Typography
+\babelfont{tt}{Inter-Regular}
+\babelfont{rm}{Merriweather-LightItalic}
+\usepackage{lettrine}
+
+\definecolor{arobs blue}{HTML}{0e2642}
+\definecolor{arobs comp}{HTML}{422a0e}
+\definecolor{invisible}{rgb}{1,1,1}
+
+% Page numbering
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\lfoot{\textcolor{invisible}{\gitAbbrevHash~\gitAuthorName~\gitAuthorIsoDate}}
+\rfoot{\textbf{\thepage}\hspace{1ex}of\hspace{1ex}\pageref{LastPage}}
+
+%\usepackage{tikz}
+%\usepackage{tikz-uml}
+%\usetikzlibrary{positioning, arrows.meta}
+
+%\usepackage{tabularx}
+
+\titleformat{\section}{\Large\bfseries\rmfamily\lsstyle\color{arobsblue}}{}{0em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
+\titleformat{\subsection}{\large\bfseries\rmfamily\lsstyle\color{arobsblue}}{}{0em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
+
+\renewcommand{\LettrineFontHook}{\rmfamily}
+
+\begin{document}
+
+	% Set language to English
+	\taal{en}
+
+	\maketitlepage{Internship Report}{1.0}
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+	
+	\lefthyphenmin=3
+	\righthyphenmin=3
+
+	\begin{hoofdstuk*}{Summary}
+
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+
+		\lettrine[findent=0.3em, nindent=0.0em, lraise=0.03]{R}{esearch} conducted in the US by the National Highway Traffic Safety Administration in 2016 found that 94 percent of all motorvehicle accidents that year could be attributed to human error \cite{nhtsa2017fatal}.
+		Twenty-one percent of these accidents were so-called ``run-off-road crashes.''
+		This type of accident involves a single vehicle veering off the road and colliding with a natural or artifical object \cite{liu2009factors}.
+		The most common causes were driver intoxication and fatigue \cite{nhtsa2017fatal}.
+
+		The automotive department of AROBS is on a mission to enable vehicles to be more autonomous.
+		By requiring less human input, cars can drive in a more predictable and safer manner.
+		AROBS has been developing an Advanced Driver-Assistance System (ADAS) that consists of numerous subsystems which warn the driver of danger on the road.
+		One of these subsystems is called the Lane Departure Warning System (LDWS).
+		It predicts when the vehicle is about to leave the road lane and propagates a warning to the ADAS so that precautionary measures can be taken to prevent incidents.
+
+		In order to detect the road lane that the vehicle is driving in, the LDWS analyzes video footage from a camera mounted on the dashboard.
+		Resource-demanding image processing techniques are run on a Graphical Processing Unit (GPU) integrated in the vehicle's onboard computer to scan for road lane markings and to predict the position of the car.
+		The GPUs used for this purpose are expensive and power-inefficient, raising the total cost of the system.
+
+		Due to a global chip shortage since the start of the COVID-19 pandemic, the prices of semiconductors have spiked \cite{ivanova2021chip}.
+		In particular, the prices of GPUs have surged up to 50 percent of their list price \cite{cheng2021chip}.
+		This has led chip consumers like AROBS to explore alternative technologies.
+		A popular alternative that can empower high-bandwidth image processing technologies are Field Programmable Gate Arrays.
+		Whereas GPUs are multi-purpose devices which can programmed for many different tasks, FPGAs have to be specifically designed to do one single task.
+		The FPGA designer has fine-grain control over the layout of the FPGA, enabling the possibility for creating devices that are tailored for a specific use case.
+		An FPGA can be designed to do parallel tasks like video processing at a high bandwidth and low power draw, making is suitable for being integrated in embedded systems.
+
+		The goal of my internship was to create a road lane marking detection system at a lower production cost and higher power efficiency than existing systems.
+		I accomplished this goal by creating an FPGA-centered system that uses digital logic for its video processing task and a CPU for its decision making.
+		The integration with other subsystems and devices is made possible through a UART interface.
+		The device can process a video frame in 11.2 milliseconds and has an average power draw of 2.246 Watt.
+		Compared to a popular GPU-oriented alternative, the Nvidia Jetson Nano, the system is four times more power efficient, 20 percent faster, and the production cost is seven times lower.
+		A drawback of the system is that the lane marking detection does not work well under certain environmental conditions.
+		The accuracy of detection depends on the quality of the road surface and lane markings, and the absence of roadside artifacts.
+		The detection is too unreliable for a finalized product.
+
+	\end{hoofdstuk*}
+
+	\begin{inhoudspagina}
+
+	\end{inhoudspagina}
+
+	\pagenumbering{arabic}
+
+	\begin{hoofdstuk*}{Preface}
+
+	\end{hoofdstuk*}
+	
+	\begin{hoofdstuk}{Project Definition}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{The Product}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Management and Control}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Analyse}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Advise}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Design}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Implementation}
+
+	\end{hoofdstuk}
+	
+	\begin{hoofdstuk}{Professional Development}
+
+	\end{hoofdstuk}
+
+	% Bibliography page
+	\begin{hoofdstuk}{References}
+
+		\printbibliography[heading=none]
+
+	\end{hoofdstuk}
+
+	\makelastpage
+
+\end{document}
