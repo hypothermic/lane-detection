@@ -2,7 +2,7 @@
 \PassOptionsToPackage{table}{xcolor}
 %\PassOptionsToPackage{draft}{graphicx}
 \documentclass{matthijs}
-\graphicspath{{../assets/}{./docs/assets/}{./docs/advisory-report/}}
+\graphicspath{{../assets/}{./docs/assets/}{./docs/internship-report/}}
 
 \begin{filecontents*}[overwrite]{\jobname.xmpdata}
 	\Title{Internship Report}
@@ -38,14 +38,14 @@
 \lfoot{\textcolor{invisible}{\gitAbbrevHash~\gitAuthorName~\gitAuthorIsoDate}}
 \rfoot{\textbf{\thepage}\hspace{1ex}of\hspace{1ex}\pageref{LastPage}}
 
-%\usepackage{tikz}
+\usepackage{tikz}
 %\usepackage{tikz-uml}
-%\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta}
 
 %\usepackage{tabularx}
 
-\titleformat{\section}{\Large\bfseries\rmfamily\lsstyle\color{arobsblue}}{}{0em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
-\titleformat{\subsection}{\large\bfseries\rmfamily\lsstyle\color{arobsblue}}{}{0em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
+\titleformat{\section}{\Large\bfseries\rmfamily\lsstyle\color{arobsblue}}{\thesection}{1.1em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
+\titleformat{\subsection}{\large\bfseries\rmfamily\lsstyle\color{arobsblue}}{\thesubsection}{1.1em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
 
 \renewcommand{\LettrineFontHook}{\rmfamily}
 
@@ -66,10 +66,10 @@
 		\setlength\parindent{1.5em}
 		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
 		\linespread{1.2}
-
+		
 		\lettrine[findent=0.3em, nindent=0.0em, lraise=0.03]{R}{esearch} conducted in the US by the National Highway Traffic Safety Administration in 2016 found that 94 percent of all motorvehicle accidents that year could be attributed to human error \cite{nhtsa2017fatal}.
 		Twenty-one percent of these accidents were so-called ``run-off-road crashes.''
-		This type of accident involves a single vehicle veering off the road and colliding with a natural or artifical object \cite{liu2009factors}.
+		This type of accident involves a single vehicle veering off the road and colliding with a natural or artificial object \cite{liu2009factors}.
 		The most common causes were driver intoxication and fatigue \cite{nhtsa2017fatal}.
 
 		The automotive department of AROBS is on a mission to enable vehicles to be more autonomous.
@@ -79,15 +79,15 @@
 		It predicts when the vehicle is about to leave the road lane and propagates a warning to the ADAS so that precautionary measures can be taken to prevent incidents.
 
 		In order to detect the road lane that the vehicle is driving in, the LDWS analyzes video footage from a camera mounted on the dashboard.
-		Resource-demanding image processing techniques are run on a Graphical Processing Unit (GPU) integrated in the vehicle's onboard computer to scan for road lane markings and to predict the position of the car.
+		Resource demanding image processing techniques are run on a Graphical Processing Unit (GPU) integrated in the vehicle's onboard computer to scan for road lane markings and to predict the position of the car.
 		The GPUs used for this purpose are expensive and power-inefficient, raising the total cost of the system.
 
 		Due to a global chip shortage since the start of the COVID-19 pandemic, the prices of semiconductors have spiked \cite{ivanova2021chip}.
 		In particular, the prices of GPUs have surged up to 50 percent of their list price \cite{cheng2021chip}.
 		This has led chip consumers like AROBS to explore alternative technologies.
-		A popular alternative that can empower high-bandwidth image processing technologies are Field Programmable Gate Arrays.
+		A popular alternative that can empower high-bandwidth image processing technologies are Field Programmable Gate Arrays (FPGAs.)
 		Whereas GPUs are multi-purpose devices which can programmed for many different tasks, FPGAs have to be specifically designed to do one single task.
-		The FPGA designer has fine-grain control over the layout of the FPGA, enabling the possibility for creating devices that are tailored for a specific use case.
+		The FPGA designer has fine-grained control over the layout of the FPGA, enabling the possibility for creating devices that are tailored for a specific use case.
 		An FPGA can be designed to do parallel tasks like video processing at a high bandwidth and low power draw, making is suitable for being integrated in embedded systems.
 
 		The goal of my internship was to create a road lane marking detection system at a lower production cost and higher power efficiency than existing systems.
@@ -109,9 +109,147 @@
 
 	\begin{hoofdstuk*}{Preface}
 
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+
+		This document aims to summarize all that I have worked on for the last eighteen weeks and to put it in an easy-to-read format.
+		I will describe the different stages of the internship project, from conceptualization to realization.
+		The first chapter is mainly about the internship organization, the stakeholders and the issue context.
+		From this chapter, the reader will be able to grasp the intent of the project and how we expected to take this market opportunity.
+		To contrast the expectations with reality, the next chapter entails the final product that I delivered.
+		The purpose of each deliverable is explained and the way that they together form the system is illustrated.
+
+		Chapters three to seven are dedicated to the professional activities.
+		They show that the level at which the project was executed meets the level that is expected of me.
+		The first activity, Management and Control, entails aspects related to the approach of the project, like the planning, the sequence, and the version management.
+		Next comes the chapter Analyze, in which I will reflect back on my activities during the research phase of the project.
+		This phase was important to the project because it shaped my knowledge on image processing and was of massive support when implementing the algorithms on my own.
+		The Advise chapter explains how I arrived at the conclusions that I made in the advisory report, and gives a discussion on the results of the project.
+		As per the planning, I spent seven weeks on the realization of the product.
+		This stage of the project is discussed in the Design and Implementation chapters of this document.
+
+		Last but not least, I will reflect back on my personal development during this project.
+		At the beginning of the internship I set out personal goals that I wanted to work on.
+		Reflecting back on these goals gives me new insights and helps me improve myself for future endeavors.
+		My time in Romania has shown me a lot about who I am and what my qualities are within this field of study, and I would like to share my experience in this chapter.
+
+
 	\end{hoofdstuk*}
 	
 	\begin{hoofdstuk}{Project Definition}
+
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+
+		\begin{paragraaf}{The Organization}
+
+			AROBS Group is an global organization with branches in Europe and Asia.
+			It is most well known for developing the TrackGPS fleet management software, which is the most used vehicle monitoring software in Romania.
+			Additionally, it provides custom software services in areas such as Automotive, Cybersecurity, Life Sciences and HR management.
+			The workforce entails over one thousand employees across nineteen offices.
+
+			\vspace{0.3ex}
+			\begin{figuur}{External view of the Cluj Business Center}
+
+				\includegraphics[width=0.75\textwidth, clip, trim=0cm 2cm 0cm 0cm]{cbc.jpg}
+
+			\end{figuur}
+			\vspace{-0.2ex}
+
+			\noindent The primary office of AROBS is located in Cluj-Napoca, Romania. 
+			It spans the second and third floor of the Cluj Business Center and houses a large part of the automotive department, consisting of over 400 employees.
+			I spent most of my time working in the embedded department on the third floor of the building, where I was surrounded by friendly colleagues who were knowledgeable about anything from microcontrollers to FPGAs.
+			
+			Even though I was the only foreigner in the team, my colleagues were very welcoming and the atmosphere was pleasant.
+			They tried their best to speak English when I was around in order to include me in the conversation, which I really appreciated.
+			My desk was near a window with a beautiful view over the Baciu forest and the northern suburbs of Cluj that surrounded it.
+			A kitchen with the imperative coffee machine was just a small walk away.
+			The business center also had facilities that I frequently made use of.
+			Located on the first floor was a brunch restaurant from which a sweet smell emanated and filled the fitness center next to it.
+			At the entrance was a coffee bar where I occasionally got my morning coffee.
+			Once per month, a beer night was held to unite the department and encourage social activity among employees.
+			I got the impression that AROBS is a modern company which invests in its employees by offering diverse activities.
+
+			\noindent I was handed a laptop which I used for preparing documents and communicating with colleagues.
+			Most internal communication at the company happened over Skype because it enabled inter-office messaging and helped to reach those who work at home.
+			I was pleased with using Skype because I could instantly reach my company mentor and a few others who I was close with.
+			It also allowed sending intermediate results during the development phase and getting feedback on them within a short timeframe.
+
+			\vspace{1ex}
+			\begin{figuur}{Organogram of AROBS Group}
+				\centerline{
+					\scalebox{0.9}{
+				\begin{tikzpicture}
+					
+					\tikzstyle{grp}=[draw=black!24, align=right];
+					\tikzstyle{man}=[draw=black!24, fill=green!12, align=center, inner sep=0.75em];
+
+					\node (org) [grp, fill=blue!6, minimum width=80ex, minimum height=84ex, inner sep=0] {};
+					\node (org label) [below right=0.8em and 0.8em of org.north west, align=left] {AROBS Group};
+					\node (org man 1) [man, below=3ex of org.north] {\textit{Managing Director} \\ Oprean, V.};
+
+					\node (rom) [grp, fill=blue!12, minimum width=60ex, minimum height=70ex, anchor=south west, above right=1ex and 1ex of org.south west, inner sep=0] {};
+					\node (rom label) [below right=0.8em and 0.8em of rom.north west, align=left] {AROBS Transilvania SA};
+					\node (rom man 1) [man, below=7ex of rom.north] {\textit{Executive Director} \\ Deaconu, A.C.};
+					
+					\node (oth) [grp, fill=blue!12, minimum width=17ex, minimum height=70ex, anchor=south east, above left=1ex and 1ex of org.south east, inner sep=0] {};
+					\node (oth label) [below=0.8em of oth.north, align=center] {Intl. Units};
+
+					\node (aum) [grp, fill=blue!18, minimum width=47ex, minimum height=52ex, anchor=south west, above right=1ex and 1ex of rom.south west, inner sep=0] {};
+					\node (aum label) [below right=0.8em and 0.8em of aum.north west, align=left] {Automotive Dept.};
+					\node (aum man 1) [man, below=6ex of aum.north] {\textit{Head of Automotive} \\ Morariu, S.};
+
+					\node (otm) [grp, fill=blue!18, minimum width=10ex, minimum height=52ex, anchor=south east, above left=1ex and 1ex of rom.south east, inner sep=0] {};
+					\node (otm label) [below=0.8em of otm.north, align=center] {\textellipsis};
+
+					\node (emb) [grp, fill=blue!24, minimum width=38ex, minimum height=34.5ex, anchor=south west, above right=1ex and 1ex of aum.south west, inner sep=0] {};
+					\node (emb label) [below right=0.8em and 0.8em of emb.north west, align=left] {Embedded Sector};
+					\node (emb man 1) [man, below=6ex of emb.north] {\textit{Head of Embedded} \\ Ghinescu, V.};
+					\node (emb man 2) [man, below=3ex of emb man 1.south] {\textit{Senior Developer} \\ Jeong, P.};
+					\node (emb man 3) [man, below=3ex of emb man 2.south] {\textit{Intern} \\ Bakker, M.};
+					
+					\node (ots) [grp, fill=blue!24, minimum width=6ex, minimum height=34.5ex, anchor=south east, above left=1ex and 1ex of aum.south east, inner sep=0] {};
+					\node (ots label) [below=0.8em of ots.north, align=center] {\textellipsis};
+
+					\draw [-] (org man 1) -- (rom man 1);
+					\draw [-] (rom man 1) -- (aum man 1);
+					\draw [-] (aum man 1) -- (emb man 1);
+					\draw [-] (emb man 1) -- (emb man 2);
+					\draw [-] (emb man 2) -- (emb man 3);
+
+				\end{tikzpicture}
+					}
+				}
+			\end{figuur}
+			\vspace{-0.2ex}
+
+			\noindent I worked on the project alone, under the lead of my mentor.
+			We talked multiple times per week when I had questions or new results to show.
+			During the most critical phase of the project, the realization phase, we agreed to plan an additional meeting every Friday at 2 PM.
+			These meetings allowed me to give updates on the development progress and any roadblocks I was facing.
+			Other weeks were mostly spent on documentation and it was not worth holding meetings because I would not have much news to show.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{The Project}
+
+			One of AROBS' specialties is developing solutions for the automotive industry.
+			Many of its clients have integrated the in-house developed Advanced Driver-Assistance System (ADAS) that aims to make cars more autonomous and relieve the driver of repetitive tasks.
+			The value of automation in cars becomes clear when we view the statistics of road accidents: according to several studies \cite{nhtsa2017fatal} \cite{liu2009factors} \cite{dod2011run} conducted in the United States by the National Highway Traffic Safety Administration, \textit{human error} is the main factor in all fatal highway motorvehicle accidents.
+			The study from 2016 shows that 94 percent of these were so-called "run-off-road crashes," which involved a single vehicle veering off the road and colliding with a natural or artificial object \cite{nhtsa2017fatal}.
+			In these cases, the most common reason why the drivers lost control were intoxication and fatigue \cite{nhtsa2017fatal}.
+			
+			To take preventive measures against run-off-road crashes, the ADAS can be fitted with subsystems like a Lane Keeping System and a Lane Departure Warning System (LDWS).
+			The latter is able to predict when a car is about to leave the lane and signal the ADAS of danger.
+			Similarly to the stick shaker being activated in an aeroplane when it is about to stall, the car can notify the driver with a vibratory or auditory warning when it is unintentionally leaving the road lane.
+
+			In order to detect the position of the vehicle relative to the road lane, a video feed from the dashcam is processed by a computer vision algorithm.
+			This algorithm is computationally expensive and requires to be run on an accelerated computing device called a Graphical Processing Unit (GPU.)
+			This type of device has a high production cost and 
+
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
