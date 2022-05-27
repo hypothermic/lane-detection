@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+
+	\tikzstyle{sysml block}=[draw=black!24, rectangle,rounded corners=0.75ex,fill=blue!15,align=center,inner ysep=1ex, inner xsep=2ex];
+	\tikzstyle{sysml aggreg}=[{Diamond[open, scale=1.2]}-{Straight Barb[scale=1.25, scale length=1.375]}, thick];
+	\newcommand{\sysmlstereo}[1]{\textcolor{darkgray}{\guillemotleft \small{#1}\guillemotright}}
+	\node (system) [sysml block, minimum width=16ex, minimum height=3em] {The System};
+	
+	\node (rc) [sysml block, minimum width=16ex, minimum height=3em, below=8ex of system] {
+		\sysmlstereo{component} \\
+		Remote Control Application
+	};
+
+	\node (ld) [sysml block, minimum width=16ex, minimum height=3em, left=6ex of rc] {
+		\sysmlstereo{component} \\
+		Lane Detector
+	};
+
+	\node (ts) [sysml block, minimum width=16ex, minimum height=3em, right=6ex of rc] {
+		\sysmlstereo{component} \\
+		Algorithm Toolsuite
+	};
+
+	\draw[sysml aggreg] (system) to [bend right=10] (ld.north);
+	\draw[sysml aggreg] (system) to [bend left=10] (ts.north);
+	\draw[sysml aggreg] (system) -- (rc);
+
+\end{tikzpicture}

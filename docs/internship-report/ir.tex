@@ -39,6 +39,7 @@
 \rfoot{\textbf{\thepage}\hspace{1ex}of\hspace{1ex}\pageref{LastPage}}
 
 \usepackage{tikz}
+\usepackage{tikzscale}
 %\usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta}
 
@@ -46,6 +47,7 @@
 
 \titleformat{\section}{\Large\bfseries\rmfamily\lsstyle\color{arobsblue}}{\thesection}{1.1em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
 \titleformat{\subsection}{\large\bfseries\rmfamily\lsstyle\color{arobsblue}}{\thesubsection}{1.1em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
+\titleformat{\subsubsection}{\normalsize\bfseries\ttfamily}{\thesubsubsection}{0.5em}{} [{\vspace{4pt}\titlerule[0.75pt]\vspace{-0.2em}}]
 
 \renewcommand{\LettrineFontHook}{\rmfamily}
 
@@ -60,6 +62,7 @@
 	
 	\lefthyphenmin=3
 	\righthyphenmin=3
+	\setcounter{tocdepth}{2}
 
 	\begin{hoofdstuk*}{Summary}
 
@@ -76,18 +79,18 @@
 		By requiring less human input, cars can drive in a more predictable and safer manner.
 		AROBS has been developing an Advanced Driver-Assistance System (ADAS) that consists of numerous subsystems which warn the driver of danger on the road.
 		One of these subsystems is called the Lane Departure Warning System (LDWS).
-		It predicts when the vehicle is about to leave the road lane and propagates a warning to the ADAS so that precautionary measures can be taken to prevent incidents.
+		It predicts when the vehicle is about to leave the road lane and propagates a warning to the ADAS so that precautionary measures can be taken to prevent incidents like run-off-road crashes.
 
 		In order to detect the road lane that the vehicle is driving in, the LDWS analyzes video footage from a camera mounted on the dashboard.
 		Resource demanding image processing techniques are run on a Graphical Processing Unit (GPU) integrated in the vehicle's onboard computer to scan for road lane markings and to predict the position of the car.
 		The GPUs used for this purpose are expensive and power-inefficient, raising the total cost of the system.
 
 		Due to a global chip shortage since the start of the COVID-19 pandemic, the prices of semiconductors have spiked \cite{ivanova2021chip}.
-		In particular, the prices of GPUs have surged up to 50 percent of their list price \cite{cheng2021chip}.
+		In particular, the prices of GPUs have surged up to 150 percent of their list price \cite{cheng2021chip}.
 		This has led chip consumers like AROBS to explore alternative technologies.
 		A popular alternative that can empower high-bandwidth image processing technologies are Field Programmable Gate Arrays (FPGAs.)
-		Whereas GPUs are multi-purpose devices which can programmed for many different tasks, FPGAs have to be specifically designed to do one single task.
-		The FPGA designer has fine-grained control over the layout of the FPGA, enabling the possibility for creating devices that are tailored for a specific use case.
+		Whereas GPUs are multipurpose devices which can programmed for many different tasks, FPGAs have to be specifically designed to do one single task.
+		The FPGA designer has fine-grained control over the layout of the FPGA, enabling the possibility to create devices that are tailored for a specific use case.
 		An FPGA can be designed to do parallel tasks like video processing at a high bandwidth and low power draw, making is suitable for being integrated in embedded systems.
 
 		The goal of my internship was to create a road lane marking detection system at a lower production cost and higher power efficiency than existing systems.
@@ -133,7 +136,8 @@
 		At the beginning of the internship I set out personal goals that I wanted to work on.
 		Reflecting back on these goals gives me new insights and helps me improve myself for future endeavors.
 		My time in Romania has shown me a lot about who I am and what my qualities are within this field of study, and I would like to share my experience in this chapter.
-
+		
+		I would like to give a special thanks to Cătălin for helping me find a place to stay, Ionut for being awesome, Alexandra for helping me at the company, Mr. Jeong for mentoring me, and Călin for being by my side throughout the journey!
 
 	\end{hoofdstuk*}
 	
@@ -142,7 +146,7 @@
 		\setlength\parindent{1.5em}
 		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
 		\linespread{1.2}
-
+		\vspace{-2.5ex}
 		\begin{paragraaf}{The Organization}
 
 			AROBS Group is an global organization with branches in Europe and Asia.
@@ -162,15 +166,15 @@
 			It spans the second and third floor of the Cluj Business Center and houses a large part of the automotive department, consisting of over 400 employees.
 			I spent most of my time working in the embedded department on the third floor of the building, where I was surrounded by friendly colleagues who were knowledgeable about anything from microcontrollers to FPGAs.
 			
-			Even though I was the only foreigner in the team, my colleagues were very welcoming and the atmosphere was pleasant.
+			Even though I was the only foreigner in the team, the atmosphere in the office was pleasant because I felt welcomed by my colleagues.
 			They tried their best to speak English when I was around in order to include me in the conversation, which I really appreciated.
-			My desk was near a window with a beautiful view over the Baciu forest and the northern suburbs of Cluj that surrounded it.
-			A kitchen with the imperative coffee machine was just a small walk away.
+			My desk was next to a window with a beautiful view over the Baciu forest and its surrounding northern suburbs.
+			A kitchen with the imperative coffee machine was just a small walk away from my desk.
 			The business center also had facilities that I frequently made use of.
 			Located on the first floor was a brunch restaurant from which a sweet smell emanated and filled the fitness center next to it.
 			At the entrance was a coffee bar where I occasionally got my morning coffee.
 			Once per month, a beer night was held to unite the department and encourage social activity among employees.
-			I got the impression that AROBS is a modern company which invests in its employees by offering diverse activities.
+			I am left with the impression that AROBS is a modern company which invests in its employees by offering diverse activities.
 
 			\noindent I was handed a laptop which I used for preparing documents and communicating with colleagues.
 			Most internal communication at the company happened over Skype because it enabled inter-office messaging and helped to reach those who work at home.
@@ -187,25 +191,25 @@
 					\tikzstyle{man}=[draw=black!24, fill=green!12, align=center, inner sep=0.75em];
 
 					\node (org) [grp, fill=blue!6, minimum width=80ex, minimum height=84ex, inner sep=0] {};
-					\node (org label) [below right=0.8em and 0.8em of org.north west, align=left] {AROBS Group};
+					\node (org label) [below right=0.8em and 0.8em of org.north west, align=left] {\ttfamily AROBS Group};
 					\node (org man 1) [man, below=3ex of org.north] {\textit{Managing Director} \\ Oprean, V.};
 
 					\node (rom) [grp, fill=blue!12, minimum width=60ex, minimum height=70ex, anchor=south west, above right=1ex and 1ex of org.south west, inner sep=0] {};
-					\node (rom label) [below right=0.8em and 0.8em of rom.north west, align=left] {AROBS Transilvania SA};
+					\node (rom label) [below right=0.8em and 0.8em of rom.north west, align=left] {\ttfamily AROBS Transilvania SA};
 					\node (rom man 1) [man, below=7ex of rom.north] {\textit{Executive Director} \\ Deaconu, A.C.};
 					
 					\node (oth) [grp, fill=blue!12, minimum width=17ex, minimum height=70ex, anchor=south east, above left=1ex and 1ex of org.south east, inner sep=0] {};
-					\node (oth label) [below=0.8em of oth.north, align=center] {Intl. Units};
+					\node (oth label) [below=0.8em of oth.north, align=center] {\ttfamily Intl. Units};
 
 					\node (aum) [grp, fill=blue!18, minimum width=47ex, minimum height=52ex, anchor=south west, above right=1ex and 1ex of rom.south west, inner sep=0] {};
-					\node (aum label) [below right=0.8em and 0.8em of aum.north west, align=left] {Automotive Dept.};
+					\node (aum label) [below right=0.8em and 0.8em of aum.north west, align=left] {\ttfamily Automotive Dept.};
 					\node (aum man 1) [man, below=6ex of aum.north] {\textit{Head of Automotive} \\ Morariu, S.};
 
 					\node (otm) [grp, fill=blue!18, minimum width=10ex, minimum height=52ex, anchor=south east, above left=1ex and 1ex of rom.south east, inner sep=0] {};
 					\node (otm label) [below=0.8em of otm.north, align=center] {\textellipsis};
 
 					\node (emb) [grp, fill=blue!24, minimum width=38ex, minimum height=34.5ex, anchor=south west, above right=1ex and 1ex of aum.south west, inner sep=0] {};
-					\node (emb label) [below right=0.8em and 0.8em of emb.north west, align=left] {Embedded Sector};
+					\node (emb label) [below right=0.8em and 0.8em of emb.north west, align=left] {\ttfamily Embedded Sector};
 					\node (emb man 1) [man, below=6ex of emb.north] {\textit{Head of Embedded} \\ Ghinescu, V.};
 					\node (emb man 2) [man, below=3ex of emb man 1.south] {\textit{Senior Developer} \\ Jeong, P.};
 					\node (emb man 3) [man, below=3ex of emb man 2.south] {\textit{Intern} \\ Bakker, M.};
@@ -229,7 +233,7 @@
 			We talked multiple times per week when I had questions or new results to show.
 			During the most critical phase of the project, the realization phase, we agreed to plan an additional meeting every Friday at 2 PM.
 			These meetings allowed me to give updates on the development progress and any roadblocks I was facing.
-			Other weeks were mostly spent on documentation and it was not worth holding meetings because I would not have much news to show.
+			Other weeks were mostly spent on documentation and it was not worth holding a meeting because I would not have much news to show.
 
 		\end{paragraaf}
 
@@ -246,14 +250,108 @@
 			Similarly to the stick shaker being activated in an aeroplane when it is about to stall, the car can notify the driver with a vibratory or auditory warning when it is unintentionally leaving the road lane.
 
 			In order to detect the position of the vehicle relative to the road lane, a video feed from the dashcam is processed by a computer vision algorithm.
-			This algorithm is computationally expensive and requires to be run on an accelerated computing device called a Graphical Processing Unit (GPU.)
-			This type of device has a high production cost and 
+			This algorithm is computationally expensive and requires to be run on an accelerated computing device like a Graphical Processing Unit (GPU.)
+			Although lane detection systems using GPUs are widely used in prototypes and academic studies, they have failed to gain widespread adoption due to high production costs.
+			Because GPUs are multipurpose devices that can be programmed to do many different tasks, they have been sought after by cryptocurrency miners, Machine Learning enthusiasts and big data hoarders, soaring the price up even higher.
+			Since the start of the COVID-19 pandemic, the prices for GPUs have surged up to 150 percent of their list price due to factories not being able to produce them at full capacity \cite{cheng2021chip}.
+			The increasing cost of these types of semiconductor devices has caused compaines like AROBS to consider replacing them with alternative hardware.
+			
+			Another device that can be programmed to process high amounts of data at once is a Field Programmable Gate Array.
+			It is a chip that does not have a hardwired layout; it can be reconfigured to have different logic at any time.
+			The chip is mass-produced in a "blank" state without any logic and the consumers can configure it to act like any digital logic circuit (as long as it fits on the chip's resources.)
+			This means that an FPGA chip can be tailored to fit any use case.
+			It also allows the FPGA designer fine-grained control over the chip's characteristics such as power draw and heat production.
+
+			The core strength of an FPGA is parallel data processing.
+			Digital logic circuits can be designed to have many signals that can work simultaneously, receiving the output of an operation on multiple data elements at the same time.
+			In the field of image processing, this would mean that every pixel of an image could be processed simultaneously.
+			A traditional processor would have to go over each pixel separately.
+
+			I was assigned the task of creating an FPGA-based lane detection system that could outperform existing systems in terms of production cost per unit and power efficiency.
+			With the market of hyper-autonomous cars being relatively new, this was a market opportunity that could have been seized.
+			AROBS had previously built a GPU-based prototype system\,that was able detect road signs, objects and road lanes, which meant that there was a lot of knowledge in the company on the field of image processing.
+			My mentor had worked on this prototype and was very knowledgeable on the subject of computer vision.
+			With his help, it was my task to choose a sequence of algorithms that could be run on an FPGA and implement them in a proof-of-concept system.
+
+			The initial situation was set out to be within the context of an existing vehicle.
+			I assumed that systems for reading the dashcam footage and for propagating results to other ADAS subsystems for the car already existed.
+			By placing them out of the scope of this project, I could focus my attention solely on developing the lane detector.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Stakeholders}
+
+			To make the project a success and meet the expectations of the parties who it affected, I had to make sure that each stakeholder's wishes would be satisfied.
+
+			\begin{subparagraaf}{Host Organization}
+
+				The organization instantiated this project and was the main driving force behind the resources of this project.
+				It wanted to have evidence that FPGA-based technology could be used in this field by having a functional prototype.
+				Although the organization was a secondary stakeholder, it could steer the project by giving the go/no go signal.
+				It also purchased the hardware that I used to develop the system, which meant that it had financial resources invested and expected to see results from its investment.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Company Supervisor}
+
+				It was in the best interest of the company supervisor that I would deliver a working proof-of-concept system.
+				Since the supervisor was my main point of contact within the company, I would be working with them closely, making them a high priority stakeholder.
+
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Windesheim Supervisor}
+
+				This stakeholder was involved with giving approval of several deliverables, including the Plan of Action and the mid-term presentation.
+				The main requirement set by this stakeholder was that the project was complex enough to be on par with level two of the HBO-ICT competences.
+				I planned to comply with this by realizing complex products, such as implementing the image processing techniques and continuously testing the deliverables.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{End Users}
+
+				The system is abstracted away in the car, making it not directly accessible by the consumers.
+				However, they will be relying on the system to give accurate results in order to guarantee their safety.
+				Therefore, this stakeholder desires the system to be able to detect danger in real-time with low latency and high precision.
+
+			\end{subparagraaf}
 
 		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{The Product}
+
+		During the internship I created a prototype lane detector along with tools that can interact with it.
+		The lane detector itself is fully implemented on the TUL Z2 board.
+		The tools are run on a personal computer or laptop that can be interfaced with it through a serial port.
+		An example setup of the lane detector being interfaced with the Remote Control tool running on a mechanic's laptop can be seen in \verwijzingb{figuur}{Prototype Setup}.
+
+		\begin{figuur}{Prototype Setup}
+			\includegraphics[width=0.8\textwidth]{product-5.png};
+		\end{figuur}
+
+		The total product can be distinguished into multiple deliverables that are able to be used together to form one functional system.
+		An overview of this system is given in \verwijzingb{figuur}{Deliverables}.
+
+		\begin{figuur}{Deliverables}
+			\vspace{2ex}
+			\centerline{
+				\includegraphics{deliverables}
+			}
+		\end{figuur}
+
+		\begin{paragraaf}{Lane Detector}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Remote Control Application}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Algorithm Toolsuite}
+
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
