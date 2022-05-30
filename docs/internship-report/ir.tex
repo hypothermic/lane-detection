@@ -41,7 +41,7 @@
 \usepackage{tikz}
 \usepackage{tikzscale}
 %\usepackage{tikz-uml}
-\usetikzlibrary{positioning, arrows.meta}
+\usetikzlibrary{positioning, arrows.meta, calc, decorations.text}
 
 %\usepackage{tabularx}
 
@@ -248,6 +248,7 @@
 			To take preventive measures against run-off-road crashes, the ADAS can be fitted with subsystems like a Lane Keeping System and a Lane Departure Warning System (LDWS).
 			The latter is able to predict when a car is about to leave the lane and signal the ADAS of danger.
 			Similarly to the stick shaker being activated in an aeroplane when it is about to stall, the car can notify the driver with a vibratory or auditory warning when it is unintentionally leaving the road lane.
+			Other possible actions are automatically slowing down the car or correcting its course.
 
 			In order to detect the position of the vehicle relative to the road lane, a video feed from the dashcam is processed by a computer vision algorithm.
 			This algorithm is computationally expensive and requires to be run on an accelerated computing device like a Graphical Processing Unit (GPU.)
@@ -281,8 +282,77 @@
 
 		\begin{paragraaf}{Stakeholders}
 
-			To make the project a success and meet the expectations of the parties who it affected, I had to make sure that each stakeholder's wishes would be satisfied.
+			To make the project a success and meet the expectations of the parties who were involved with it, I had to make sure that each stakeholder's wishes would be satisfied.
 
+			\vspace{2.5ex}
+			\begin{figuur}{Stakeholder Analysis Matrix}
+				\centerline{
+				\begin{tikzpicture}[baseline=(current bounding box.north)]
+					\path (-10, 0) -- (10, 0);
+					\def\rad{4}
+					\def\off{1.25}
+					\def\offa{2.5}
+					\draw [draw=black, fill=blue!18] (-\rad,0) -- (\rad,0) arc(0:180:\rad) --cycle;
+					\draw [draw=black, fill=blue!12] (-\rad+\off,0) -- (\rad-\off,0) arc(0:180:\rad-\off) --cycle;
+					\draw [draw=black, fill=blue!6] (-\rad+\offa,0) -- (\rad-\offa,0) arc(0:180:\rad-\offa) --cycle;
+					%\draw [latex-latex] (-\rad, -0.5) -- (0, -0.5);
+					\draw [color=darkgray] (0, 0) -- (60:\rad);
+					\draw [color=darkgray] (0, 0) -- (120:\rad);
+
+					\node[text centered] at (0, 1) {\small Least};
+					\node[text centered] at (0, 2.125) {\small Average};
+					\node[text centered] at (0, 3.375) {\small Most};
+					\node[above right=2mm and 0.5cm of {(40:\rad)}, anchor=west] {\underline{Affected}};
+					\node[above left=2mm and 0.5cm of {(140:\rad)}, anchor=east] {\underline{Affecting}};
+
+					\coordinate (com sup p) at (160:\rad-\off/2);
+					\coordinate (com sup s) at ($ (com sup p) + (-0.75, -1.75) $);
+					\coordinate (com sup l) at ($ (com sup s) + (-0.5, 0) $);
+					\filldraw (com sup p) circle (2.5pt);
+					\draw [-, draw=darkgray] (com sup p)
+						-- (com sup s)
+						-- (com sup l);
+					\node[left=0.7ex of com sup l, anchor=east] {\small Company Supervisor};
+
+					\coordinate (win sup p) at (140:\rad-\off/2);
+					\coordinate (win sup s) at ($ (win sup p) + (-1, -3.5) $);
+					\coordinate (win sup l) at ($ (win sup s) + (-0.5, 0) $);
+					\filldraw (win sup p) circle (2.5pt);
+					\draw [-, draw=darkgray] (win sup p)
+						-- (win sup s)
+						-- (win sup l);
+					\node[left=0.7ex of win sup l, anchor=east] {\small Windesheim Supervisor};
+
+					\coordinate (host org p) at (150:\rad-\off-\off/2);
+					\coordinate (host org s) at ($ (host org p) + (-0.885, -3.1) $);
+					\coordinate (host org l) at ($ (host org s) + (-0.5, 0) $);
+					\filldraw (host org p) circle (2.5pt);
+					\draw [-, draw=darkgray] (host org p)
+						-- (host org s)
+						-- (host org l);
+					\node[left=0.7ex of host org l, anchor=east] {\small Host Organization};
+					
+					\coordinate (end users p) at (30:\rad-\off-\off/2);
+					\coordinate (end users s) at ($ (end users p) + (0.61, -1.9) $);
+					\coordinate (end users l) at ($ (end users s) + (0.5, 0) $);
+					\filldraw (end users p) circle (2.5pt);
+					\draw [-, draw=darkgray] (end users p)
+						-- (end users s)
+						-- (end users l);
+					\node[right=0.7ex of end users l, anchor=west] {\small End Users};
+
+					%\draw [decorate, decoration={text along path, reverse path, raise=3ex, text={Affected}, text align={center}}] (\rad,0) arc(0:60:\rad);
+					%\draw [decorate, decoration={text along path, raise=3ex, text={Affecting}, text align={center}}] (-\rad,0) arc(0:-60:-\rad);
+				\end{tikzpicture}
+				}
+			\end{figuur}
+			\vspace{-1ex}
+
+			\noindent The above figure gives an overview of all stakeholders, along with their level of impact.
+			It also shows whether a stakeholder has effect on the project or is affected by the outcome of the project.
+			A brief description of each stakeholder and their interests is given in the following paragraphs.
+
+			
 			\begin{subparagraaf}{Host Organization}
 
 				The organization instantiated this project and was the main driving force behind the resources of this project.
@@ -305,6 +375,7 @@
 				This stakeholder was involved with giving approval of several deliverables, including the Plan of Action and the mid-term presentation.
 				The main requirement set by this stakeholder was that the project was complex enough to be on par with level two of the HBO-ICT competences.
 				I planned to comply with this by realizing complex products, such as implementing the image processing techniques and continuously testing the deliverables.
+				They expected me to send a progress report at the end of every week for keeping watch on the status of my project.
 
 			\end{subparagraaf}
 
@@ -322,7 +393,7 @@
 	
 	\begin{hoofdstuk}{The Product}
 
-		During the internship I created a prototype lane detector along with tools that can interact with it.
+		During the internship I created a prototype lane detector alongside tools that can interact with it.
 		The lane detector itself is fully implemented on the TUL Z2 board.
 		The tools are run on a personal computer or laptop that can be interfaced with it through a serial port.
 		An example setup of the lane detector being interfaced with the Remote Control tool running on a mechanic's laptop can be seen in \verwijzingb{figuur}{Prototype Setup}.
@@ -350,6 +421,9 @@
 		\end{paragraaf}
 
 		\begin{paragraaf}{Algorithm Toolsuite}
+
+			I developed this application during the research phase of the project.
+			It was my goal to get hands-on experience with the algorithms I researched by implementing them in a computer program.
 
 		\end{paragraaf}
 
