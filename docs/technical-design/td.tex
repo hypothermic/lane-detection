@@ -1019,7 +1019,7 @@
 			The opening of the serial connection is done using the Unix \textit{termios} API.
 			I used \textit{termios} because it allows easy configuration of the data bit amount and the parity bit setting.
 			The reading of the serial device is done using the standard Unix system call \textit{read} in blocking fashion to give the thread a chance to idle when no data is available.
-			This blocking call is indicated in \verwijzingb{figuur}{Serial Connection Activity Diagram} in red color.
+			This blocking call is indicated in \verwijzingb{figuur}{Serial Connection Sequence Diagram} in red color.
 			\verwijzingb{figuur}{Serial Drivers in Unix-based Systems} gives an overview of the layers behind the drivers.
 			In the remote control application, I configure the TTY layer settings and use the user space layer for reading/writing.
 			I do not use the line discipline layer because the bytes need to be transferred raw, no control codes or characters need to be parsed.
@@ -1043,7 +1043,7 @@
 
 			\clearpage
 
-			\begin{figuur}{Serial Connection Activity Diagram}
+			\begin{figuur}{Serial Connection Sequence Diagram}
 				\vspace{-5ex}
 				\singlespacing
 				\centerline{

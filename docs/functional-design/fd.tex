@@ -27,7 +27,7 @@
 	% Set language to English
 	\taal{en}
 
-	\maketitlepage{Functional Design}{0.1}
+	\maketitlepage{Functional Design}{1.0}
 	\pagenumbering{arabic}
 	\thispagestyle{empty}
 	
@@ -233,10 +233,10 @@
 			\definecolor{osx-yellow}{HTML}{ffc12e}
 			\definecolor{osx-green}{HTML}{28ca42}
 
-			\node (bg) [draw=none, fill=black!8, rounded corners=2ex, minimum width=.95\textwidth, minimum height=73.5ex] at (0,0) {};
+			\node (bg) [draw=none, fill=black!6, rounded corners=2ex, minimum width=.95\textwidth, minimum height=73.5ex] at (0,0) {};
 
 			% top bar
-			\node (top bar) [draw=none, fill=black!12, rounded corners=2ex, minimum width=.95\textwidth, minimum height=6ex, anchor=north] at (bg.north) {};
+			\node (top bar) [draw=none, fill=black!10, rounded corners=2ex, minimum width=.95\textwidth, minimum height=6ex, anchor=north] at (bg.north) {};
 			\node (top bar nocornerssouth) [draw=none, fill=black!12, minimum width=.95\textwidth, minimum height=2ex, anchor=south] at (top bar.south) {};
 			\node (btn exit) [fill=osx-red, circle, inner sep=0pt, outer sep=0pt, anchor=center, minimum size=1.75ex, below left=2.55ex and 2.85ex of top bar.north east] {};
 			\node (btn min) [fill=osx-yellow, circle, inner sep=0pt, outer sep=0pt, anchor=center, minimum size=1.75ex, below left=2.55ex and 6.025ex of top bar.north east] {};

@@ -41,6 +41,7 @@
 
 \usepackage{tikz}
 \usepackage{tikzscale}
+\usepackage{tabularx}
 %\usepackage{tikz-uml}
 \usetikzlibrary{positioning, arrows.meta, calc, decorations.text}
 
@@ -109,6 +110,7 @@
 
 	\end{hoofdstuk*}
 
+	\thispagestyle{empty}
 	\begin{inhoudspagina}
 
 	\end{inhoudspagina}
@@ -168,7 +170,7 @@
 			\vspace{-0.2ex}
 
 			\noindent The primary office of AROBS is located in Cluj-Napoca, Romania. 
-			It spans the second and third floor of the Cluj Business Center and houses a large part of the automotive department, consisting of over 400 employees.
+			It spans the second and third floor of the Cluj Business Center and houses a large part of the automotive department, which consists of over 400 employees.	
 			I spent most of my time working in the embedded department on the third floor of the building, where I was surrounded by friendly colleagues who were knowledgeable about anything from microcontrollers to FPGAs.
 			
 			Even though I was the only foreigner in the team, the atmosphere in the office was pleasant because I felt welcomed by my colleagues.
@@ -181,7 +183,7 @@
 			Once per month, a beer night was held to unite the department and encourage social activity among employees.
 			I am left with the impression that AROBS is a modern company which invests in its employees by offering diverse activities.
 
-			\noindent I was handed a laptop which I used for preparing documents and communicating with colleagues.
+			\noindent I was handed a laptop which I used to prepare documents and communicate with colleagues.
 			Most internal communication at the company happened over Skype because it enabled inter-office messaging and helped to reach those who work at home.
 			I was pleased with using Skype because I could instantly reach my company mentor and a few others who I was close with.
 			It also allowed sending intermediate results during the development phase and getting feedback on them within a short timeframe.
@@ -235,10 +237,10 @@
 			\vspace{-0.2ex}
 
 			\noindent I worked on the project alone, under the lead of my company mentor.
-			We talked every Friday at 2 PM to discuss my progress and our expectations for next week.
+			We talked every Friday at 2 PM to reflect on my progress and to discuss our expectations for the next week.
 			These meetings allowed me to give updates on the development progress and any roadblocks I was facing.
 			Additionally, I reached out to my mentor over Skype when I had new results to show.
-			For example, when I finally managed to get the detection working on the FPGA and I was ecstatic, I sent them the result video to share my excitement.
+			For example, when I finally managed to get the detection working on the FPGA and I was ecstatic about it, I sent them the result video to share my excitement.
 
 		\end{paragraaf}
 
@@ -701,21 +703,30 @@
 
 			\begin{subparagraaf}{Literature Study}
 		
-				I held a literature study in which I compared the algorithms that were frequently used in other lane detection research papers, as can be seen in \verwijzingb{figuur}{Comparison of Frequently Used Algorithms among Other Researches}.
+				\setlength\parindent{1.5em}
+				\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+				\linespread{1.2}
+		
+				I held a literature study in which I compared the algorithms that were frequently used in other lane detection research papers.
 				I gathered my own knowledge on these algorithms and explained their working using my own words.
 				Furthermore, I researched the mathematics behind them to help me implement all of them in a small computer program: the algorithm toolsuite.
 				I used this program to evaluate the effectiveness of every algorithm and to help me string them together to compose the most effective pipeline as possible.
-				
-				\begin{figuur}{Comparison of Frequently Used Algorithms among Other Researches}
-					\centerline{\scalebox{0.8325}{
+			
+				\vspace{2ex}
+				%\begin{figuur}{Comparison of Frequently Used Algorithms among Other Researches}
+					\centerline{\scalebox{0.975}{
 						\includegraphics[clip, trim=2.75cm 10.25cm 2.75cm 8.25cm]{research-paper-conclusion.pdf}
 					}}
-				\end{figuur}
+				%\end{figuur}
 			
 			\end{subparagraaf}
 
 			\begin{subparagraaf}{Test Implementation}
 
+				\setlength\parindent{1.5em}
+				\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+				\linespread{1.2}
+				
 				In order to gain familiarity with the computer vision algorithms, I implemented them in the ``algorithm toolsuite'' computer program.
 				This program can load images from disk in PPM format and apply the algorithms to them, in order to test their effectiveness.
 				I tested the effectiveness of the processing pipeline using the Berkeley DeepDrive dataset, which is a library of 100,000 sample images taken from dashboard cameras.
@@ -744,8 +755,9 @@
 			Using the sample tests, I decided on a detection pipeline consisting of Canny edge detection and the Hough transform, along with other minor operations.
 			I came to the conclusion that this pipeline was good enough for most scenarios, but my testing did indicate that it would not be effective under certain environmental conditions like sun glare, wet road surfaces, and other hazards.
 			Especially when roadside objects with straight lines, like guardrails, light poles or trees were present, the results would be inaccurate because the Hough transform would pick up the lines of these arbitrary objects.
-			I discussed this with my mentor and we decided that the pipeline was good enough for the project because this would only be a prototype.
-			I also argumented that the pipeline would get much more complicated if we were to account for all environments, and that it would not be certain if we had enough time or resources to implement more advanced detection methods.
+			
+			I discussed this issue with my mentor and we decided that the pipeline was good enough for the project because this would only be a prototype.
+			I also brought up the argument that the pipeline would get much more complicated if we were to account for all environments, and that it would not be certain if we had enough time or resources to implement more advanced detection methods.
 			We agreed to stick with the basic pipeline for this prototype.
 			Reflecting back on this, I should have pursued another detection pipeline because I had many issues later in the project where it gave inaccurate results.
 			I would have chosen something that involved machine learning or AI, because these algorithms can be trained to adapt better to different environments.
@@ -883,13 +895,318 @@
 	
 	\begin{hoofdstuk}{Design}
 
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-1ex}
+
+		I wanted to make sure that the requirements of the system were set in stone before I started developing it.
+		It was important that the company and I had the same expectations of the resulting system and that I would meet the demands of the company.
+		I did this by creating a functional design with user stories, use cases, and a user interface design.
+		
+		The user stories are the requirements of a system which are viewed from the perspective of a user or stakeholder.
+		They help to identify what the user expects from the system and why he expects it.
+		Concrete and measurable acceptance criteria are bound to each user story to test if the product meets the goal of the user.
+		I also assigned a product quality category from the ISO/IEC 25010:2011 standard \cite{iso25010systems} to each acceptance criteria to indicate in which area they belong.
+		Because the system is mostly autonomous -- it is meant to be integrated into a broader system inside the vehicle, not to be controlled by a user directly -- there is only one user story which includes the vehicle driver.
+		And finally, I created a use case diagram that shows the relationships of the system components and users.
+
+		\begin{figuur}{A User Story with Acceptance Criteria}
+			\vspace{2ex}
+			\centerline{
+				\includegraphics[width=0.9\textwidth]{user-stories-crop.pdf}
+				\hspace{3ex}
+			}
+		\end{figuur}
+
+		\begin{figuur}{The Use Case Diagram}
+			\vspace{1ex}
+			\centerline{
+				\includegraphics[width=0.9\textwidth]{use-cases-crop.pdf}
+				\hspace{1.5ex}
+			}
+		\end{figuur}
+
+		\clearpage
+
+		\noindent The technical design was much less reminiscent of an inventarisation and more of a learning trajectory: it helped me wrap my head around the design methodology of the FPGA and the challenges associated with developing for this platform.
+
+		When I started with the design, we were still targeting the Digilent Arty A7 development board, as it was widely available and cheap.
+		While figuring out how I would store the images in the memory of the FPGA, I came to the conclusion that an image would not fit in the Block RAM.
+		I explored different ways to solve this issue, such as processing the image in chunks, or resizing the image to a smaller format to take up less memory, but these remedies did not fit our use case.
+		I notified my company mentor of this problem and I suggested them to switch to a different development board.
+		They allowed this choice and they purchased the new development board, the TUL PYNQ-Z2, for me.
+		I am very glad that I started with the technical design \textit{before} creating the FPGA implementation because I would have run into this issue later on in the project.
+		Luckily, I saved ourselves time by immediately reaching out to my mentor and proposing to buy a new board.
+		
+		I researched which board to purchase by looking at the Xilinx Vitis Vision list of recommended boards.
+		The PYNQ-Z2 was the most beginner-friendly board on that list, and we decided to buy it.
+		However, the Z2 is not only an FPGA board; it has a System-on-Chip with a few other peripherals.
+
+		\vspace{-0.6ex}
+		\begin{figuur}{Classic Hardware Co-processing compared to FPGA Co-processing}
+			\singlespacing
+			\scalebox{0.825}{
+				\includegraphics{coprocessing}
+			}
+			\onehalfspacing
+		\end{figuur}
+		\vspace{-0.2ex}
+
+		\noindent The Zynq SoC consists of two main components: an FPGA (called the Programmable Logic or PL) and an ARM Cortex A9 dual-core processor (called the Processor System or PS.)
+		These are linked together using multiple hardwired connections.
+		At first, I did not understand the methodology behind this, so I compared it to a system that \textit{was} already familiar to me: the GPU offloading model.
+		I did graphics programming with Vulkan a few years back, and I noticed that the concepts of data transfer within this system is very similar to that of the Zynq SoC.
+		To aid me with wrapping my head around the Zynq data transfer model -- and hopefully explain it to other people who follow up on this project -- I created \verwijzingb{figuur}{Classic Hardware Co-processing compared to FPGA Co-processing} that compares its working to the classic hardware co-processing model.
+
+		For the rest of the technical design I used SysML \cite{hause2006sysml} as the modeling standard.
+		Every embedded engineer at AROBS understands this format, and I could ask my colleagues to give feedback on the diagrams I made.
+		A colleague a few desks away from me could not get a good overview of the system and recommended me to create a component diagram in the form of a SysML Block Definition Diagram.
+		I followed his advice and created \verwijzingb{figuur}{Component Diagram}, which shows all components that the system consists of.
+
+		\begin{figuur}{Component Diagram}
+			\singlespacing
+			\centerline{
+				\scalebox{0.76}{
+					\includegraphics{block-definition-diagram}
+				}
+			}
+			\vspace{1.5ex}
+			\onehalfspacing
+		\end{figuur}
+
+		\noindent I divided the technical design into four main chapters, named after the child components of the system as seen in the component diagram.
+		In the Hardware chapter, I described the behavior of the physical components.
+		This includes an electrical schematic to show how the hardware is wired together, a layout of the memory configuration, and an explanation of how the communication between the processor sand the programmable logic is achieved.
+		
+		The Programmable Logic chapter encompasses all there is to say about the digital logic part of the system.
+		In the chapter called Processing System I describe the working of the driver software that runs on the embedded ARM processor and how it communicates with the digital logic.
+		And finally, in the Software chapter, I wrote about the remote control software that runs on an external laptop.
+
+
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Implementation}
 
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-1ex}
+		
+		\begin{paragraaf}{Realization}
+
+			FPGA's are a collection of digital logic components that can be layed out to function in different ways.
+			For example, the developer can set logic gates and connect them using wires in a digital logic design.
+			These designs are usually written in a Hardware Description Language like Verilog or VHDL.
+			These languages are very verbose and error-prone, making them difficult to use for large projects.
+			Large codebases of HDL code are hard to maintain because developers must have intimate knowledge of the digital logic code.
+			
+			Because of the aforementioned reasons and because the development phase of the project only spans eight weeks, a colleague recommended me to look into High Level Synthesis (HLS.)
+			This technique allowed me to write code in the high level C++ language which would get translated to VHDL upon synthesis.
+			I used the Vitis HLS compiler which was included in the Xilinx Vivado design suite.
+			
+			\begin{figuur}{HLS Coding Practices}
+				\centerline{
+					\includegraphics[width=0.9\textwidth]{hls-code.png}
+				}
+			\end{figuur}
+
+			\noindent However, while writing the code in C++, I did have to keep my HDL mindset, because the code would need to get translated properly.
+			All the practices from HDL coding still applied: I had to specify pragmas to tell the compiler how to unroll loops, how to pipeline certain functions, and how much latency should be allowed over a piece of code.
+			
+			\noindent For example, in the code in \verwijzingb{figuur}{HLS Coding Practices}, I used pragmas to tell the compiler that the inner loop (the one labelled \textit{l\_iter}) should be pipelined to send all the data at the same clock cycle (think of the VHDL generate statement), while the outer loop (labelled \textit{l\_dim}) should be treated as a regular loop and should be implemented in VHDL using a state machine.
+			Because I constantly had to consider how the code would be implemented in VHDL by the HLS compiler, I have proven that I can work with digital logic at a high level, as well as at a low level.
+
+			\vspace{1ex}
+			\begin{figuur}{The Video Processing IP Core}
+				\centerline{
+					%\includegraphics[width=0.76\textwidth, clip, trim=6.5cm 0.16cm 6.5cm 6.9cm]{hw-block-diagram-crop-asset.pdf}
+					\includegraphics[width=0.76\textwidth, clip, trim=8.75cm 0.16cm 11.5cm 12.2cm]{hw-block-diagram-v2-crop-asset.pdf}
+				}
+
+				\vspace{3ex}
+
+				{
+				\small
+				\begin{tabular}{l l l}
+					\toprule
+					Signal(s) & Width & Description \\
+					\midrule
+					in\_r & \qty{24}{\bit} & Image input stream (RGB-888 = 24bpp) \\
+					out\_r & \qty{32}{\bit} & Detected lines output (Q10.22 pairs until TLAST) \\
+					ap\_clk & - & Clock signal of 125 MHz \\
+					ap\_rst\_n & - & Reset signal for reverting internal state \\
+					s\_axi\_control & \qty{32}{\bit} data + \qty{6}{\bit} addr & Used to control and adjust detection parameters \\
+					ap\_local\_block & - & Remains low as long as no deadlock occurs \\
+					interrupt & - & Goes high when image has been processed \\
+					\bottomrule
+				\end{tabular}
+				}
+			\end{figuur}
+
+			\noindent From the HLS code, I inferenced two ARM AXI-Stream data interfaces and one AXI-Lite control interface.
+			These AXI interfaces are similar to the Avalon interface that we used in the Computer Engineering class at Windesheim, but they are supported by Xilinx.
+			The interfaces are connected to the Processing System via hardwired connections.
+			I configured the data input interface to accept 24 bits per clock cycle (1 pixel, 3 channels, 8 bit per channel = 24 bits total.)
+			The output interface was to send the results from the Hough Transform back to the Processor System.
+			The Hough Transform gave results in floating point format, so I wrote a function to convert it into 32-bit Q10.22 fixed point and send it to the Processor System via the output interface.
+			The reasoning behind this specific data width and decimal resolution is a bit hard to explain here, but is fully argued in the Technical Design.
+			I used the Xilinx Vitis Vision library for most of the video processing functions because it closely imitated the OpenCV API.
+			My mentor was very familiar with OpenCV and felt comfortable with me using these predefined functions instead of writing them myself, to guarantee their correct working.
+
+\begin{table}[h]
+				\centering
+				\begin{tabularx}{0.9\textwidth}{p{8ex} c X c c c c} 
+					Field &
+					\makebox[2ex][l]{\rotatebox{60}{\small AUTO\_RESTART}} &
+					&
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_READY}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_IDLE}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_DONE}} &
+					\makebox[2ex][l]{\rotatebox{60}{\small AP\_START}} \\
+					\noalign{\vskip 0.8ex}\cline{2-7}
+					Bit &
+					\multicolumn{1}{|c|}{7} &
+					6 \hfill ... \hfill 4 &
+					\multicolumn{1}{|c}{3} &
+					\multicolumn{1}{|c}{2} &
+					\multicolumn{1}{|c}{1} &
+					\multicolumn{1}{|c|}{0} \\
+					\cline{2-7}\noalign{\vskip 0.8ex}  
+					Access &
+					\small R/W &
+					\small &
+					\small R &
+					\small R &
+					\small R &
+					\small W \\\noalign{\vskip 0.8ex}
+					Reset &
+					\small 0 &
+					&
+					\small 1 &
+					\small 1 &
+					\small 0 &
+					\small 0 \\
+				\end{tabularx}
+				\caption{Control Register Description}
+				\label{tabel:Control Register Description}
+			\end{table}
+
+			The AXI-Lite control interface is used to start/stop the clock input of the video processing logic.
+			The start bit is set by the driver software to indicate that the video processing can begin.
+			I implemented this control mechanism to have finer control over the logic, to get an interrupt signal when a video frame has been processed, and to turn off the device for saving power when the it is not needed.
+			
+			\noindent The software interacts with the control interface through memory-mapped IO.
+			I chose to use MMIO for this purpose because it is low-speed and only needs to be accessed every ten milliseconds.
+			The video input interface and the Hough result output interface, however, need to send and receive data at higher speeds.
+			Therefore, I connected these to the processing system using a Direct Memory Access (DMA) controller.
+			The software driver is able to copy image data to a DMA buffer at roughly 400 megabytes per second \cite{xilinx2022dma}, which is more than enough (even overkill) for our use case.
+
+			\begin{figuur}{Driver Activity Diagram}
+				\singlespacing
+				\centerline{
+					\includegraphics{activity-diagram} 
+				}
+				\onehalfspacing
+			\end{figuur}
+
+			\noindent I wrote a software driver that runs on the ARM Cortex A9.
+			Its purpose is to communicate with other devices and to send/receive data that is input/output to/from the FPGA.
+			I recognized that the strong point of software is to do complex business logic and its weakness is heavy computation, so it does not do any heavy number crunching -- all of that is done by the FPGA.
+			The main workflow of this driver can be seen in the activity diagram in \verwijzingb{figuur}{Driver Activity Diagram}.
+			First, the driver configures the DMA controller and the digital logic peripherals.
+			Then, it enters a loop which waits for a video frame to be received from the dashcam.
+			Upon receiving a video frame, it transfers it to the Video Processing Unit by using the shared memory space that is allocated by the DMA.
+			It enters a blocking loop until the \textit{AP\_DONE} bit in the status control register is set, meaning that the Hough Transform results are available in the shared memory.
+			From these results, it determines the car position.
+			If the results are outside of a relative threshold, it determines that the car is about to leave the lane and it sends a warning signal over the UART port along with the resulting lane lines.
+
+			I also created a remote control desktop application with a graphical user interface that can be used to read the messages from the lane detector's UART port.
+			Initially, I did not think of creating such an application, but my mentor suggested that I should create it.
+			Their main motivation for this was to give me real-time insight into the working of the system and to be able to debug it themselves.
+			They also argued that a mechanic in a car repair shop should be able to troubleshoot the system because it is part of the car.
+			I fully agreed with their arguments and added the remote control application to the user stories in the functional design and to the problem domain in the technical design.
+			An illustration of the application in action can be seen in \verwijzingb{figuur}{Remote Control User Interface}.
+
+			\begin{figuur}{Serial Connection Sequence Diagram}
+				\centerline{
+					\includegraphics[width=0.9\textwidth]{remote-control-seq.pdf}
+				}
+			\end{figuur}
+
+			\noindent The remote control application makes use of a host system's virtual serial device ($/dev/tty_{X}$ on POSIX-compliant operating systems) to read the data that is received over the serial port.
+			The settings of the system, consisting of the different thresholds used in the image processing pipeline, can be viewed under the \textit{Device Status} label.
+			The detected lane lines are projected as blue lines on the Preview window.
+			These lines turn red as soon as the lane detection warning is given, indicating to the user that there is danger.
+			I ended up having a lot of ease from this application because it allowed me to troubleshoot the driver code.
+			It helped me discover a bug in the driver code where the lane lines were flipped horizontally because of an incorrect negative multiplication, which I would not have noticed otherwise because the detection result was still accurate.
+
+			
+		\end{paragraaf}
+
+		\begin{paragraaf}{Testing}
+
+			Verification of the correct working of the system is very important for AROBS because the safety of human lives is at stake.
+			Additionally, AROBS does not want to let down its partner companies who license the ADAS system because its reputation would be at risk.
+			Therefore, I was required to set up rigorous testing of the system.
+			
+			Along with the High Level Synthesis compiler, Xilinx offers tools to test the working of high level code.
+			These tools are a \textit{C-simulation} tool, which directly interprets the high level code, and a \textit{co-simulation} tool, which compiles the high level code to VHDL and then simulates it using the Vivado XSim logic simulator.
+			I used the C-simulator to test my code during development because it was the fastest, and every time before programming the FPGA I would run the co-simulator to verify the integrity of the digital logic.
+
+			The way I used these simulators is with a piece of code called a \textit{test bench}.
+			This code had two functions; one function would call the real high-level code, and the other function would call a sample OpenCV code that would do the same operations.
+			The output of the functions would then be compared, and the test would fail if there was any difference.
+			\verwijzingb{figuur}{C-simulation Test Bench failing due to Incorrect Code} shows a test bench failing due to a syntax error in the code.
+			
+			\begin{figuur}{C-simulation Test Bench failing due to Incorrect Code}
+				\includegraphics[width=0.925\textwidth]{csim-err5.png}
+			\end{figuur}
+			
+		\end{paragraaf}
+
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Professional Development}
+
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-1ex}
+
+		My time in Romania has taught me a lot about myself and my habits.
+		This is the first time living by myself and having a real work-life balance, and it has shown me how little time there actually is in a day.
+		Although I really enjoyed my stay in Romania overall, it has become apparent to me that I wouldn't want to live without friends or family for an extended period of time, and that the relationships with them are extremely valuable.
+
+		At the start of the period I set out two goals for myself.
+		The aim of these goals were to improve myself and expand my toolset.
+		The first goal was to learn to efficiently plan solo projects.
+		In the past, I had no problem following the planning of team projects because there were always people who motivated me and spurred me on when I needed it.
+		However, working alone on a project and not having someone close by my side had always led to my motivation being destroyed.
+		I would also procrastinate too much and add irrelevant new features to the project that didn't need to be added.
+		I set out to mitigate these issues and improve my solo planning methods by using the Solo Iterative Process technique.
+		The main idea behind using this technique was to create a minimum viable product (MVP) during each iteration.
+		This prevented me from adding unnecessary features to the product; instead, I focused on making the system work.
+		
+		An example of this is when I wanted to implement the image preprocessing too quickly: I did not even have the image transfer working and I already wanted to implement the Sobel filter.
+		I reminded myself of my weakness and that I should stick to the planning.
+		So instead, I fell back to creating a simple grayscale filter and testing the image transfer before I started working on the preprocessing stages.
+		The planning technique has shown to be a great addition to my arsenal and I will consider using it for future projects.
+
+		The second goal that I set for myself was to broaden my knowledge on the field of computer vision.
+		I did not only want to research the specific algorithms that I required for the lane detection pipeline -- I wanted to learn about a whole plethora of image analysis techniques.
+		I had always been fascinated on how simple electronic circuits could do human-like pattern recognition.
+		I received an account on the company's Udemy portal that allowed me access to learning courses on this subject.
+		I followed two courses: \textit{Autonomous Cars: Deep Learning and Computer Vision} and \textit{Computer Vision Masterclass}, amounting to a total of 15 hours.
+		The knowledge I got from these classes helped me understand the math (another weak point of mine) behind these systems and introduced me to algorithms like Canny Edge Detection and the Hough Transform, which I ended up using in my lane detector.
+
+		I also faced a cultural challenge during my internship regarding communication with my company mentor.
+		For neither of us, English is our native tongue.
+		Our accents sometimes made it difficult to understand each other.
+		To make myself understandable, I tried slowing the pace at which I talked, and I tried speaking a bit louder than normal.
+		I noticed that slowing my pace also had the effect that my mentor would slow down too.
+		This made the conversations more comfortable for both of us, and strengthened our bond.
+		In my opinion, I solved this issue in a respectful and professional way.
 
 	\end{hoofdstuk}
 
