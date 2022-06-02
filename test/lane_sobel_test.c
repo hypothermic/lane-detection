@@ -14,7 +14,7 @@
 /**
  * The level of thresholding applied after the Sobel filter
  */
-#define ARTIFACT_THRESHOLD	(200) // ~80%... (256/100)*80=205
+#define ARTIFACT_THRESHOLD	(100) // ~80%... (256/100)*80=205
 
 int main(int argc, char **argv) {
 	lane_image_t *input = NULL,

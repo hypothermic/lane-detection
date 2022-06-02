@@ -15,7 +15,7 @@
 /**
  * @see test/lane_hough_overlay_test.c#HOUGH_THRESHOLD
  */
-#define HOUGH_THRESHOLD		(150)
+#define HOUGH_THRESHOLD		(100)
 
 /**
  * @see test/lane_hough_overlay_test.c#HOUGH_ANGLE_MIN

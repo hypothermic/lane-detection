@@ -49,6 +49,10 @@
 \titleformat{\subsection}{\large\bfseries\rmfamily\lsstyle\color{arobsblue}}{\thesubsection}{1.1em}{} [{\vspace{4pt}\titlerule[0.75pt]}]
 \titleformat{\subsubsection}{\normalsize\bfseries\ttfamily}{\thesubsubsection}{0.5em}{} [{\vspace{4pt}\titlerule[0.75pt]\vspace{-0.2em}}]
 
+\usepackage{siunitx}
+\sisetup{detect-all}
+\sisetup{output-decimal-marker = {,}}
+
 \renewcommand{\LettrineFontHook}{\rmfamily}
 
 \begin{document}
@@ -229,11 +233,11 @@
 			\end{figuur}
 			\vspace{-0.2ex}
 
-			\noindent I worked on the project alone, under the lead of my mentor.
-			We talked multiple times per week when I had questions or new results to show.
-			During the most critical phase of the project, the realization phase, we agreed to plan an additional meeting every Friday at 2 PM.
+			\noindent I worked on the project alone, under the lead of my company mentor.
+			We talked every Friday at 2 PM to discuss my progress and our expectations for next week.
 			These meetings allowed me to give updates on the development progress and any roadblocks I was facing.
-			Other weeks were mostly spent on documentation and it was not worth holding a meeting because I would not have much news to show.
+			Additionally, I reached out to my mentor over Skype when I had new results to show.
+			For example, when I finally managed to get the detection working on the FPGA and I was ecstatic, I sent them the result video to share my excitement.
 
 		\end{paragraaf}
 
@@ -372,7 +376,7 @@
 
 			\begin{subparagraaf}{Windesheim Supervisor}
 
-				This stakeholder was involved with giving approval of several deliverables, including the Plan of Action and the mid-term presentation.
+				This stakeholder was involved with giving approval of several deliverables, including the Plan of Action and the midterm presentation.
 				The main requirement set by this stakeholder was that the project was complex enough to be on par with level two of the HBO-ICT competences.
 				I planned to comply with this by realizing complex products, such as implementing the image processing techniques and continuously testing the deliverables.
 				They expected me to send a progress report at the end of every week for keeping watch on the status of my project.
@@ -393,6 +397,11 @@
 	
 	\begin{hoofdstuk}{The Product}
 
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-2.5ex}
+		
 		During the internship I created a prototype lane detector alongside tools that can interact with it.
 		The lane detector itself is fully implemented on the TUL Z2 board.
 		The tools are run on a personal computer or laptop that can be interfaced with it through a serial port.
@@ -402,10 +411,10 @@
 			\includegraphics[width=0.8\textwidth]{product-5.png};
 		\end{figuur}
 
-		The total product can be distinguished into multiple deliverables that are able to be used together to form one functional system.
-		An overview of this system is given in \verwijzingb{figuur}{Deliverables}.
+		\noindent The total product can be distinguished into multiple deliverables that are able to be used together to form one functional system.
+		An overview of this system is given in \verwijzingb{figuur}{Product Deliverables}.
 
-		\begin{figuur}{Deliverables}
+		\begin{figuur}{Product Deliverables}
 			\vspace{2ex}
 			\centerline{
 				\includegraphics{deliverables}
@@ -414,16 +423,138 @@
 
 		\begin{paragraaf}{Lane Detector}
 
+			The detector is a combined hardware/software solution that is implemented on the TUL Z2 development board.
+			It takes a video feed from an external input source and processes it in real time, predicting whether the vehicle is about to depart the road lane.
+			When the vehicle is predicted to leave the lane, the tri-color leds are toggled to shine red and a warning is given over an external interface.
+			This makes the device easily integrateable with other car components.
+
+			\begin{figuur}{TUL Z2 Development Board}
+				\includegraphics[width=0.8\textwidth]{product-6.png};
+			\end{figuur}
+
+			\noindent It takes 11.2 milliseconds for a video frame to be processed.
+			The total latency between a video frame being received from the camera and the output of a lane departure warning is 26.6 milliseconds.
+			This is fast enough to comply with the safety regulations and requirements as I set out in the functional design.
+			The average power draw is 2.3 Watt, making it viable to implement in a battery powered vehicle.
+
 		\end{paragraaf}
 
 		\begin{paragraaf}{Remote Control Application}
+
+			This application can be used on a mechanic's laptop to troubleshoot the lane detector.
+			Algorithm settings and detection results that are broadcast over the external interface of the lane detector are received over the serial connection of the laptop and are read by the application.
+			A graphical user interface (GUI) is shown to the mechanic which displays the settings and results of the lane detector.
+			I developed this application to show that the results are correctly being sent over the lane detector's external serial interface and that other devices can reliably interface with it.
+			It was also a good opportunity for me to debug the internals of the lane detector without connecting to it via the board's development framework.
+			The application shows results in near real-time because of a fast serial data transfer rate, making it great for troubleshooting the device.
+			As can be seen in \verwijzingb{figuur}{Remote Control User Interface}, the user interface shows all vital information about the lane detector to the mechanic.
+
+			\vspace{1.5ex}
+			\begin{figuur}{Remote Control User Interface}
+				\includegraphics[width=0.845\textwidth]{product-gui.png};
+			\end{figuur}
+			\vspace{-1ex}
 
 		\end{paragraaf}
 
 		\begin{paragraaf}{Algorithm Toolsuite}
 
 			I developed this application during the research phase of the project.
-			It was my goal to get hands-on experience with the algorithms I researched by implementing them in a computer program.
+			It was my goal to get hands-on experience with the algorithms that I researched by implementing them in a computer program.
+			The program is able to read/save images to disk in PPM format.
+			Users can run the application from a shell, providing the path to the input image and the desired image operations by specifying the relevant command line arguments.
+			I implemented the following noteworthy computer vision algorithms that I would later go on to use in the hardware lane detector:
+
+			\vspace{-0.75ex}
+			\begin{itemize}
+				\item Preprocessing operations
+					\vspace{-0.75ex}
+					\begin{itemize}
+						\item Grayscale Filter
+						\item Single-channel Thresholding
+						\item K-means Segmentation
+						\item Gaussian Blur
+					\end{itemize}
+					\vspace{-0.85ex}
+				\item Edge Detection operations
+					\vspace{-0.75ex}
+					\begin{itemize}
+						\item Sobel Filter
+						\item Laplacian Filter
+					\end{itemize}
+					\vspace{-0.85ex}
+				\item Line Classification operations
+					\vspace{-0.75ex}
+					\begin{itemize}
+						\item Hough Transform
+						\item K-means Line Clustering
+					\end{itemize}
+					\vspace{-0.85ex}
+			\end{itemize}
+			\vspace{-0.25ex}
+
+			\vspace{1.25ex}
+			\begin{figuur}{Image processed using the Algorithm Toolsuite}
+				\centerline{
+				\begin{tabular}{ccc}
+					\includegraphics[width=0.475\textwidth]{0a0a0b1a-7c39d841.png} &
+
+					\begin{tikzpicture}
+						\draw[-to, white] (0, 0) -- (1, 0);
+						\draw[-to, black, thick] (0, 1.65) -- (1, 1.65);
+					\end{tikzpicture} &
+
+					\includegraphics[width=0.475\textwidth]{0a0a0b1a-7c39d841.kmeans.out.png} \\
+				\end{tabular}
+				}
+			\end{figuur}
+			\vspace{0.5ex}
+			
+			\noindent An example of an image being processed with the toolsuite is given in \verwijzingb{figuur}{Image processed using the Algorithm Toolsuite}.
+			The image was taken from the Berkeley DeepDrive dataset and shows an ideal scenario for detecting lane lines; the weather is clear, there is enough contrast between the paint and the road, and no major roadside artifacts are present.
+			The operations performed on this image were as described in the final chapter of the research paper: first, the image is converted to grayscale and segmented into two buckets with k-means clustering.
+			Then, Canny edge detection is applied to find the edge pixels in the image.
+			Next, the Hough transform is applied on the edge pixels to find all the lines in the image.
+			Finally, the lines are classified into lane/non-lane by using angle detection and k-means clustering.
+
+			In the future, this program can be used to test new algorithms.
+			The program can feed the entire DeepDrive database into the detection pipeline to predict its reliability.
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Documentation}
+
+			Alongside the system that I built, I also wrote a lot of documentation that is valuable for the company.
+			Specifically, the company is interested in how I managed to implement the detection algorithm on the FPGA.
+			To document my process from design to realization, I wrote several documents that explain what steps I took, why I took them, and what decisions I made along the way.
+
+			\begin{itemize}
+				\item Advisory Report --
+					In this document I reflected upon the effectiveness of the choices I made during the project, and the final benchmark results of the system. 
+					I also give suggestions to the company on which steps can be taken to further improve the system and considerations that should be taken into account for potential future projects.
+
+				\item Functional Design --
+					I describe the requirements and expectations of the system.
+					It is a baseline to check whether the product meets the demands that it was given.
+
+				\item Plan of Action --
+					This document described the process and planning of the project.
+					It was created at the very start of the project as a guideline for working on it.
+					I set out several goals for the assignment and described how I was planning to reach them.
+
+				\item Research Paper --
+					To familiarize myself with image processing and computer vision, I set out to explore different methods of lane marking detection and to compare them.
+					The literature review makes up the biggest part of this paper, and looks at the different image operations in great detail.
+					Mathematical constructs behind the image operations are also researched to give myself a mental picture of how the operations work.
+					The practical part of the research consisted of implementing the operations myself.
+					I wrote about the methods I used and the results I got, which finally led me to put together a lane marking detection pipeline.
+					I used this pipeline when creating the lane detector.
+
+				\item Technical Design --
+					The goal of this document is to describe how I implemented the total system.
+					I wrote about the working of each component in detail, and about how the components communicate together to form one orchestrated system.
+
+			\end{itemize}
 
 		\end{paragraaf}
 
@@ -433,11 +564,202 @@
 
 	\end{hoofdstuk}
 	
-	\begin{hoofdstuk}{Analyse}
+	\begin{hoofdstuk}{Analysis}
 
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-1ex}
+		
+		At the start of the project, I had no experience with image processing and computer vision.
+		To gain knowledge of these topics and to educate myself on what was needed to implement a lane detection pipeline, I set out to learn about relevant computer vision algorithms during the research phase of the project.
+		The main question of this research paper was: \textit{"What is the best suited combination of computer vision algorithms for detecting road lane markings from a video feed?"}
+
+		\begin{paragraaf}{Methods}
+
+			It was vital to select an algorithm that would work well, because it would be difficult to change the algorithm after implementing it in hardware.
+			Any changes that would have needed to be made would have set back the project and undone a lot of work.
+			I did not want to take any chances, so I decided to thoroughly compare which detection techniques are used in the wild, and implement them in a computer program so that I could test their effectiveness.
+
+			\begin{subparagraaf}{Literature Study}
+		
+				I held a literature study in which I compared the algorithms that were frequently used in other lane detection research papers, as can be seen in \verwijzingb{figuur}{Comparison of Frequently Used Algorithms among Other Researches}.
+				I gathered my own knowledge on these algorithms and explained their working using my own words.
+				Furthermore, I researched the mathematics behind them to help me implement all of them in a small computer program: the algorithm toolsuite.
+				I used this program to evaluate the effectiveness of every algorithm and to help me string them together to compose the most effective pipeline as possible.
+				
+				\begin{figuur}{Comparison of Frequently Used Algorithms among Other Researches}
+					\centerline{\scalebox{0.8325}{
+						\includegraphics[clip, trim=2.75cm 10.25cm 2.75cm 8.25cm]{research-paper-conclusion.pdf}
+					}}
+				\end{figuur}
+			
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Test Implementation}
+
+				In order to gain familiarity with the computer vision algorithms, I implemented them in the ``algorithm toolsuite'' computer program.
+				This program can load images from disk in PPM format and apply the algorithms to them, in order to test their effectiveness.
+				I tested the effectiveness of the processing pipeline using the Berkeley DeepDrive dataset, which is a library of 100,000 sample images taken from dashboard cameras.
+				For this, I set up a script that automatically fetched images from the dataset and fed them through the computer program.
+				This testing emulated real-world scenario's to gauge the total reliability of the pipeline.
+				I set up a list of criteria to judge this reliability and effectiveness.
+				These criteria included the accuracy of detection in different environments, the feasibility of implementing it in digital logic, and the resources required to implement the pipeline in real-time.
+				After all, it had to be possible to implement within the timeframe of the project and had to be small enough to fit on the FPGA fabric.
+
+				\begin{figuur}{Practical Workflow of the Research Implementation}
+					\centerline{\scalebox{0.8325}{
+						\includegraphics[clip, trim=2.75cm 11cm 2.75cm 4.1cm]{research-paper-results.pdf}
+					}}
+				\end{figuur}
+
+				\noindent In the research paper I explained all the steps I took in a chronological order.
+				I did this to easily express the roadblocks I hit with certain algorithms and to explain how I solved these.
+				Looking back at it, this chapter of the research paper almost reads like a story, and that perfectly illustrates the learning journey I took.
+
+			\end{subparagraaf}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Results}
+			
+			Using the sample tests, I decided on a detection pipeline consisting of Canny edge detection and the Hough transform, along with other minor operations.
+			I came to the conclusion that this pipeline was good enough for most scenarios, but my testing did indicate that it would not be effective under certain environmental conditions like sun glare, wet road surfaces, and other hazards.
+			Especially when roadside objects with straight lines, like guardrails, light poles or trees were present, the results would be inaccurate because the Hough transform would pick up the lines of these arbitrary objects.
+			I discussed this with my mentor and we decided that the pipeline was good enough for the project because this would only be a prototype.
+			I also argumented that the pipeline would get much more complicated if we were to account for all environments, and that it would not be certain if we had enough time or resources to implement more advanced detection methods.
+			We agreed to stick with the basic pipeline for this prototype.
+			Reflecting back on this, I should have pursued another detection pipeline because I had many issues later in the project where it gave inaccurate results.
+			I would have chosen something that involved machine learning or AI, because these algorithms can be trained to adapt better to different environments.
+			FPGAs are also very well suited for neural networks, and I can't believe that I didn't think of this possibility when creating the research paper.
+
+		\end{paragraaf}
 	\end{hoofdstuk}
 	
 	\begin{hoofdstuk}{Advise}
+
+		\setlength\parindent{1.5em}
+		\setlength{\parskip}{0.5em plus 0.2em minus 0.1em}
+		\linespread{1.2}
+		\vspace{-1ex}
+		
+		I wrote an advisory report for AROBS to give my thoughts on the results of the current lane detection system, and to express my views on the future of using FPGA technology for this purpose.
+		This advice is valuable to the company because they are looking to apply FPGA vision in more fields, so I made sure to consider the technology from different aspects.
+
+		\begin{paragraaf}{FPGA vs GPU Accelerated Processing}
+
+			To compare both technologies in a practical and fair way, I compared the lane detector system to an equivalent one that could be implemented on an Nvidia Jetson Nano.
+			The main question for AROBS was whether it was worth investing in FPGA technology or not.
+			This meant that I not only had to consider the performance and power efficiency aspects, which were obviously in favor of FPGA technology, but also the unit costs and development costs associated with the process.
+
+			\noindent I chose the Jetson as a reference device because it is widely used in edge devices.
+			I had used the device before in a KBS project at Windesheim and was familiar with how well it is able to perform.
+
+			\begin{subparagraaf}{Processing Latency}
+
+				Because FPGA logic is fixed, operations are run on clock pulses.
+				By looking at the amount of clock cycles required to run the video processing pipeline and dividing this number by the system clock speed of 125 MHz, I was able to determine that a video frame could be processed within a total of 11.2 milliseconds.
+				However, the prototyping framework that I used to test the FPGA logic added 15 milliseconds of latency on top of this.
+				If AROBS wishes to develop this system further and use lower level code for the processor system, thus eliminating the need for the prototyping framework, this latency can be discarded.
+
+				\vspace{1.5ex}
+				\begin{tabel}{Performance Benchmark Results}{l @{\extracolsep{\fill}} S[table-format=3.1]S[table-format=3.1]}
+					Device & {Average (ms)} & {Standard Deviation (ms)} \tabularnewline
+					\midrule
+
+					FPGA (raw)		& 11.2		& {-} 		\tabularnewline
+					FPGA (co-processing)	& 26.6		& 0.443		\tabularnewline
+					Reference OpenCV (CPU)	& 72.2		& 1.801		\tabularnewline
+					Reference OpenCV (GPU)	& 14.2		& 0.794		\tabularnewline
+					Reference Lane Program	& 382.7		& 13.81		\tabularnewline
+
+				\end{tabel}
+				
+				\noindent To compare the performance with existing technology, I also estimated the time that the Nvidia Jetson would need for processing a video frame.
+				I did this by running the same OpenCV code that I used in the digital logic co-simulation tests.
+				This reference code ran on my laptop's iGPU, which has roughly the same specifications as the Jetson's GPU.
+				The average run time per video frame for the reference code was 14.2 milliseconds.
+				This is roughly 25 percent slower than the FPGA implementation.
+				Another interesting test was to compare the speed against the test program I made during the research phase.
+				This program ran on a single CPU core without using hardware acceleration, meaning that it was easily outclassed.
+
+				I came to the conclusion that the FPGA implementation performed faster than a Jetson if the prototyping framework latency is not taken into account.
+				But even with taking into account this latency, the FPGA implementation was still able to process the video at a speed higher than 30 frames per second, meeting the requirements of the project.
+			
+				\begin{figuur}{Performance Benchmark Results in a Bar Chart}
+					\centerline{
+						\includegraphics[clip, trim=2.5cm 3.6cm 2.5cm 15.2cm]{benchmarks.pdf}
+					}
+				\end{figuur}	
+				\vspace{-1ex}
+
+				\noindent I organized the results in a table, but in my opinion this did not express the difference between implementations enough.
+				Therefore, I decided to plot the results next to each other in a bar chart.
+				This chart shows the difference in scale of the results.
+
+			\end{subparagraaf}
+
+			\begin{subparagraaf}{Power Efficiency}
+
+				One of the areas that FPGAs excel in compared to their alternatives is low power consumption.
+				I measured the total chip power draw to be circa 2.25 Watt, with a fluctuation of 0.16 Watt depending on how much load was put on the CPU cores.
+				The Nvidia Jetson consumes roughly 10 Watt when processing the same load.
+				In the advisory report I concluded that the FPGA solution is much more suitable for being embedded in vehicles because of its low power draw.
+
+			\end{subparagraaf}
+
+		\end{paragraaf}
+
+		\begin{paragraaf}{Detection Algorithm Improvement}
+
+			Because AROBS wants to further develop this system, I gave suggestions on how the accuracy and effectiveness of the algorithm could be improved.
+			The most apparent downside of the lane detector is that it does not work in some environmental conditions.
+			For example, on dashcam footage where the contrast between the road and the lane markings was too low, the lane markings would simply not get detected.
+			This would also happen if sun glare was captured in the lens of the camera or if the road surface was very reflective.
+			Both of these defects can be solved by improving the preprocessing of the video.
+			I advised AROBS to investigate more effective preprocessing methods for the video processing pipeline or to consider different approaches like the usage of a neural network.
+
+			\vspace{1.75ex}
+			\begin{figuur}{Inaccurate Detection Result due to Sun Glare}
+				\centerline{
+				\begin{tabular}{ccc}
+					\includegraphics[width=0.475\textwidth]{0fc0b0cc-75d5e23d.jpg} &
+
+					\begin{tikzpicture}
+						\draw[-to, white] (0, 0) -- (1, 0);
+						\draw[-to, black, thick] (0, 1.65) -- (1, 1.65);
+					\end{tikzpicture} &
+
+					\includegraphics[width=0.475\textwidth]{0fc0b0cc-75d5e23d.grayscale.out.kmseg.out.gaussian.out.sobel.out.hough_kmeans.out.png} \\
+				\end{tabular}
+				}
+			\end{figuur}
+			\vspace{0.5ex}
+
+			\noindent Another culprit of the lane detection algorithm is that it incorrectly classifies roadside objects with straight horizontal edges like guardrails, poles and buildings as lane lines.
+			This frequently occurred in busy urban areas like in \verwijzingb{figuur}{Inaccurate Detection Result due to Roadside Artifacts}.
+			I did propose several techniques to ignore these false lines in the research paper, but after discussing it with my mentor we decided not to implement them because it would hinder the flexibility of the system.
+			For example, the video feed could be cropped to only include the actual road surface.
+			This, however, would mean that we would need to define the crop region for each setup, and that would not make the device generic enough for any car.
+			To keep the prototype system as universal as possible, we decided against these optimizations, but considering the poor accuracy of the lane detection, I advised AROBS to look into these improvements again.
+
+			\vspace{1.75ex}
+			\begin{figuur}{Inaccurate Detection Result due to Roadside Artifacts}
+				\centerline{
+				\begin{tabular}{ccc}
+					\includegraphics[width=0.475\textwidth]{0f1a2d28-bfa30000.jpg} &
+
+					\begin{tikzpicture}
+						\draw[-to, white] (0, 0) -- (1, 0);
+						\draw[-to, black, thick] (0, 1.65) -- (1, 1.65);
+					\end{tikzpicture} &
+
+					\includegraphics[width=0.475\textwidth]{0f1a2d28-bfa30000.grayscale.out.kmseg.out.gaussian.out.sobel.out.hough_overlay.out.png} \\
+				\end{tabular}
+				}
+			\end{figuur}
+			\vspace{0.5ex}
+		\end{paragraaf}
 
 	\end{hoofdstuk}
 	
