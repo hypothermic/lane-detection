@@ -18,3 +18,18 @@ test/*.{c,h,sh}
 Makefile
 README.md
 test.sh
+
+[remote control]
+# alle code zelf geschreveen
+rc/rc_*.{cpp,hpp}
+
+[fpga logic]
+# de video processing code zelf geschreven
+hls/vpu_*.{cpp,hpp}
+# toch nog een stukje VHDL!
+rtl/top.vhd
+# het FPGA design zelf gemaakt
+rtl/constraints.xdc
+rtl/driver.ipynb
+rtl/ibd.tcl
+rtl/manual.ipynb

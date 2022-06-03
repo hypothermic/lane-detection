@@ -1,41 +1,62 @@
-De toolsuite wordt voornamelijk handmatig gebruikt, maar kan ook
-automatisch getest worden d.m.v. unit tests. Alle tests, zowel de
-handmatige als de automatische, kunnen met de meegeleverde Makefile
-worden uitgevoerd. Deze Makefile biedt targets voor het compileren,
-uitvoeren, testen, en debuggen van de software.
+Het compileren, testen en uitvoeren van alle deelproducten (de FPGA digitale
+logica, de test implementation en ook de remote control applicatie) kan worden
+gedaan door de bijbehorende Makefile targets aan te roepen.
 
-De toolsuite is voortdurend ontwikkeld en getest op Arch Linux omdat
-deze distro de laatste versie van alle packages biedt. Om zeker te
-zijn van compatibility is hij ook automatisch getest op de laatste
-Ubuntu-server versie (op dit moment 21.04) in een Docker environment.
-Deze automatische tests worden door een Github Actions Workflow na
-het pushen van elke commit geïnstantieerd.
+Alle deelproducten zijn voortdurend ontwikkeld en getest op Arch Linux omdat
+deze distro de laatste versie van alle packages biedt. Om zeker te zijn van
+compatibility zijn ze ook automatisch getest op de laatste Ubuntu-server versie
+(op dit moment 21.04) in een Docker environment. Deze automatische tests worden
+geïnstantieerd door een Github Actions Workflow na het pushen van elke commit.
+
 
 Installeer voor het builden van de documentatie de volgende tools:
 - doxygen (incl. graphviz en plantuml)
 - TeX Live 2018 en latexmk
 - TeX-bibliotheek setspace (van https://www.ctan.org/pkg/setspace)
-- mijn dotfiles (van https://github.com/hypothermic/dotfiles)
+- TeX-bibliotheek tikz-uml (van https://perso.ensta-paris.fr/~kielbasi/tikzuml/)
+- mijn gebruikersconfiguratie (van https://github.com/hypothermic/dotfiles)
+
+Installeer voor het builden van de digitale logica de volgende tools:
+- Xilinx Vivado ML Edition 2022.1
+- Xilinx Vitis en Vitis HLS 2022.1
+
 Installeer voor het builden van de software de volgende tools:
 - gcc 10.2 of hoger
 - coreutils (make, zsh, etc.)
-- ghdl en gtkwave
 - valgrind en gdb voor het debuggen
+- gtk-4.0 en gtkmm-4.0 voor de remote control applicatie
+
 Alle tools zijn verkrijgbaar van Arch Linux packages of van de AUR.
+
+
+Testen van de digitale logica:
+$ make test-hls
+Builden van de digitale logica:
+$ make compile-hls compile-hw
+Uploaden van de FPGA bitstream:
+$ make transfer-bitstream
+
+Testen van het researchprogramma:
+$ make test-lane
+Builden van het researchprogramma:
+$ make compile-lane
+Voorbeeld handmatig gebruik van het researchprogramma:
+$ make DEBUG=true test-lane-man ARG_TEST=kmseg ARG_SAMPLE=0a0a0b1a-7c39d841
+$ SAMPLE=0a0a0b1a-7c39d841 ./test.sh grayscale gaussian sobel hough_kmeans
+
+Builden van het remote control programma:
+$ make compile-rc
+Starten van het remote control programma:
+$ make run-rc
+
+Alle build files verwijderen:
+$ make clean
+
 
 Omdat de BDD100K dataset onder een stricte licentie wordt uitgegeven
 kan ik deze niet meeleveren met het project. U kunt de dataset zelf
 verkrijgen en de afbeeldingen eruit halen d.m.v. het extract-script
 dat ik heb geschreven. Dit script bevindt zich in de data-map.
 Als argument wordt de locatie van de 10K images dataset meegegeven.
-
 Voorbeeld voor het gebruik van het extract-script vanuit de root map:
 $ data/extract.sh ~/Downloads/bdd100k_images_10k/bdd100k/images/10k
-
-Voorbeeld handmatig gebruik (op desktop, image viewer opent automatisch):
-$ make DEBUG=true test-lane-man ARG_TEST=kmseg ARG_SAMPLE=0a0a0b1a-7c39d841
-$ SAMPLE=0a0a0b1a-7c39d841 ./test.sh grayscale gaussian sobel hough_kmeans
-
-Voorbeeld automatisch gebruik (kan op server/headless, zie exit code):
-$ make test
-
