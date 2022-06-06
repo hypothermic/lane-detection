@@ -9,17 +9,19 @@
 
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 
 /**
  * A message sent over the UART connection.
+ *
+ * The type and subclass indicate which kind of packet it is
  */
 class UartPacket {
 	public:
 		/**
-		 * Determins which kind of packet it is.
+		 * Determins which kind of packet it is
 		 */
 		enum class Type {
 			STATUS_UPDATE		= (1u << 1),
@@ -29,18 +31,62 @@ class UartPacket {
 
 	private:
 		/**
-		 * The kind of packet.
+		 * The kind of packet it is. This can also be
+		 * determined by its subclass
 		 */
 		uint8_t type;
 
 	public:
+		/**
+		 * Construct a new UartPacket
+		 */
 		UartPacket();
+
+		/**
+		 * Release this packet's internal resources
+		 */
 		virtual ~UartPacket();
 	
+		/**
+		 * Try to reconstruct a packet from a buffer.
+		 * Reading will start at the specified <i>offset</i>
+		 * A reference to the reconstructed packet will
+		 * be assigned to the <i>packet</i> pointer.
+		 *
+		 * If no packet is read, the address of the
+		 * pointer will not be changed, indicating failure
+		 *
+		 * @param buffer	The buffer to read from
+		 * @param offset	Where to start reading
+		 * @param packet	Return value location
+		 *
+		 * @return		Amount of bytes that
+		 * 			have been read
+		 */
 		static size_t read(char *buffer, size_t offset, UartPacket **packet);
 
+		/**
+		 * Reconstruct the packet data from a buffer
+		 *
+		 * @param buffer	The buffer to read from
+		 * @param offset	Where to start reading
+		 *
+		 * @return		How many bytes have been read
+		 */
 		virtual size_t read(char *buffer, size_t offset);
+
+		/**
+		 * Get the type of the packet
+		 *
+		 * @return		Packet type as 8-bit int
+		 */
 		virtual uint8_t get_type();
+
+		/**
+		 * Get the amount of bytes the packet contains
+		 *
+		 * @return		Size of the packet
+		 */
 		virtual size_t get_length();
 };
 
@@ -79,16 +125,49 @@ class StatusUpdatePacket : public UartPacket {
 		uint8_t h_thres;
 
 	public:
+		/*
+		 * @inheritDoc
+		 */
 		StatusUpdatePacket();
+		
+		/*
+		 * @inheritDoc
+		 */
 		~StatusUpdatePacket();
 
+		/*
+		 * @inheritDoc
+		 */
 		size_t read(char *buffer, size_t offset) override;
+		
+		/*
+		 * @inheritDoc
+		 */
 		size_t get_length() override;
 
+		/*
+		 * @inheritDoc
+		 */
 		bool get_is_processing();
+
+		/*
+		 * @inheritDoc
+		 */
 		uint8_t get_seg_thres();
+
+		/*
+		 * @inheritDoc
+		 */
 		float get_g_sigma();
+
+		/*
+		 * @inheritDoc
+		 */
 		uint8_t get_e_thres();
+
+		/*
+		 * @inheritDoc
+		 */
 		uint8_t get_h_thres();
 };
 
@@ -99,7 +178,11 @@ class StatusUpdatePacket : public UartPacket {
  */
 class FrameProcessedPacket : public UartPacket {
 	public:
+		/**
+		 * Type for holding a vector with rho,theta line parameters
+		 */
 		using line_vector = std::vector<std::pair<float, float>>;
+
 	private:
 		/**
 		 * The detected lines described in (rho, theta) format.
@@ -107,12 +190,29 @@ class FrameProcessedPacket : public UartPacket {
 		line_vector lines;
 
 	public:
+		/*
+		 * @inheritDoc
+		 */
 		FrameProcessedPacket();
+
+		/*
+		 * @inheritDoc
+		 */
 		~FrameProcessedPacket();
 
+		/*
+		 * @inheritDoc
+		 */
 		size_t read(char *buffer, size_t offset) override;
+
+		/*
+		 * @inheritDoc
+		 */
 		size_t get_length() override;
 
+		/*
+		 * @inheritDoc
+		 */
 		line_vector get_lines();
 };
 
@@ -126,17 +226,34 @@ class FrameProcessedPacket : public UartPacket {
 class DepartureWarningPacket : public UartPacket {
 	private:
 		/**
-		 * Whether the departure alarm is currently active.
+		 * Whether the departure alarm is currently active or not
 		 */
 		bool is_departing;
 
 	public:
+		/*
+		 * @inheritDoc
+		 */
 		DepartureWarningPacket();
+
+		/*
+		 * @inheritDoc
+		 */
 		~DepartureWarningPacket();
 
+		/*
+		 * @inheritDoc
+		 */
 		size_t read(char *buffer, size_t offset) override;
+
+		/*
+		 * @inheritDoc
+		 */
 		size_t get_length() override;
 
+		/*
+		 * @inheritDoc
+		 */
 		bool get_is_departing();
 };
 

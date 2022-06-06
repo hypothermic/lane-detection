@@ -13,30 +13,37 @@
 
 #include "rc_information_window.hpp"
 
-#include <iostream>
-
-/**
+/*
+ * @internal
+ *
  * Set the label text with a value suffix
+ *
+ * @tparam T	the type of value which is supplied
+ * 
+ * @param label	the label which should be updated
+ * @param name	the prefix of the label
+ * @param value	the suffix of the label
  */
 template<typename T>
 static inline void set_label_text(Gtk::Label &label, const char *name, T value) {
-	Glib::ustring seg_thres_str;
-
 	label.set_markup(Glib::ustring::sprintf("%s: <b>%s</b>", name, std::to_string(value)));
 }
 
 /*
  * @internal
+ * @inheritDoc
  *
- * Specialization for booleans because <i>std::to_string</i> can't handle them
+ * Specialization for booleans because <i>std::to_string</i> can't handle them...
+ * Each day I'm losing more faith in the STL, it's almost as bad as the IEEE VHDL STD
  */
 template<>
 inline void set_label_text(Gtk::Label &label, const char *name, bool value) {
-	Glib::ustring seg_thres_str;
-
 	label.set_markup(Glib::ustring::sprintf("%s: <b>%s</b>", name, (value ? "true" : "false")));
 }
 
+/*
+ * @inheritDoc
+ */
 InformationWindow::InformationWindow(UartManager *uart_manager) :
 	uart_manager(uart_manager),
 	main_container(Gtk::Orientation::VERTICAL),
@@ -48,9 +55,15 @@ InformationWindow::InformationWindow(UartManager *uart_manager) :
 	preview_aspect(Gtk::Align::CENTER, Gtk::Align::CENTER, (1280.0f/720.0f)),
 	preview_area() {
 
+	// Construct all the UI widgets.
+	// This could be done using Glade in the future
+	// It's an XML-like UI definition file that will help
+	// replace the hardcoded stuff below here
+	
 	this->port_entry.set_text("/dev/ttyUSB0");
 	this->port_entry.set_hexpand(true);
 
+	// Connect the callback of the "Connect"/"Disconnect" button
 	this->connect_button.signal_clicked().connect(
 			sigc::mem_fun(*this, &InformationWindow::on_connect_request));
 
@@ -59,6 +72,8 @@ InformationWindow::InformationWindow(UartManager *uart_manager) :
 	this->connection_container.append(this->connect_button);
 
 	this->connection_frame.set_child(this->connection_container);
+
+	// TODO use a for loop or macro or something
 
 	this->is_processing_label.set_halign(Gtk::Align::START);
 	this->is_processing_label.set_hexpand(false);
@@ -104,13 +119,25 @@ InformationWindow::InformationWindow(UartManager *uart_manager) :
 	this->set_child(this->main_container);
 }
 
+/*
+ * @inheritDoc
+ */
 void InformationWindow::on_connection_state_update(ConnectionState state) {
 	this->port_entry.set_editable(state == ConnectionState::DISCONNECTED);
 	this->connect_button.set_label(state == ConnectionState::DISCONNECTED ? "Connect" : "Disconnect");
 }
 
+/*
+ * @inheritDoc
+ */
 void InformationWindow::on_data_update(UartPacket *packet) {
+
+	// Depending on which type of packet we have received,
+	// we want to update the relevant information widgets
 	switch (packet->get_type()) {
+
+		// The packet contains a new status and parameters,
+		// update the relevant fields in the Status frame;
 		case static_cast<uint8_t>(UartPacket::Type::STATUS_UPDATE): {
 			StatusUpdatePacket *sup = dynamic_cast<StatusUpdatePacket *>(packet);
 
@@ -123,11 +150,20 @@ void InformationWindow::on_data_update(UartPacket *packet) {
 
 			break;
 		}
+
+		// The packet contains line data, delegate it to the
+		// preview window so that it can plot the lines
 		case static_cast<uint8_t>(UartPacket::Type::FRAME_PROCESSED): {
 			this->preview_area.on_frame_update(dynamic_cast<FrameProcessedPacket *>(packet));
 
 			break;
 		}
+
+		// The packet contains a boolean which indicates
+		// whether the departure alarm has been activated.
+		//
+		// Update the status label and set the line plot
+		// color to make the lines red/blue.
 		case static_cast<uint8_t>(UartPacket::Type::DEPARTURE_WARNING): {
 			DepartureWarningPacket *dwp = dynamic_cast<DepartureWarningPacket *>(packet);
 
@@ -144,7 +180,14 @@ void InformationWindow::on_data_update(UartPacket *packet) {
 	}
 }
 
+/*
+ * @inheritDoc
+ */
 void InformationWindow::on_connect_request() {
+
+	// If the port text field is editable, the connection
+	// hasn't been established, so we emit the connect signal.
+	// Otherwise, emit the disconnect signal
 	if (this->port_entry.get_editable() == true) {
 		this->connect_request_signal(this->port_entry.get_text());
 	} else {
