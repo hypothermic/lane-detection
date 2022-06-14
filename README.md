@@ -1,8 +1,10 @@
 ## Lane Detection Internship [![Compile Documents](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml/badge.svg?branch=master&event=push)](https://github.com/hypothermic/lane-detection/actions/workflows/compile-documents.yml)
 
-The goal of this project is to accelerate road lane detection using an FPGA.
+The goal of this project was to accelerate road lane detection using an FPGA.
 
-![Preview picture](./data/preview.png)
+Using a low-end Xilinx FPGA we were able to process a video feed at 85 frames per second using only 2.1 Watt active power draw.
+
+https://user-images.githubusercontent.com/32428346/173520322-7a7dbf6a-94eb-4cb2-a4ab-3cfb29654cc5.mp4
 
 This repository contains the documentation and code for all of the deliverables.
 
@@ -85,4 +87,3 @@ $ find -iname "*.bit" -o -iname "*.hwh"
 If you use the PYNQ framework on the TUL Z2, copy the Jupyter
 notebook and the Python modules along with the bitstream and
 hardware handoff file to the development board.
-
